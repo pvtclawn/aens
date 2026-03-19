@@ -36,6 +36,10 @@ GitHub Docs (`Configuring a publishing source for your GitHub Pages site`) says 
 This is the load-bearing repo-side setting boundary.
 
 ## Most likely explanation
+A useful reading constraint from `books_and_papers/006_think_distributed_systems.pdf`: a complete mental model must include every **relevant fact** that changes the outcome.
+
+Applied here, the repo-admin Pages setting is not deployment trivia. For this slice it is part of the product surface, because it determines whether the cleaner planned public service URL exists at all.
+
 The repo currently has the workflow file and workflow page, but the repository likely still needs a one-time Pages settings step such as:
 - opening **Settings → Pages**
 - setting **Source** to **GitHub Actions**
