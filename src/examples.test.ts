@@ -15,7 +15,7 @@ test('example registry exposes contrasting capability authority demos', () => {
   expect(parentAuthorized?.capabilityAuthorization.status).toBe('parent-authorized')
   expect(parentAuthorized?.profile.ensName).toBe('research.pvtclawn.eth')
   expect(parentAuthorized?.profile.records.parentName).toBe('pvtclawn.eth')
-  expect(parentAuthorized?.profile.records.serviceUrl).toBe('https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md')
+  expect(parentAuthorized?.profile.records.serviceUrl).toBe('https://pvtclawn.github.io/aens/research-capability/')
   expect(parentAuthorized?.parentProfile?.records.capabilities).toEqual(['research.pvtclawn.eth'])
 
   const unlistedChild = getExampleScenario('unlisted-child-capability')

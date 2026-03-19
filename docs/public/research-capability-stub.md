@@ -36,5 +36,10 @@ The goal of that slice is to prove **ENS-backed authority structure**, not the f
 - child capability: `research.pvtclawn.eth`
 - expected live authority result: `parent-authorized`
 
+## Canonical public page
+- `https://pvtclawn.github.io/aens/research-capability/`
+
+This markdown file is the source document for the public stub content, but the intended public-facing service surface is the cleaner GitHub Pages route above.
+
 ## Future upgrade path
 This stub should eventually be replaced by a real research-capability endpoint or a stronger owned landing page without changing the core ÆNS authority model.

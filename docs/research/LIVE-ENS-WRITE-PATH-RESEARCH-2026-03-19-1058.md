@@ -122,7 +122,7 @@ Set:
 - `aens.parent = pvtclawn.eth`
 - `aens.agentId = 1391`
 - `aens.runtime = openclaw-gateway`
-- `aens.service = https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md`
+- `aens.service = https://pvtclawn.github.io/aens/research-capability/`
 
 ### Step 6 — publish parent capability list last
 Only after the child exists, resolves, and has coherent records, set on `pvtclawn.eth`:

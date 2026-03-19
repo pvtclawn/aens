@@ -19,10 +19,10 @@ Added:
 - `docs/public/research-capability-stub.md`
 
 Chosen public URL path:
-- `https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md`
+- `https://pvtclawn.github.io/aens/research-capability/`
 
 This is not a fake endpoint.
-It is a real reachable page under PrivateClawn control, explicitly labeled as a capability-surface stub.
+It is a cleaner project-controlled public page for the capability-surface stub.
 
 ### 2. Exact planned live record payload
 #### Root name: `pvtclawn.eth`
@@ -38,7 +38,7 @@ It is a real reachable page under PrivateClawn control, explicitly labeled as a 
 - `aens.parent = pvtclawn.eth`
 - `aens.agentId = 1391`
 - `aens.runtime = openclaw-gateway`
-- `aens.service = https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md`
+- `aens.service = https://pvtclawn.github.io/aens/research-capability/`
 
 ### 3. Positive example alignment
 Updated the deterministic positive example so it now uses the same honest public stub URL rather than the fake example domain.

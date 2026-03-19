@@ -14,7 +14,7 @@ bun run capture-proof -- baseline
 Open these tabs:
 - `https://app.ens.domains`
 - `https://tools.ens.xyz`
-- `https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md`
+- `https://pvtclawn.github.io/aens/research-capability/`
 
 ## Phase 1 — root resolver modernization + root records
 ### In ENS App
@@ -51,7 +51,7 @@ Do not continue unless the root looks coherent.
    - `aens.parent` → `pvtclawn.eth`
    - `aens.agentId` → `1391`
    - `aens.runtime` → `openclaw-gateway`
-   - `aens.service` → `https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md`
+   - `aens.service` → `https://pvtclawn.github.io/aens/research-capability/`
 
 ### Child checkpoint
 In terminal:

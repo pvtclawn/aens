@@ -6,7 +6,7 @@ const DEMO_ADDRESS = '0x000000000000000000000000000000000000dEaD'
 const PARENT_NAME = 'pvtclawn.eth'
 const DEFAULT_AGENT_ID = '1391'
 const DEFAULT_RUNTIME = 'openclaw-gateway'
-const PUBLIC_RESEARCH_CAPABILITY_STUB_URL = 'https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md'
+const PUBLIC_RESEARCH_CAPABILITY_STUB_URL = 'https://pvtclawn.github.io/aens/research-capability/'
 
 export type AensExampleId =
   | 'parent-authorized-capability'
