@@ -1,5 +1,7 @@
 export * from './capability-authorization'
+export * from './cli'
 export * from './config'
+export * from './examples'
 export * from './linked-records'
 export * from './profile'
 export * from './proof-evidence'
