@@ -125,6 +125,20 @@ Where:
 - `status` carries raw HTTP context when available
 - `detail` carries a short operational explanation when useful
 
+## Presentation rule — primary signal first
+Observed output should render as:
+- `state (+ supporting detail)`
+
+not as:
+- raw boolean/status bundles that force the reader to infer the state.
+
+Examples:
+- `proofs: fetch-failed (http 503)`
+- `receipts: content-invalid (http 200, invalid JSON)`
+- `receipts: content-parsed (http 200)`
+
+That keeps the observed layer human-shaped: the operational conclusion comes first, and the transport detail remains secondary context.
+
 ## Mapping guidance from current data
 Given current inputs:
 - no linked URL for kind → `not-declared`
