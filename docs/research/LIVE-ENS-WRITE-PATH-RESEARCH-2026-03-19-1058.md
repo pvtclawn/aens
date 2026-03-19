@@ -26,6 +26,10 @@ A direct mainnet probe using `viem` against the ENS Registry, Name Wrapper, Base
 - Base Registrar `ownerOf(labelhash('pvtclawn'))` returns the same Name Wrapper address
 
 ## What this means
+A useful reading constraint from `books_and_papers/006_think_distributed_systems.pdf`: a good mental model must capture every **relevant fact** of the system, especially the interactions and boundaries that actually shape outcomes.
+
+Applied here, wrapper state, resolver compatibility, and human-wallet approval are not low-level execution trivia. They are product-shaping facts for the first live ÆNS proof slice.
+
 ### 1. `pvtclawn.eth` is already wrapped
 This is not a hypothetical possibility; it is the current live state.
 
