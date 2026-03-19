@@ -1,13 +1,13 @@
-# AENS
+# ÆNS
 
-**AENS is an ENS-native CLI trust debugger for agent profiles and capability subnames.**
+**ÆNS is an ENS-native CLI trust debugger for agent profiles and capability subnames.**
 
-Today, AENS is not yet a full invocation/payment protocol.
+Today, ÆNS is not yet a full invocation/payment protocol.
 Its current product truth is simpler: given an ENS name, it resolves the name, reads relevant ENS records, classifies capability authority, optionally fetches linked proof material, and prints a trust-tier report that makes the result legible.
 
 ## What it does today
 
-AENS currently supports:
+ÆNS currently supports:
 - live ENS lookup via `bun run inspect <ens-name>`
 - capability-authority classification for ENS child capability surfaces
 - optional linked proof/receipt fetching via `--with-links`
@@ -19,12 +19,12 @@ AENS currently supports:
   - inferred claims / caveats
 - deterministic offline example scenarios for contrasting authority states
 
-In plain English: AENS helps answer questions like:
+In plain English: ÆNS helps answer questions like:
 - “Is this ENS name just a profile, or does it look like a callable agent/service surface?”
 - “If this is a child capability subname, is it actually authorized by the parent?”
 - “Does the name declare proof/receipt links, and what do those links appear to contain?”
 
-## ENS records AENS reads today
+## ENS records ÆNS reads today
 
 ### Standard ENS/profile records
 - `description`
@@ -34,7 +34,7 @@ In plain English: AENS helps answer questions like:
 - `com.github`
 - `org.telegram`
 
-### Current AENS-specific records
+### Current ÆNS-specific records
 - `aens.agentId`
 - `aens.service`
 - `aens.proofs`
@@ -44,7 +44,7 @@ In plain English: AENS helps answer questions like:
 - `aens.capabilities`
 
 These are read-only today.
-AENS currently does **not** publish or modify ENS records.
+ÆNS currently does **not** publish or modify ENS records.
 
 ## Quickstart
 
@@ -127,7 +127,7 @@ Example meaning:
 ## Minimal architecture
 
 - `src/resolver.ts` — ENS resolution + text record reads
-- `src/profile.ts` — normalized AENS profile model
+- `src/profile.ts` — normalized ÆNS profile model
 - `src/capability-authorization.ts` — authority classification for child capability names
 - `src/linked-records.ts` — linked proof/receipt fetch + lightweight structure summaries
 - `src/report.ts` — trust-tier report rendering
@@ -136,17 +136,17 @@ Example meaning:
 
 ## Why the repo looks the way it does
 
-AENS is being built as a sequence of small, evidence-backed slices.
+ÆNS is being built as a sequence of small, evidence-backed slices.
 The research notes in `docs/research/` are there to freeze product decisions and verification passes, but the intended first-touch surface is now this README plus the CLI commands above.
 
 ## Current product truth, one more time
 
-AENS currently proves:
+ÆNS currently proves:
 - ENS can be a load-bearing entrypoint for agent identity and capability authority inspection
 - child capability subnames can be classified in a legible way
 - declared proof material can be kept distinct from live observations and inferred claims
 
-AENS does **not yet** prove:
+ÆNS does **not yet** prove:
 - live invocation
 - payment flows
 - broad public deployment
