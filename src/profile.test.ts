@@ -7,7 +7,7 @@ import {
   hasProfileMetadata,
   hasProofSurface,
 } from './profile'
-import { renderProfileReport } from './report'
+import { createReportSections, renderProfileReport } from './report'
 
 test('buildAensProfile normalizes missing fields to null and computes sharper state helpers', () => {
   const profile = buildAensProfile({
@@ -28,7 +28,38 @@ test('buildAensProfile normalizes missing fields to null and computes sharper st
   expect(hasProofSurface(profile)).toBe(false)
 })
 
-test('renderProfileReport explains why ENS is load-bearing with explicit state lines', () => {
+test('createReportSections builds semantic trust-tier sections in the right order', () => {
+  const profile = buildAensProfile({
+    ensName: 'vitalik.eth',
+    address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+    records: {
+      url: 'https://vitalik.ca',
+      twitter: 'VitalikButerin',
+    },
+  })
+
+  const sections = createReportSections(profile)
+
+  expect(sections.map((section) => section.key)).toEqual([
+    'identity-anchor',
+    'capability-authority',
+    'linked-proof-material',
+    'live-observations',
+    'inferred-claims',
+  ])
+
+  expect(sections[0]?.lines).toContain('Primary URL: https://vitalik.ca')
+  expect(sections[0]?.lines).toContain('Profile metadata present: yes')
+  expect(sections[0]?.lines).toContain('Callable service surface present: no')
+  expect(sections[2]?.lines).toEqual([
+    'Proof surface present: no',
+    'No linked proof material declared.',
+  ])
+  expect(sections[3]?.lines).toEqual(['No live observations recorded.'])
+  expect(sections[4]?.lines).toEqual(['No inferred claims or caveats.'])
+})
+
+test('renderProfileReport explains why ENS is load-bearing with trust-tier sections', () => {
   const profile = buildAensProfile({
     ensName: 'pvtclawn.eth',
     address: '0x000000000000000000000000000000000000dEaD',
@@ -42,9 +73,9 @@ test('renderProfileReport explains why ENS is load-bearing with explicit state l
 
   const report = renderProfileReport(profile)
   expect(report).toContain('AENS profile: pvtclawn.eth')
-  expect(report).toContain('Identity anchor present: yes')
-  expect(report).toContain('Profile metadata present: yes')
-  expect(report).toContain('Callable service surface present: no')
+  expect(report).toContain('Identity anchor [anchored | ens]')
+  expect(report).toContain('Capability authority [authorized | parent-ens]')
+  expect(report).toContain('Linked proof material [declared | linked-doc]')
   expect(report).toContain('Proof surface present: yes')
   expect(report).toContain('Why ENS matters here:')
 })

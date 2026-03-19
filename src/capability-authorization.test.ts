@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test'
 import { classifyCapabilityAuthorization } from './capability-authorization'
 import { buildAensProfile } from './profile'
-import { renderProfileReport } from './report'
+import { createReportSections, renderProfileReport } from './report'
 
 test('classifyCapabilityAuthorization detects a parent-authorized capability surface', () => {
   const parentProfile = buildAensProfile({
@@ -96,7 +96,39 @@ test('classifyCapabilityAuthorization detects profiles that are not capability s
   }).status).toBe('not-a-capability-surface')
 })
 
-test('renderProfileReport includes capability-authorization status', () => {
+test('createReportSections keeps capability authority fields inside the authority section', () => {
+  const parentProfile = buildAensProfile({
+    ensName: 'pvtclawn.eth',
+    address: '0x000000000000000000000000000000000000dEaD',
+    records: {
+      agentId: '1391',
+      capabilities: ['research.pvtclawn.eth'],
+    },
+  })
+
+  const childProfile = buildAensProfile({
+    ensName: 'research.pvtclawn.eth',
+    address: '0x000000000000000000000000000000000000dEaD',
+    records: {
+      parentName: 'pvtclawn.eth',
+      agentId: '1391',
+    },
+  })
+
+  const authorization = classifyCapabilityAuthorization({
+    profile: childProfile,
+    parentProfile,
+  })
+
+  const sections = createReportSections(childProfile, [], authorization)
+  const authoritySection = sections.find((section) => section.key === 'capability-authority')
+
+  expect(authoritySection?.lines).toContain('Capability authorization: parent-authorized')
+  expect(authoritySection?.lines).toContain('Capability listed by parent: yes')
+  expect(authoritySection?.lines).toContain('Capability identity matches parent: yes')
+})
+
+test('renderProfileReport includes capability-authorization status under the authority heading', () => {
   const parentProfile = buildAensProfile({
     ensName: 'pvtclawn.eth',
     address: '0x000000000000000000000000000000000000dEaD',
@@ -121,6 +153,7 @@ test('renderProfileReport includes capability-authorization status', () => {
   })
 
   const report = renderProfileReport(childProfile, [], authorization)
+  expect(report).toContain('Capability authority [authorized | parent-ens]')
   expect(report).toContain('Capability authorization: parent-authorized')
   expect(report).toContain('Capability listed by parent: yes')
 })

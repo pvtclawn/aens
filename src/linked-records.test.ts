@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test'
 import { buildAensProfile } from './profile'
 import { fetchLinkedRecords } from './linked-records'
-import { renderProfileReport } from './report'
+import { createReportSections, renderProfileReport } from './report'
 
 test('fetchLinkedRecords summarizes linked proof and receipt JSON documents', async () => {
   const profile = buildAensProfile({
@@ -44,7 +44,44 @@ test('fetchLinkedRecords summarizes linked proof and receipt JSON documents', as
   expect(linked[1]?.coreFieldsMissing).toHaveLength(0)
 })
 
-test('renderProfileReport includes stronger proof summaries when receipt-like docs are present', () => {
+test('createReportSections separates declared, observed, and inferred proof details', () => {
+  const profile = buildAensProfile({
+    ensName: 'pvtclawn.eth',
+    address: '0x000000000000000000000000000000000000dEaD',
+    records: {
+      proofsUrl: 'https://example.com/proofs.json',
+    },
+  })
+
+  const sections = createReportSections(profile, [
+    {
+      kind: 'receipts',
+      url: 'https://example.com/receipts.json',
+      reachable: true,
+      status: 200,
+      validJson: true,
+      shape: 'battle-receipt',
+      itemCount: null,
+      keyCount: 3,
+      proofStrength: 'signed-receipt',
+      coreFieldsPresent: ['payload', 'signature', 'receiptHash', 'payload.agentId'],
+      coreFieldsMissing: [],
+      summary: 'receipts document matches a signed receipt-like object with all core fields present',
+    },
+  ])
+
+  expect(sections.find((section) => section.key === 'linked-proof-material')?.lines).toContain(
+    'receipts: receipts document matches a signed receipt-like object with all core fields present',
+  )
+  expect(sections.find((section) => section.key === 'live-observations')?.lines).toContain(
+    'receipts: reachable=yes, valid JSON=yes, http status=200',
+  )
+  expect(sections.find((section) => section.key === 'inferred-claims')?.lines).toContain(
+    'receipts: shape=battle-receipt, proof strength=signed-receipt',
+  )
+})
+
+test('renderProfileReport includes trust-tier headings when receipt-like docs are present', () => {
   const profile = buildAensProfile({
     ensName: 'pvtclawn.eth',
     address: '0x000000000000000000000000000000000000dEaD',
@@ -70,7 +107,10 @@ test('renderProfileReport includes stronger proof summaries when receipt-like do
     },
   ])
 
-  expect(report).toContain('proof strength: signed-receipt')
+  expect(report).toContain('Linked proof material [declared | linked-doc]')
+  expect(report).toContain('Live observations [observed | live-fetch]')
+  expect(report).toContain('Inferred claims / caveats [inferred | inference]')
+  expect(report).toContain('proof strength=signed-receipt')
   expect(report).toContain('core fields present: payload, signature, receiptHash, payload.agentId')
-  expect(report).toContain('shape: battle-receipt')
+  expect(report).toContain('shape=battle-receipt')
 })
