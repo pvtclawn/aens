@@ -20,6 +20,18 @@ This checklist is for **one continuous live session** with the wrapped-owner wal
 Do **not** split this into “upgrade resolver now, finish later” unless forced by failure.
 If forced to stop early, stop with explicit abort notes and do not present the intermediate state as success.
 
+### Partial-execution rule
+For this first live ÆNS publication, partial completion is **failure handling**, not incremental success.
+If the session stops after only some writes land, treat the run as an aborted session:
+- stop adding new writes
+- save the last tx hash
+- capture current CLI output immediately
+- record the exact failed checkpoint
+
+The acceptable external outcomes are:
+1. full success (`parent-authorized` child + proof artifacts)
+2. captured abort
+
 ## Human prerequisites
 Before starting, confirm all of the following:
 - [ ] Egor is present and ready to approve wallet prompts
