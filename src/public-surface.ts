@@ -1,5 +1,6 @@
-export const PAGES_ROOT_URL = 'https://pvtclawn.github.io/aens/'
-export const PAGES_RESEARCH_STUB_URL = 'https://pvtclawn.github.io/aens/research-capability/'
+export const DEFAULT_PUBLIC_BASE_URL = 'https://aens-nine.vercel.app/'
+export const RESEARCH_CAPABILITY_PATH = 'research-capability/'
+export const DEFAULT_RESEARCH_CAPABILITY_URL = new URL(RESEARCH_CAPABILITY_PATH, DEFAULT_PUBLIC_BASE_URL).toString()
 export const GITHUB_BLOB_STUB_URL = 'https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md'
 
 export interface SurfaceCheckResult {
@@ -8,6 +9,51 @@ export interface SurfaceCheckResult {
   status: number
   expectedMarker: string
   body: string
+}
+
+export interface SurfaceCheckTarget {
+  label: string
+  url: string
+  expectedMarker: string
+}
+
+export function normalizePublicBaseUrl(value: string): string {
+  const trimmed = value.trim()
+  const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+  return withProtocol.endsWith('/') ? withProtocol : `${withProtocol}/`
+}
+
+export function resolvePreferredPublicBaseUrl(input: {
+  envValue?: string
+  deployedHost?: string
+  defaultBaseUrl?: string
+} = {}): string {
+  if (input.envValue?.trim()) {
+    return normalizePublicBaseUrl(input.envValue)
+  }
+
+  if (input.deployedHost?.trim()) {
+    return normalizePublicBaseUrl(input.deployedHost)
+  }
+
+  return normalizePublicBaseUrl(input.defaultBaseUrl ?? DEFAULT_PUBLIC_BASE_URL)
+}
+
+export function buildPreferredSurfaceTargets(baseUrl: string): SurfaceCheckTarget[] {
+  const normalizedBaseUrl = normalizePublicBaseUrl(baseUrl)
+
+  return [
+    {
+      label: 'public root',
+      url: normalizedBaseUrl,
+      expectedMarker: 'ÆNS — PrivateClawn landing',
+    },
+    {
+      label: 'research capability page',
+      url: new URL(RESEARCH_CAPABILITY_PATH, normalizedBaseUrl).toString(),
+      expectedMarker: 'PrivateClawn Research Capability',
+    },
+  ]
 }
 
 export function surfaceCheckPassed(result: SurfaceCheckResult): boolean {
@@ -26,6 +72,6 @@ export function summarizeSurfaceCheck(result: SurfaceCheckResult): string {
   return `${result.label}: http ${result.status} (${result.url})`
 }
 
-export function pagesSurfaceReady(results: SurfaceCheckResult[]): boolean {
+export function preferredSurfaceReady(results: SurfaceCheckResult[]): boolean {
   return results.every(surfaceCheckPassed)
 }

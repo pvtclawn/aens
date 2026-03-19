@@ -1,7 +1,7 @@
 import { classifyCapabilityAuthorization, type CapabilityAuthorization } from './capability-authorization'
 import type { LinkedRecordSummary } from './linked-records'
 import { buildAensProfile, type AensResolvedProfile } from './profile'
-import { PAGES_RESEARCH_STUB_URL } from './public-surface'
+import { DEFAULT_RESEARCH_CAPABILITY_URL } from './public-surface'
 
 const DEMO_ADDRESS = '0x000000000000000000000000000000000000dEaD'
 const PARENT_NAME = 'pvtclawn.eth'
@@ -105,7 +105,7 @@ function buildParentAuthorizedCapabilityExample(): AensExampleScenario {
     description: 'Offline demo of a child capability explicitly listed by its parent ENS identity.',
     childName: 'research.pvtclawn.eth',
     childDescription: 'Research capability surface for PrivateClawn',
-    childServiceUrl: PAGES_RESEARCH_STUB_URL,
+    childServiceUrl: DEFAULT_RESEARCH_CAPABILITY_URL,
     parentCapabilities: ['research.pvtclawn.eth'],
   })
 }

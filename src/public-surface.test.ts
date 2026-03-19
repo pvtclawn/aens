@@ -1,16 +1,48 @@
 import { expect, test } from 'bun:test'
-import { pagesSurfaceReady, summarizeSurfaceCheck, surfaceCheckPassed, type SurfaceCheckResult } from './public-surface'
+import {
+  buildPreferredSurfaceTargets,
+  preferredSurfaceReady,
+  resolvePreferredPublicBaseUrl,
+  summarizeSurfaceCheck,
+  surfaceCheckPassed,
+  type SurfaceCheckResult,
+} from './public-surface'
 
 function buildResult(overrides: Partial<SurfaceCheckResult> = {}): SurfaceCheckResult {
   return {
     label: 'research capability page',
-    url: 'https://pvtclawn.github.io/aens/research-capability/',
+    url: 'https://aens-nine.vercel.app/research-capability/',
     status: 200,
-    expectedMarker: 'PrivateClawn Research Capability Surface',
-    body: 'PrivateClawn Research Capability Surface (stub)',
+    expectedMarker: 'PrivateClawn Research Capability',
+    body: 'PrivateClawn Research Capability',
     ...overrides,
   }
 }
+
+test('resolvePreferredPublicBaseUrl prefers env, then deployed host, then default', () => {
+  expect(resolvePreferredPublicBaseUrl({ envValue: 'https://custom.example/app' })).toBe(
+    'https://custom.example/app/',
+  )
+  expect(resolvePreferredPublicBaseUrl({ deployedHost: 'preview.example' })).toBe('https://preview.example/')
+  expect(resolvePreferredPublicBaseUrl({ defaultBaseUrl: 'https://fallback.example/root' })).toBe(
+    'https://fallback.example/root/',
+  )
+})
+
+test('buildPreferredSurfaceTargets derives root and research-capability URLs from the preferred base', () => {
+  expect(buildPreferredSurfaceTargets('https://aens-nine.vercel.app')).toEqual([
+    {
+      label: 'public root',
+      url: 'https://aens-nine.vercel.app/',
+      expectedMarker: 'ÆNS — PrivateClawn landing',
+    },
+    {
+      label: 'research capability page',
+      url: 'https://aens-nine.vercel.app/research-capability/',
+      expectedMarker: 'PrivateClawn Research Capability',
+    },
+  ])
+})
 
 test('surfaceCheckPassed requires http 200 plus expected marker', () => {
   expect(surfaceCheckPassed(buildResult())).toBe(true)
@@ -20,26 +52,26 @@ test('surfaceCheckPassed requires http 200 plus expected marker', () => {
 
 test('summarizeSurfaceCheck explains success, unexpected body, and http failure', () => {
   expect(summarizeSurfaceCheck(buildResult())).toBe(
-    'research capability page: ok (https://pvtclawn.github.io/aens/research-capability/)',
+    'research capability page: ok (https://aens-nine.vercel.app/research-capability/)',
   )
 
   expect(summarizeSurfaceCheck(buildResult({ body: 'wrong body' }))).toBe(
-    'research capability page: reachable but missing expected marker (https://pvtclawn.github.io/aens/research-capability/)',
+    'research capability page: reachable but missing expected marker (https://aens-nine.vercel.app/research-capability/)',
   )
 
   expect(summarizeSurfaceCheck(buildResult({ status: 404 }))).toBe(
-    'research capability page: http 404 (https://pvtclawn.github.io/aens/research-capability/)',
+    'research capability page: http 404 (https://aens-nine.vercel.app/research-capability/)',
   )
 })
 
-test('pagesSurfaceReady requires every checked page to pass', () => {
-  expect(pagesSurfaceReady([
-    buildResult({ label: 'pages root', expectedMarker: 'ÆNS', body: 'ÆNS public surface' }),
+test('preferredSurfaceReady requires every checked preferred page to pass', () => {
+  expect(preferredSurfaceReady([
+    buildResult({ label: 'public root', url: 'https://aens-nine.vercel.app/', expectedMarker: 'ÆNS', body: 'ÆNS public surface' }),
     buildResult(),
   ])).toBe(true)
 
-  expect(pagesSurfaceReady([
-    buildResult({ label: 'pages root', expectedMarker: 'ÆNS' }),
+  expect(preferredSurfaceReady([
+    buildResult({ label: 'public root', url: 'https://aens-nine.vercel.app/', expectedMarker: 'ÆNS' }),
     buildResult({ status: 404 }),
   ])).toBe(false)
 })

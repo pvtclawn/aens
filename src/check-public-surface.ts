@@ -1,8 +1,8 @@
 import {
   GITHUB_BLOB_STUB_URL,
-  PAGES_RESEARCH_STUB_URL,
-  PAGES_ROOT_URL,
-  pagesSurfaceReady,
+  buildPreferredSurfaceTargets,
+  preferredSurfaceReady,
+  resolvePreferredPublicBaseUrl,
   summarizeSurfaceCheck,
   type SurfaceCheckResult,
 } from './public-surface'
@@ -36,18 +36,11 @@ async function checkSurface(input: {
 }
 
 async function main() {
-  const pagesResults = await Promise.all([
-    checkSurface({
-      label: 'pages root',
-      url: PAGES_ROOT_URL,
-      expectedMarker: 'ÆNS',
-    }),
-    checkSurface({
-      label: 'research capability page',
-      url: PAGES_RESEARCH_STUB_URL,
-      expectedMarker: 'PrivateClawn Research Capability Surface',
-    }),
-  ])
+  const preferredBaseUrl = resolvePreferredPublicBaseUrl({
+    envValue: process.env.AENS_PUBLIC_BASE_URL,
+  })
+  const preferredTargets = buildPreferredSurfaceTargets(preferredBaseUrl)
+  const preferredResults = await Promise.all(preferredTargets.map(checkSurface))
 
   const fallbackResult = await checkSurface({
     label: 'github blob fallback',
@@ -57,17 +50,20 @@ async function main() {
 
   console.log('ÆNS public surface check')
   console.log('')
-  for (const result of [...pagesResults, fallbackResult]) {
+  console.log(`Preferred public base: ${preferredBaseUrl}`)
+  console.log('')
+  for (const result of [...preferredResults, fallbackResult]) {
     console.log(summarizeSurfaceCheck(result))
   }
 
   console.log('')
-  if (pagesSurfaceReady(pagesResults)) {
-    console.log(`Pages surface ready: yes (${PAGES_RESEARCH_STUB_URL})`)
+  const preferredResearchUrl = preferredTargets[1]?.url ?? preferredBaseUrl
+  if (preferredSurfaceReady(preferredResults)) {
+    console.log(`Preferred public surface ready: yes (${preferredResearchUrl})`)
     process.exit(0)
   }
 
-  console.log(`Pages surface ready: no (${PAGES_RESEARCH_STUB_URL})`)
+  console.log(`Preferred public surface ready: no (${preferredResearchUrl})`)
   process.exit(1)
 }
 
