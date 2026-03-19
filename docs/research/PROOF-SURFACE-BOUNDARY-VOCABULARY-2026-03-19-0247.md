@@ -128,12 +128,31 @@ These should leave `Linked proof material [declared | linked-doc]`:
 - `key count`
 - `core fields present/missing`
 
+## Design rationale — avoid mixed-provenance summary types
+A supporting software-design lesson from `books_and_papers/003_solid_software.pdf` and `books_and_papers/006_think_distributed_systems.pdf`:
+- distinct domain variants should be modeled explicitly,
+- and runtime observations are a different kind of fact from durable declarations or downstream interpretations.
+
+Applied to AENS:
+- a single mixed `LinkedRecordSummary`-style blob is too broad as the direct rendering input,
+- because it combines declared material, live observations, and inferred interpretation into one shape.
+
+That makes it too easy for the renderer to leak interpretation into the declared section.
+
+The next build slice should therefore treat proof reporting as three evidence views:
+1. declared proof material
+2. observed proof fetch state
+3. inferred proof interpretation
+
+Even if the fetch/parsing layer still produces one raw object, the report layer should convert it into these separate views before rendering.
+
 ## Acceptance criteria for the next build slice
 1. Declared section contains only presence + URL-level proof declarations.
 2. Observed section contains only fetch/runtime state.
 3. Inferred section contains all parsed/derived content interpretation.
 4. A synthetic linked-proof test proves the summary text is no longer present in the declared section.
 5. A failed fetch still leaves declared proof material intact while degrading only the observed section.
+6. Report rendering uses separate declared / observed / inferred proof views rather than spraying one mixed summary shape across all three sections.
 
 ## Why this is the next smallest move
 The trust-tier model is already in place.
