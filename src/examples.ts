@@ -2,7 +2,15 @@ import { classifyCapabilityAuthorization, type CapabilityAuthorization } from '.
 import type { LinkedRecordSummary } from './linked-records'
 import { buildAensProfile, type AensResolvedProfile } from './profile'
 
-export type AensExampleId = 'parent-authorized-capability'
+const DEMO_ADDRESS = '0x000000000000000000000000000000000000dEaD'
+const PARENT_NAME = 'pvtclawn.eth'
+const DEFAULT_AGENT_ID = '1391'
+const DEFAULT_RUNTIME = 'openclaw-gateway'
+
+export type AensExampleId =
+  | 'parent-authorized-capability'
+  | 'unlisted-child-capability'
+  | 'identity-mismatch-capability'
 
 export interface AensExampleScenario {
   id: AensExampleId
@@ -14,28 +22,63 @@ export interface AensExampleScenario {
   capabilityAuthorization: CapabilityAuthorization
 }
 
-function buildParentAuthorizedCapabilityExample(): AensExampleScenario {
-  const parentProfile = buildAensProfile({
-    ensName: 'pvtclawn.eth',
-    address: '0x000000000000000000000000000000000000dEaD',
+function buildParentProfile(input: {
+  capabilities: string[]
+  agentId?: string
+}): AensResolvedProfile {
+  return buildAensProfile({
+    ensName: PARENT_NAME,
+    address: DEMO_ADDRESS,
     records: {
-      agentId: '1391',
+      agentId: input.agentId ?? DEFAULT_AGENT_ID,
       description: 'PrivateClawn root agent identity',
-      capabilities: ['research.pvtclawn.eth'],
-      runtime: 'openclaw-gateway',
+      capabilities: input.capabilities,
+      runtime: DEFAULT_RUNTIME,
     },
   })
+}
 
-  const profile = buildAensProfile({
-    ensName: 'research.pvtclawn.eth',
-    address: '0x000000000000000000000000000000000000dEaD',
+function buildCapabilityProfile(input: {
+  ensName: string
+  description: string
+  serviceUrl: string
+  agentId?: string
+  parentName?: string
+}): AensResolvedProfile {
+  return buildAensProfile({
+    ensName: input.ensName,
+    address: DEMO_ADDRESS,
     records: {
-      parentName: 'pvtclawn.eth',
-      agentId: '1391',
-      description: 'Research capability surface for PrivateClawn',
-      serviceUrl: 'https://pvtclawn.example/research',
-      runtime: 'openclaw-gateway',
+      parentName: input.parentName ?? PARENT_NAME,
+      agentId: input.agentId ?? DEFAULT_AGENT_ID,
+      description: input.description,
+      serviceUrl: input.serviceUrl,
+      runtime: DEFAULT_RUNTIME,
     },
+  })
+}
+
+function buildCapabilityExampleScenario(input: {
+  id: AensExampleId
+  title: string
+  description: string
+  childName: string
+  childDescription: string
+  childServiceUrl: string
+  parentCapabilities: string[]
+  parentAgentId?: string
+  childAgentId?: string
+}): AensExampleScenario {
+  const parentProfile = buildParentProfile({
+    capabilities: input.parentCapabilities,
+    agentId: input.parentAgentId,
+  })
+
+  const profile = buildCapabilityProfile({
+    ensName: input.childName,
+    description: input.childDescription,
+    serviceUrl: input.childServiceUrl,
+    agentId: input.childAgentId,
   })
 
   const capabilityAuthorization = classifyCapabilityAuthorization({
@@ -44,9 +87,9 @@ function buildParentAuthorizedCapabilityExample(): AensExampleScenario {
   })
 
   return {
-    id: 'parent-authorized-capability',
-    title: 'Parent-authorized capability surface',
-    description: 'Offline demo of a child capability explicitly listed by its parent ENS identity.',
+    id: input.id,
+    title: input.title,
+    description: input.description,
     profile,
     parentProfile,
     linkedRecords: [],
@@ -54,14 +97,59 @@ function buildParentAuthorizedCapabilityExample(): AensExampleScenario {
   }
 }
 
+function buildParentAuthorizedCapabilityExample(): AensExampleScenario {
+  return buildCapabilityExampleScenario({
+    id: 'parent-authorized-capability',
+    title: 'Parent-authorized capability surface',
+    description: 'Offline demo of a child capability explicitly listed by its parent ENS identity.',
+    childName: 'research.pvtclawn.eth',
+    childDescription: 'Research capability surface for PrivateClawn',
+    childServiceUrl: 'https://pvtclawn.example/research',
+    parentCapabilities: ['research.pvtclawn.eth'],
+  })
+}
+
+function buildUnlistedChildCapabilityExample(): AensExampleScenario {
+  return buildCapabilityExampleScenario({
+    id: 'unlisted-child-capability',
+    title: 'Unlisted child capability surface',
+    description: 'Offline demo of a child capability that matches parent identity but is not listed by the parent profile.',
+    childName: 'ops.pvtclawn.eth',
+    childDescription: 'Ops capability surface for PrivateClawn',
+    childServiceUrl: 'https://pvtclawn.example/ops',
+    parentCapabilities: ['research.pvtclawn.eth'],
+  })
+}
+
+function buildIdentityMismatchCapabilityExample(): AensExampleScenario {
+  return buildCapabilityExampleScenario({
+    id: 'identity-mismatch-capability',
+    title: 'Identity-mismatch capability surface',
+    description: 'Offline demo of a listed child capability whose declared agent identity does not match the parent profile.',
+    childName: 'trade.pvtclawn.eth',
+    childDescription: 'Trade capability surface for PrivateClawn',
+    childServiceUrl: 'https://pvtclawn.example/trade',
+    parentCapabilities: ['trade.pvtclawn.eth'],
+    childAgentId: '9999',
+  })
+}
+
 export function listExampleIds(): AensExampleId[] {
-  return ['parent-authorized-capability']
+  return [
+    'parent-authorized-capability',
+    'unlisted-child-capability',
+    'identity-mismatch-capability',
+  ]
 }
 
 export function getExampleScenario(exampleId: string): AensExampleScenario | null {
   switch (exampleId) {
     case 'parent-authorized-capability':
       return buildParentAuthorizedCapabilityExample()
+    case 'unlisted-child-capability':
+      return buildUnlistedChildCapabilityExample()
+    case 'identity-mismatch-capability':
+      return buildIdentityMismatchCapabilityExample()
     default:
       return null
   }
