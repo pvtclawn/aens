@@ -28,6 +28,16 @@ All three currently render as effectively empty:
 There is no existing public positive path to polish.
 The next slice really does need to create one.
 
+## Applied rationale
+A useful reading constraint from `books_and_papers/004_building_ethereum_products_and_protocols.pdf`:
+- each user interaction should increase trust
+- trust grows when product surfaces are auditable and tied to real artifacts
+- protocol claims need contact with real data / real behavior, not only local fixtures
+
+Applied here, that means AENS should bias toward the **smallest live public authority artifact** rather than a broader second input mode.
+The repo already explains itself and the CLI already demonstrates the model offline.
+What it lacks now is one real published ENS path that the same CLI can verify publicly.
+
 ## Best target namespace
 # **Primary target: `pvtclawn.eth` + `research.pvtclawn.eth`**
 
