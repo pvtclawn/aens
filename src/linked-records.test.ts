@@ -217,6 +217,36 @@ test('createProofEvidenceViews separates declared, observed, and inferred proof 
   expect('url' in views.inferred[0]!).toBe(false)
 })
 
+test('shouldCollapseNeutralUndeclaredObservedOutput requires both views to agree', () => {
+  const emptyDeclared = {
+    proofSurfacePresent: false,
+    proofsUrl: null,
+    receiptsUrl: null,
+    note: 'No linked proof material declared.',
+  }
+
+  const declaredWithProofsUrl = {
+    proofSurfacePresent: true,
+    proofsUrl: 'https://example.com/proofs.json',
+    receiptsUrl: null,
+    note: 'Linked proof material declared via ENS-linked URLs.',
+  }
+
+  const allUndeclaredObserved = [
+    { kind: 'proofs' as const, state: 'not-declared' as const, status: null, detail: null },
+    { kind: 'receipts' as const, state: 'not-declared' as const, status: null, detail: null },
+  ]
+
+  const mixedObserved = [
+    { kind: 'proofs' as const, state: 'not-attempted' as const, status: null, detail: null },
+    { kind: 'receipts' as const, state: 'not-declared' as const, status: null, detail: null },
+  ]
+
+  expect(shouldCollapseNeutralUndeclaredObservedOutput(emptyDeclared, allUndeclaredObserved)).toBe(true)
+  expect(shouldCollapseNeutralUndeclaredObservedOutput(declaredWithProofsUrl, allUndeclaredObserved)).toBe(false)
+  expect(shouldCollapseNeutralUndeclaredObservedOutput(emptyDeclared, mixedObserved)).toBe(false)
+})
+
 test('createReportSections collapses pure undeclared observed sameness but keeps mixed states separate', () => {
   const undeclaredProfile = buildAensProfile({
     ensName: 'vitalik.eth',
@@ -231,10 +261,6 @@ test('createReportSections collapses pure undeclared observed sameness but keeps
   expect(collapsedObserved?.lines).toEqual([
     'No proof fetch observations: no proof material declared.',
   ])
-  expect(shouldCollapseNeutralUndeclaredObservedOutput([
-    { kind: 'proofs', state: 'not-declared', status: null, detail: null },
-    { kind: 'receipts', state: 'not-declared', status: null, detail: null },
-  ])).toBe(true)
 
   const mixedProfile = buildAensProfile({
     ensName: 'pvtclawn.eth',
@@ -250,10 +276,6 @@ test('createReportSections collapses pure undeclared observed sameness but keeps
     'proofs: not-attempted',
     'receipts: not-declared',
   ])
-  expect(shouldCollapseNeutralUndeclaredObservedOutput([
-    { kind: 'proofs', state: 'not-attempted', status: null, detail: null },
-    { kind: 'receipts', state: 'not-declared', status: null, detail: null },
-  ])).toBe(false)
 })
 
 test('createReportSections keeps summary text out of the declared proof section', () => {

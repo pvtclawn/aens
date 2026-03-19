@@ -64,12 +64,19 @@ test('createReportSections builds semantic trust-tier sections in the right orde
 })
 
 test('shouldCollapseNeutralUndeclaredObservedOutput only collapses pure undeclared sameness', () => {
-  expect(shouldCollapseNeutralUndeclaredObservedOutput([
+  const emptyDeclared = {
+    proofSurfacePresent: false,
+    proofsUrl: null,
+    receiptsUrl: null,
+    note: 'No linked proof material declared.',
+  }
+
+  expect(shouldCollapseNeutralUndeclaredObservedOutput(emptyDeclared, [
     { kind: 'proofs', state: 'not-declared', status: null, detail: null },
     { kind: 'receipts', state: 'not-declared', status: null, detail: null },
   ])).toBe(true)
 
-  expect(shouldCollapseNeutralUndeclaredObservedOutput([
+  expect(shouldCollapseNeutralUndeclaredObservedOutput(emptyDeclared, [
     { kind: 'proofs', state: 'not-attempted', status: null, detail: null },
     { kind: 'receipts', state: 'not-declared', status: null, detail: null },
   ])).toBe(false)

@@ -109,12 +109,30 @@ function buildLinkedProofMaterialSection(declared: DeclaredProofMaterialView): R
   })
 }
 
-export function shouldCollapseNeutralUndeclaredObservedOutput(observed: ObservedProofFetchView[]): boolean {
-  return observed.length > 0 && observed.every((record) => record.state === 'not-declared')
+function isDeclaredProofViewEmpty(declared: DeclaredProofMaterialView): boolean {
+  return (
+    declared.proofSurfacePresent === false
+    && declared.proofsUrl === null
+    && declared.receiptsUrl === null
+  )
 }
 
-function buildLiveObservationsSection(observed: ObservedProofFetchView[]): ReportSection {
-  const lines = shouldCollapseNeutralUndeclaredObservedOutput(observed)
+export function shouldCollapseNeutralUndeclaredObservedOutput(
+  declared: DeclaredProofMaterialView,
+  observed: ObservedProofFetchView[],
+): boolean {
+  return (
+    isDeclaredProofViewEmpty(declared)
+    && observed.length > 0
+    && observed.every((record) => record.state === 'not-declared')
+  )
+}
+
+function buildLiveObservationsSection(
+  declared: DeclaredProofMaterialView,
+  observed: ObservedProofFetchView[],
+): ReportSection {
+  const lines = shouldCollapseNeutralUndeclaredObservedOutput(declared, observed)
     ? ['No proof fetch observations: no proof material declared.']
     : observed.map((record) => {
         const detail = record.detail ? ` (${record.detail})` : ''
@@ -173,7 +191,7 @@ export function createReportSections(
     buildIdentityAnchorSection(profile),
     buildCapabilityAuthoritySection(profile, capabilityAuthorization),
     buildLinkedProofMaterialSection(proofEvidenceViews.declared),
-    buildLiveObservationsSection(proofEvidenceViews.observed),
+    buildLiveObservationsSection(proofEvidenceViews.declared, proofEvidenceViews.observed),
     buildInferredClaimsSection(proofEvidenceViews.inferred),
   ]
 }
