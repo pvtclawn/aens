@@ -14,7 +14,36 @@ const TEXT_RECORD_KEYS = {
   proofsUrl: 'aens.proofs',
   receiptsUrl: 'aens.receipts',
   runtime: 'aens.runtime',
+  parentName: 'aens.parent',
+  capabilities: 'aens.capabilities',
 } as const
+
+function parseCapabilities(value: string | null | undefined): string[] | null {
+  if (!value) {
+    return null
+  }
+
+  const trimmed = value.trim()
+  if (!trimmed) {
+    return null
+  }
+
+  if (trimmed.startsWith('[')) {
+    try {
+      const parsed = JSON.parse(trimmed) as unknown
+      if (Array.isArray(parsed)) {
+        return parsed.filter((entry): entry is string => typeof entry === 'string')
+      }
+    } catch {
+      return null
+    }
+  }
+
+  return trimmed
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+}
 
 export function createEnsClient(rpcUrl: string) {
   return createPublicClient({
@@ -38,14 +67,15 @@ async function resolveAensProfileViaRpc(input: {
     }),
   )
 
-  const records = Object.fromEntries(entries)
+  const rawRecords = Object.fromEntries(entries) as Record<keyof typeof TEXT_RECORD_KEYS, string | null>
 
   return buildAensProfile({
     ensName: input.ensName,
     address: address ? getAddress(address) : null,
     records: {
-      ...records,
+      ...rawRecords,
       avatar,
+      capabilities: parseCapabilities(rawRecords.capabilities),
     },
   })
 }

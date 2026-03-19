@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+import { classifyCapabilityAuthorization } from './capability-authorization'
 import { fetchLinkedRecords } from './linked-records'
 import { renderProfileReport } from './report'
 import { resolveAensProfile } from './resolver'
@@ -14,8 +15,16 @@ async function main(): Promise<void> {
   }
 
   const profile = await resolveAensProfile({ ensName })
+  const parentProfile = profile.records.parentName
+    ? await resolveAensProfile({ ensName: profile.records.parentName }).catch(() => null)
+    : null
+  const capabilityAuthorization = classifyCapabilityAuthorization({
+    profile,
+    parentProfile,
+  })
   const linkedRecords = withLinks ? await fetchLinkedRecords(profile) : []
-  console.log(renderProfileReport(profile, linkedRecords))
+
+  console.log(renderProfileReport(profile, linkedRecords, capabilityAuthorization))
 
   if (!profile.address) {
     process.exitCode = 2

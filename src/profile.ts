@@ -10,12 +10,26 @@ export interface AensRecords {
   proofsUrl?: string | null
   receiptsUrl?: string | null
   runtime?: string | null
+  parentName?: string | null
+  capabilities?: string[] | null
 }
 
 export interface AensResolvedProfile {
   ensName: string
   address: string | null
   records: AensRecords
+}
+
+function normalizeCapabilities(capabilities?: string[] | null): string[] | null {
+  if (!capabilities || capabilities.length === 0) {
+    return null
+  }
+
+  const normalized = capabilities
+    .map((capability) => capability.trim())
+    .filter(Boolean)
+
+  return normalized.length > 0 ? normalized : null
 }
 
 export function buildAensProfile(input: {
@@ -38,6 +52,8 @@ export function buildAensProfile(input: {
       proofsUrl: input.records.proofsUrl ?? null,
       receiptsUrl: input.records.receiptsUrl ?? null,
       runtime: input.records.runtime ?? null,
+      parentName: input.records.parentName ?? null,
+      capabilities: normalizeCapabilities(input.records.capabilities),
     },
   }
 }

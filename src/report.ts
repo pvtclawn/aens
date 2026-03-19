@@ -1,9 +1,11 @@
+import { type CapabilityAuthorization } from './capability-authorization'
 import { hasDiscoverySurface, hasProofSurface, type AensResolvedProfile } from './profile'
 import type { LinkedRecordSummary } from './linked-records'
 
 export function renderProfileReport(
   profile: AensResolvedProfile,
   linkedRecords: LinkedRecordSummary[] = [],
+  capabilityAuthorization?: CapabilityAuthorization,
 ): string {
   const lines = [
     `AENS profile: ${profile.ensName}`,
@@ -20,10 +22,21 @@ export function renderProfileReport(
     `Twitter: ${profile.records.twitter ?? 'not set'}`,
     `GitHub: ${profile.records.github ?? 'not set'}`,
     `Telegram: ${profile.records.telegram ?? 'not set'}`,
+    `Parent Name: ${profile.records.parentName ?? 'not set'}`,
+    `Declared Capabilities: ${profile.records.capabilities?.join(', ') ?? 'not set'}`,
     '',
     `Discovery surface present: ${hasDiscoverySurface(profile) ? 'yes' : 'no'}`,
     `Proof surface present: ${hasProofSurface(profile) ? 'yes' : 'no'}`,
   ]
+
+  if (capabilityAuthorization) {
+    lines.push(
+      `Capability authorization: ${capabilityAuthorization.status}`,
+      `Capability authority summary: ${capabilityAuthorization.summary}`,
+      `Capability listed by parent: ${capabilityAuthorization.listedByParent ? 'yes' : 'no'}`,
+      `Capability identity matches parent: ${capabilityAuthorization.identityMatchesParent ? 'yes' : 'no'}`,
+    )
+  }
 
   if (linkedRecords.length > 0) {
     lines.push('', 'Linked proof records:')
