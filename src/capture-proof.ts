@@ -3,7 +3,14 @@ import { appendFileSync, mkdirSync, writeFileSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { buildCommandSection, buildProofCaptureHeader, resolveProofCaptureConfig } from './proof-capture'
+import { resolvePreferredPublicBaseUrl } from './public-surface'
+import { fetchPublicProofState, summarizePublicProofStateLines } from './public-proof-state'
+import {
+  buildCommandSection,
+  buildProofCaptureHeader,
+  buildPublicTruthSnapshotSection,
+  resolveProofCaptureConfig,
+} from './proof-capture'
 
 function repoRootFromModule(): string {
   return resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -81,9 +88,21 @@ export async function runCaptureProof(
     publicationMode: env.AENS_PROOF_PUBLICATION_MODE,
     serviceUrl: env.AENS_PROOF_SERVICE_URL,
   })
+  const preferredBaseUrl = resolvePreferredPublicBaseUrl({
+    envValue: env.AENS_PUBLIC_BASE_URL,
+  })
+  const publicProofState = await fetchPublicProofState({
+    preferredBaseUrl,
+  })
 
   mkdirSync(config.outDir, { recursive: true })
-  writeFileSync(config.outFile, buildProofCaptureHeader(config))
+  writeFileSync(
+    config.outFile,
+    [
+      buildProofCaptureHeader(config),
+      buildPublicTruthSnapshotSection(summarizePublicProofStateLines(publicProofState)),
+    ].join(''),
+  )
 
   let overallExitCode = 0
   for (const [title, command] of [
