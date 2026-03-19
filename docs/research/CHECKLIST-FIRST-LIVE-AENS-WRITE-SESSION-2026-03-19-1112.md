@@ -89,6 +89,7 @@ Before any write, save a baseline.
 ### Commands
 ```bash
 cd /home/clawn/.openclaw/workspace/aens
+bun run check-public-surface
 export AENS_PROOF_PUBLICATION_MODE=<preferred|bootstrap>
 export AENS_PROOF_SERVICE_URL=<selected service URL>
 bun run inspect pvtclawn.eth
@@ -97,6 +98,7 @@ bun run capture-proof -- baseline
 ```
 
 ### Required capture
+- [ ] save output for `bun run check-public-surface`
 - [ ] save output for `pvtclawn.eth`
 - [ ] save output for `research.pvtclawn.eth`
 - [ ] note current time
@@ -263,16 +265,35 @@ This slice counts only if proof is saved.
 - [ ] tx hash for parent capability list
 - [ ] final CLI output for `bun run inspect pvtclawn.eth`
 - [ ] final CLI output for `bun run inspect research.pvtclawn.eth`
+- [ ] final `bun run capture-proof -- final` artifact with public-truth snapshot
 - [ ] at least one screenshot of the live final state
 - [ ] repo-side verification note after the session
 
-## Scope-language checklist
+## Proof-scope wording checklist
+Use `docs/research/FIRST-LIVE-AENS-PROOF-SCOPE-TEMPLATE-2026-03-19-2045.md` for the final note.
+
+### Machine-verifiable scope
 The final proof note must say:
 - [ ] this proves one live ENS-backed ÆNS authority path
-- [ ] this proves the child points to a real public stub URL under project control
+- [ ] this section is limited to machine-verifiable structure such as ENS records, final CLI authority output, publication mode, exact service URL, and commit-pinned bootstrap source reference
+
+### Observed public-alias state (time-scoped)
+The final proof note must say:
+- [ ] the public service-surface claim is a snapshot at capture time, not a timeless claim about the URL forever
+- [ ] the verifier output at capture time showed whether `preferred surface ready` and `bootstrap proof ready` were true or false
+- [ ] if bootstrap mode is used, the note says the child points to a real public bootstrap surface under project control at capture time
+
+### Unresolved human control-plane state
+The final proof note must say:
+- [ ] if the preferred route is still blocked, that blocker is described as unresolved human-controlled deployment/control-plane state
+- [ ] the note does **not** flatten that boundary into vague language like `deployment weirdness`, `basically fixed`, or implied preferred-route readiness
+
+### Not yet proven
+The final proof note must say:
 - [ ] this does **not** yet prove invocation
 - [ ] this does **not** yet prove payment flow
-- [ ] this does **not** yet prove runtime auth or broad production readiness
+- [ ] this does **not** yet prove runtime auth
+- [ ] this does **not** yet prove broad production readiness or end-to-end machine closure
 
 ## Hard finish line
 The session is done only if **all** are true:

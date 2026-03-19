@@ -5,7 +5,13 @@ Wallet required:
 - `0xeC6cd01f6fdeaEc192b88Eb7B62f5E72D65719Af`
 
 ## Before opening the browser
-In terminal, first choose the publication mode.
+In terminal, first check the current public surface state:
+```bash
+cd /home/clawn/.openclaw/workspace/aens
+bun run check-public-surface
+```
+
+Then choose the publication mode.
 
 ### If the preferred child route is live
 Use this only if `bun run check-public-surface` reports the preferred surface ready:
@@ -33,6 +39,9 @@ Open these tabs:
 - `https://tools.ens.xyz`
 - preferred child route: `https://aens-nine.vercel.app/research-capability/`
 - bootstrap fallback page: `https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md`
+
+Also keep this wording template open for the final proof note:
+- `docs/research/FIRST-LIVE-AENS-PROOF-SCOPE-TEMPLATE-2026-03-19-2045.md`
 
 ## Phase 1 — root resolver modernization + root records
 ### In ENS App
@@ -110,3 +119,18 @@ The session only counts if the final child output shows:
 - final CLI captures
 - at least one screenshot
 - repo-side verification note after the session
+
+## Final proof note structure (mandatory)
+Use the template in `docs/research/FIRST-LIVE-AENS-PROOF-SCOPE-TEMPLATE-2026-03-19-2045.md`.
+
+The final note must use these top-level sections in order:
+1. `Machine-verifiable scope`
+2. `Observed public-alias state (time-scoped)`
+3. `Unresolved human control-plane state`
+4. `Not yet proven`
+
+For the current bootstrap-mode case, keep the note narrow:
+- machine-verifiable scope = ENS authority path, publication mode, exact service URL, commit-pinned bootstrap source
+- observed public-alias state = what the verifier saw at capture time, not a timeless claim about the URL forever
+- unresolved human control-plane state = the preferred Vercel child route is still blocked by unresolved deployment control-plane state
+- not yet proven = invocation, payment flow, runtime auth, end-to-end machine closure, or preferred-route readiness
