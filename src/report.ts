@@ -1,5 +1,11 @@
 import { type CapabilityAuthorization } from './capability-authorization'
-import { hasDiscoverySurface, hasProofSurface, type AensResolvedProfile } from './profile'
+import {
+  hasCallableServiceSurface,
+  hasIdentityAnchor,
+  hasProfileMetadata,
+  hasProofSurface,
+  type AensResolvedProfile,
+} from './profile'
 import type { LinkedRecordSummary } from './linked-records'
 
 export function renderProfileReport(
@@ -25,7 +31,9 @@ export function renderProfileReport(
     `Parent Name: ${profile.records.parentName ?? 'not set'}`,
     `Declared Capabilities: ${profile.records.capabilities?.join(', ') ?? 'not set'}`,
     '',
-    `Discovery surface present: ${hasDiscoverySurface(profile) ? 'yes' : 'no'}`,
+    `Identity anchor present: ${hasIdentityAnchor(profile) ? 'yes' : 'no'}`,
+    `Profile metadata present: ${hasProfileMetadata(profile) ? 'yes' : 'no'}`,
+    `Callable service surface present: ${hasCallableServiceSurface(profile) ? 'yes' : 'no'}`,
     `Proof surface present: ${hasProofSurface(profile) ? 'yes' : 'no'}`,
   ]
 

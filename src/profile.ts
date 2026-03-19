@@ -58,16 +58,44 @@ export function buildAensProfile(input: {
   }
 }
 
-export function hasDiscoverySurface(profile: AensResolvedProfile): boolean {
+export function hasProfileMetadata(profile: AensResolvedProfile): boolean {
   return Boolean(
-    profile.address
-      || profile.records.serviceUrl
-      || profile.records.proofsUrl
-      || profile.records.receiptsUrl
-      || profile.records.url,
+    profile.records.description
+      || profile.records.avatar
+      || profile.records.url
+      || profile.records.twitter
+      || profile.records.github
+      || profile.records.telegram,
   )
+}
+
+export function hasCallableServiceSurface(profile: AensResolvedProfile): boolean {
+  return Boolean(profile.records.serviceUrl)
 }
 
 export function hasProofSurface(profile: AensResolvedProfile): boolean {
   return Boolean(profile.records.proofsUrl || profile.records.receiptsUrl)
+}
+
+export function hasIdentityAnchor(profile: AensResolvedProfile): boolean {
+  return Boolean(
+    profile.address
+      || profile.records.agentId
+      || profile.records.parentName
+      || profile.records.runtime
+      || profile.records.capabilities?.length
+      || hasProfileMetadata(profile)
+      || hasCallableServiceSurface(profile)
+      || hasProofSurface(profile),
+  )
+}
+
+/** @deprecated prefer explicit state lines (identity/profile/service/proof/authority) */
+export function hasDiscoverySurface(profile: AensResolvedProfile): boolean {
+  return Boolean(
+    hasCallableServiceSurface(profile)
+      || hasProofSurface(profile)
+      || profile.records.parentName
+      || profile.records.capabilities?.length,
+  )
 }
