@@ -1,7 +1,10 @@
 import { expect, test } from 'bun:test'
 import { fetchLinkedRecords } from './linked-records'
 import { buildAensProfile } from './profile'
-import { createProofEvidenceViews } from './proof-evidence'
+import {
+  createObservedProofFetchViews,
+  createProofEvidenceViews,
+} from './proof-evidence'
 import { createReportSections, renderProfileReport } from './report'
 
 test('fetchLinkedRecords summarizes linked proof and receipt JSON documents', async () => {
@@ -45,6 +48,116 @@ test('fetchLinkedRecords summarizes linked proof and receipt JSON documents', as
   expect(linked[1]?.coreFieldsMissing).toHaveLength(0)
 })
 
+test('createObservedProofFetchViews derives not-declared and not-attempted distinctly', () => {
+  const profile = buildAensProfile({
+    ensName: 'pvtclawn.eth',
+    address: '0x000000000000000000000000000000000000dEaD',
+    records: {
+      proofsUrl: 'https://example.com/proofs.json',
+    },
+  })
+
+  expect(createObservedProofFetchViews(profile)).toEqual([
+    {
+      kind: 'proofs',
+      state: 'not-attempted',
+      status: null,
+      detail: null,
+    },
+    {
+      kind: 'receipts',
+      state: 'not-declared',
+      status: null,
+      detail: null,
+    },
+  ])
+})
+
+test('createObservedProofFetchViews derives fetch-failed, content-invalid, and content-parsed states', () => {
+  const profile = buildAensProfile({
+    ensName: 'pvtclawn.eth',
+    address: '0x000000000000000000000000000000000000dEaD',
+    records: {
+      proofsUrl: 'https://example.com/proofs.json',
+      receiptsUrl: 'https://example.com/receipts.json',
+    },
+  })
+
+  expect(createObservedProofFetchViews(profile, [
+    {
+      kind: 'proofs',
+      url: 'https://example.com/proofs.json',
+      reachable: false,
+      status: 503,
+      validJson: false,
+      shape: 'missing',
+      itemCount: null,
+      keyCount: null,
+      proofStrength: 'none',
+      coreFieldsPresent: [],
+      coreFieldsMissing: [],
+      summary: 'proofs document is not currently usable: http 503',
+    },
+    {
+      kind: 'receipts',
+      url: 'https://example.com/receipts.json',
+      reachable: true,
+      status: 200,
+      validJson: false,
+      shape: 'invalid',
+      itemCount: null,
+      keyCount: null,
+      proofStrength: 'none',
+      coreFieldsPresent: [],
+      coreFieldsMissing: [],
+      summary: 'receipts document is reachable but not valid JSON',
+    },
+  ])).toEqual([
+    {
+      kind: 'proofs',
+      state: 'fetch-failed',
+      status: 503,
+      detail: 'http 503',
+    },
+    {
+      kind: 'receipts',
+      state: 'content-invalid',
+      status: 200,
+      detail: 'http 200, invalid JSON',
+    },
+  ])
+
+  expect(createObservedProofFetchViews(profile, [
+    {
+      kind: 'proofs',
+      url: 'https://example.com/proofs.json',
+      reachable: true,
+      status: 200,
+      validJson: true,
+      shape: 'proof-list',
+      itemCount: 2,
+      keyCount: 1,
+      proofStrength: 'generic',
+      coreFieldsPresent: [],
+      coreFieldsMissing: [],
+      summary: 'proofs document is a JSON object with 1 key(s) and 2 listed proof item(s)',
+    },
+  ])).toEqual([
+    {
+      kind: 'proofs',
+      state: 'content-parsed',
+      status: 200,
+      detail: 'http 200',
+    },
+    {
+      kind: 'receipts',
+      state: 'not-attempted',
+      status: null,
+      detail: null,
+    },
+  ])
+})
+
 test('createProofEvidenceViews separates declared, observed, and inferred proof details', () => {
   const profile = buildAensProfile({
     ensName: 'pvtclawn.eth',
@@ -80,10 +193,16 @@ test('createProofEvidenceViews separates declared, observed, and inferred proof 
 
   expect(views.observed).toEqual([
     {
+      kind: 'proofs',
+      state: 'not-attempted',
+      status: null,
+      detail: null,
+    },
+    {
       kind: 'receipts',
-      reachable: true,
-      validJson: true,
+      state: 'content-parsed',
       status: 200,
+      detail: 'http 200',
     },
   ])
   expect('proofStrength' in views.observed[0]!).toBe(false)
@@ -131,7 +250,8 @@ test('createReportSections keeps summary text out of the declared proof section'
   expect(declaredSection?.lines.join('\n')).not.toContain('signed receipt-like object')
   expect(declaredSection?.lines.join('\n')).not.toContain('key count')
 
-  expect(observedSection?.lines).toContain('receipts: reachable=yes, valid JSON=yes, http status=200')
+  expect(observedSection?.lines).toContain('proofs: not-attempted')
+  expect(observedSection?.lines).toContain('receipts: content-parsed (http 200)')
   expect(observedSection?.lines.join('\n')).not.toContain('proof strength')
 
   expect(inferredSection?.lines).toContain('receipts: summary=receipts document matches a signed receipt-like object with all core fields present')
@@ -169,6 +289,8 @@ test('renderProfileReport includes trust-tier headings when receipt-like docs ar
   expect(report).toContain('Linked proof material [declared | linked-doc]')
   expect(report).toContain('Live observations [observed | live-fetch]')
   expect(report).toContain('Inferred claims / caveats [inferred | inference]')
+  expect(report).toContain('proofs: not-attempted')
+  expect(report).toContain('receipts: content-parsed (http 200)')
   expect(report).toContain('receipts: summary=receipts document matches a signed receipt-like object with all core fields present')
   expect(report).toContain('proof strength=signed-receipt')
   expect(report).toContain('core fields present: payload, signature, receiptHash, payload.agentId')

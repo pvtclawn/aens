@@ -111,8 +111,8 @@ function buildLinkedProofMaterialSection(declared: DeclaredProofMaterialView): R
 
 function buildLiveObservationsSection(observed: ObservedProofFetchView[]): ReportSection {
   const lines = observed.map((record) => {
-    const status = record.status !== null ? String(record.status) : 'not available'
-    return `${record.kind}: reachable=${record.reachable ? 'yes' : 'no'}, valid JSON=${record.validJson ? 'yes' : 'no'}, http status=${status}`
+    const detail = record.detail ? ` (${record.detail})` : ''
+    return `${record.kind}: ${record.state}${detail}`
   })
 
   return createSection({
@@ -120,7 +120,7 @@ function buildLiveObservationsSection(observed: ObservedProofFetchView[]): Repor
     title: 'Live observations',
     tier: 'observed',
     source: 'live-fetch',
-    lines: lines.length > 0 ? lines : ['No live observations recorded.'],
+    lines,
   })
 }
 

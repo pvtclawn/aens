@@ -55,7 +55,10 @@ test('createReportSections builds semantic trust-tier sections in the right orde
     'Proof surface present: no',
     'No linked proof material declared.',
   ])
-  expect(sections[3]?.lines).toEqual(['No live observations recorded.'])
+  expect(sections[3]?.lines).toEqual([
+    'proofs: not-declared',
+    'receipts: not-declared',
+  ])
   expect(sections[4]?.lines).toEqual(['No inferred claims or caveats.'])
 })
 
