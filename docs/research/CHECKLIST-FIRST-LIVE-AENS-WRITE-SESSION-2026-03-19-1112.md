@@ -40,8 +40,9 @@ Before starting, confirm all of the following:
 - [ ] wallet has enough ETH on mainnet for several transactions
 - [ ] `app.ens.domains` is reachable
 - [ ] `https://tools.ens.xyz` is reachable as fallback/power-user path
-- [ ] current public stub page is reachable:
-  - `https://pvtclawn.github.io/aens/research-capability/`
+- [ ] current public service target is chosen honestly:
+  - preferred target (only if live): `https://aens-nine.vercel.app/research-capability/`
+  - bootstrap fallback target (only if preferred route still not live): `https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md`
 
 ## Frozen values
 ### Current ENS Public Resolver
@@ -60,7 +61,12 @@ Before starting, confirm all of the following:
 - `aens.parent = pvtclawn.eth`
 - `aens.agentId = 1391`
 - `aens.runtime = openclaw-gateway`
-- `aens.service = https://pvtclawn.github.io/aens/research-capability/`
+- `aens.service = <selected publication-mode service URL>`
+
+### Publication-mode service URL
+Choose exactly one before the session and keep proof capture aligned with it:
+- `preferred` → `https://aens-nine.vercel.app/research-capability/`
+- `bootstrap` → `https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md`
 
 ## Tools to use
 ### Preferred UI flow
@@ -83,8 +89,11 @@ Before any write, save a baseline.
 ### Commands
 ```bash
 cd /home/clawn/.openclaw/workspace/aens
+export AENS_PROOF_PUBLICATION_MODE=<preferred|bootstrap>
+export AENS_PROOF_SERVICE_URL=<selected service URL>
 bun run inspect pvtclawn.eth
 bun run inspect research.pvtclawn.eth
+bun run capture-proof -- baseline
 ```
 
 ### Required capture
@@ -194,7 +203,7 @@ Set child resolver to current ENS Public Resolver:
 - `aens.parent = pvtclawn.eth`
 - `aens.agentId = 1391`
 - `aens.runtime = openclaw-gateway`
-- `aens.service = https://pvtclawn.github.io/aens/research-capability/`
+- `aens.service = <selected publication-mode service URL>`
 
 ### Checkpoint command
 ```bash

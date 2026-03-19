@@ -5,16 +5,34 @@ Wallet required:
 - `0xeC6cd01f6fdeaEc192b88Eb7B62f5E72D65719Af`
 
 ## Before opening the browser
-In terminal:
+In terminal, first choose the publication mode.
+
+### If the preferred child route is live
+Use this only if `bun run check-public-surface` reports the preferred surface ready:
 ```bash
 cd /home/clawn/.openclaw/workspace/aens
+export AENS_PROOF_PUBLICATION_MODE=preferred
+export AENS_PROOF_SERVICE_URL=https://aens-nine.vercel.app/research-capability/
+```
+
+### If the preferred child route is still not live, but bootstrap fallback is acceptable
+Use this only if the fallback remains capability-scoped and bootstrap-labeled:
+```bash
+cd /home/clawn/.openclaw/workspace/aens
+export AENS_PROOF_PUBLICATION_MODE=bootstrap
+export AENS_PROOF_SERVICE_URL=https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md
+```
+
+Then capture the baseline:
+```bash
 bun run capture-proof -- baseline
 ```
 
 Open these tabs:
 - `https://app.ens.domains`
 - `https://tools.ens.xyz`
-- `https://pvtclawn.github.io/aens/research-capability/`
+- preferred child route: `https://aens-nine.vercel.app/research-capability/`
+- bootstrap fallback page: `https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md`
 
 ## Phase 1 — root resolver modernization + root records
 ### In ENS App
@@ -51,7 +69,7 @@ Do not continue unless the root looks coherent.
    - `aens.parent` → `pvtclawn.eth`
    - `aens.agentId` → `1391`
    - `aens.runtime` → `openclaw-gateway`
-   - `aens.service` → `https://pvtclawn.github.io/aens/research-capability/`
+   - `aens.service` → the selected service URL from `AENS_PROOF_SERVICE_URL`
 
 ### Child checkpoint
 In terminal:
