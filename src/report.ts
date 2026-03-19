@@ -109,11 +109,17 @@ function buildLinkedProofMaterialSection(declared: DeclaredProofMaterialView): R
   })
 }
 
+export function shouldCollapseNeutralUndeclaredObservedOutput(observed: ObservedProofFetchView[]): boolean {
+  return observed.length > 0 && observed.every((record) => record.state === 'not-declared')
+}
+
 function buildLiveObservationsSection(observed: ObservedProofFetchView[]): ReportSection {
-  const lines = observed.map((record) => {
-    const detail = record.detail ? ` (${record.detail})` : ''
-    return `${record.kind}: ${record.state}${detail}`
-  })
+  const lines = shouldCollapseNeutralUndeclaredObservedOutput(observed)
+    ? ['No proof fetch observations: no proof material declared.']
+    : observed.map((record) => {
+        const detail = record.detail ? ` (${record.detail})` : ''
+        return `${record.kind}: ${record.state}${detail}`
+      })
 
   return createSection({
     key: 'live-observations',

@@ -5,7 +5,11 @@ import {
   createObservedProofFetchViews,
   createProofEvidenceViews,
 } from './proof-evidence'
-import { createReportSections, renderProfileReport } from './report'
+import {
+  createReportSections,
+  renderProfileReport,
+  shouldCollapseNeutralUndeclaredObservedOutput,
+} from './report'
 
 test('fetchLinkedRecords summarizes linked proof and receipt JSON documents', async () => {
   const profile = buildAensProfile({
@@ -211,6 +215,45 @@ test('createProofEvidenceViews separates declared, observed, and inferred proof 
   expect(views.inferred[0]?.summary).toBe('receipts document matches a signed receipt-like object with all core fields present')
   expect(views.inferred[0]?.proofStrength).toBe('signed-receipt')
   expect('url' in views.inferred[0]!).toBe(false)
+})
+
+test('createReportSections collapses pure undeclared observed sameness but keeps mixed states separate', () => {
+  const undeclaredProfile = buildAensProfile({
+    ensName: 'vitalik.eth',
+    address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+    records: {
+      url: 'https://vitalik.ca',
+    },
+  })
+
+  const collapsedObserved = createReportSections(undeclaredProfile)
+    .find((section) => section.key === 'live-observations')
+  expect(collapsedObserved?.lines).toEqual([
+    'No proof fetch observations: no proof material declared.',
+  ])
+  expect(shouldCollapseNeutralUndeclaredObservedOutput([
+    { kind: 'proofs', state: 'not-declared', status: null, detail: null },
+    { kind: 'receipts', state: 'not-declared', status: null, detail: null },
+  ])).toBe(true)
+
+  const mixedProfile = buildAensProfile({
+    ensName: 'pvtclawn.eth',
+    address: '0x000000000000000000000000000000000000dEaD',
+    records: {
+      proofsUrl: 'https://example.com/proofs.json',
+    },
+  })
+
+  const mixedObserved = createReportSections(mixedProfile)
+    .find((section) => section.key === 'live-observations')
+  expect(mixedObserved?.lines).toEqual([
+    'proofs: not-attempted',
+    'receipts: not-declared',
+  ])
+  expect(shouldCollapseNeutralUndeclaredObservedOutput([
+    { kind: 'proofs', state: 'not-attempted', status: null, detail: null },
+    { kind: 'receipts', state: 'not-declared', status: null, detail: null },
+  ])).toBe(false)
 })
 
 test('createReportSections keeps summary text out of the declared proof section', () => {

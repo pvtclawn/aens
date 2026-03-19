@@ -7,7 +7,11 @@ import {
   hasProfileMetadata,
   hasProofSurface,
 } from './profile'
-import { createReportSections, renderProfileReport } from './report'
+import {
+  createReportSections,
+  renderProfileReport,
+  shouldCollapseNeutralUndeclaredObservedOutput,
+} from './report'
 
 test('buildAensProfile normalizes missing fields to null and computes sharper state helpers', () => {
   const profile = buildAensProfile({
@@ -55,11 +59,20 @@ test('createReportSections builds semantic trust-tier sections in the right orde
     'Proof surface present: no',
     'No linked proof material declared.',
   ])
-  expect(sections[3]?.lines).toEqual([
-    'proofs: not-declared',
-    'receipts: not-declared',
-  ])
+  expect(sections[3]?.lines).toEqual(['No proof fetch observations: no proof material declared.'])
   expect(sections[4]?.lines).toEqual(['No inferred claims or caveats.'])
+})
+
+test('shouldCollapseNeutralUndeclaredObservedOutput only collapses pure undeclared sameness', () => {
+  expect(shouldCollapseNeutralUndeclaredObservedOutput([
+    { kind: 'proofs', state: 'not-declared', status: null, detail: null },
+    { kind: 'receipts', state: 'not-declared', status: null, detail: null },
+  ])).toBe(true)
+
+  expect(shouldCollapseNeutralUndeclaredObservedOutput([
+    { kind: 'proofs', state: 'not-attempted', status: null, detail: null },
+    { kind: 'receipts', state: 'not-declared', status: null, detail: null },
+  ])).toBe(false)
 })
 
 test('renderProfileReport explains why ENS is load-bearing with trust-tier sections', () => {
