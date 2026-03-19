@@ -136,7 +136,7 @@ if (isMainInvocation()) {
       process.exitCode = exitCode
     })
     .catch((error) => {
-      console.error('AENS lookup failed:', error)
+      console.error('ÆNS lookup failed:', error)
       process.exit(1)
     })
 }

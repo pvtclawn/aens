@@ -107,5 +107,5 @@ export async function resolveAensProfile(input: {
     }
   }
 
-  throw new Error(`AENS lookup failed across ${rpcUrls.length} RPC endpoint(s): ${failures.join(' | ')}`)
+  throw new Error(`ÆNS lookup failed across ${rpcUrls.length} RPC endpoint(s): ${failures.join(' | ')}`)
 }

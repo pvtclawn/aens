@@ -95,7 +95,7 @@ test('renderProfileReport explains why ENS is load-bearing with trust-tier secti
   })
 
   const report = renderProfileReport(profile)
-  expect(report).toContain('AENS profile: pvtclawn.eth')
+  expect(report).toContain('ÆNS profile: pvtclawn.eth')
   expect(report).toContain('Identity anchor [anchored | ens]')
   expect(report).toContain('Capability authority [authorized | parent-ens]')
   expect(report).toContain('Linked proof material [declared | linked-doc]')

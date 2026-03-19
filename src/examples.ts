@@ -6,6 +6,7 @@ const DEMO_ADDRESS = '0x000000000000000000000000000000000000dEaD'
 const PARENT_NAME = 'pvtclawn.eth'
 const DEFAULT_AGENT_ID = '1391'
 const DEFAULT_RUNTIME = 'openclaw-gateway'
+const PUBLIC_RESEARCH_CAPABILITY_STUB_URL = 'https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md'
 
 export type AensExampleId =
   | 'parent-authorized-capability'
@@ -104,7 +105,7 @@ function buildParentAuthorizedCapabilityExample(): AensExampleScenario {
     description: 'Offline demo of a child capability explicitly listed by its parent ENS identity.',
     childName: 'research.pvtclawn.eth',
     childDescription: 'Research capability surface for PrivateClawn',
-    childServiceUrl: 'https://pvtclawn.example/research',
+    childServiceUrl: PUBLIC_RESEARCH_CAPABILITY_STUB_URL,
     parentCapabilities: ['research.pvtclawn.eth'],
   })
 }

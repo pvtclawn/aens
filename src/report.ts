@@ -209,7 +209,7 @@ export function renderProfileReport(
   capabilityAuthorization?: CapabilityAuthorization,
 ): string {
   const sections = createReportSections(profile, linkedRecords, capabilityAuthorization)
-  const lines = [`AENS profile: ${profile.ensName}`, '']
+  const lines = [`ÆNS profile: ${profile.ensName}`, '']
 
   for (const section of sections) {
     lines.push(...renderSection(section), '')
