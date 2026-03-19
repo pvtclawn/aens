@@ -1,5 +1,4 @@
-export const pagesRootUrl = 'https://pvtclawn.github.io/aens/'
-export const researchCapabilityUrl = 'https://pvtclawn.github.io/aens/research-capability/'
+export const researchCapabilityPath = './research-capability/'
 export const repoUrl = 'https://github.com/pvtclawn/aens'
 export const ensRoot = 'pvtclawn.eth'
 export const ensResearch = 'research.pvtclawn.eth'
