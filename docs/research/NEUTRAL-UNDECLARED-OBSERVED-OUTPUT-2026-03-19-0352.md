@@ -30,6 +30,17 @@ This does **not** weaken the state model because:
 - the observed-state model still exists in code,
 - and per-kind lines can still be rendered whenever they become informative.
 
+## Design rationale — collapse sameness, preserve distinction
+A supporting software-design lesson from `books_and_papers/003_solid_software.pdf` and `books_and_papers/004_building_ethereum_products_and_protocols.pdf`:
+- maximize clarity with fewer elements,
+- avoid repetition that adds noise,
+- but preserve lines when they express a meaningful distinction the user needs.
+
+Applied to AENS:
+- two `not-declared` lines usually communicate the same neutral truth,
+- so collapsing them improves clarity,
+- but mixed states such as `not-attempted` vs `not-declared` should remain separate because the contrast is meaningful.
+
 ## When to keep per-kind observed lines
 Do **not** collapse the section if any observed state is more informative than `not-declared`, such as:
 - `not-attempted`
