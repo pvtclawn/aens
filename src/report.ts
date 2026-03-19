@@ -1,9 +1,14 @@
 import { type CapabilityAuthorization } from './capability-authorization'
 import {
+  createProofEvidenceViews,
+  type DeclaredProofMaterialView,
+  type InferredProofInterpretationView,
+  type ObservedProofFetchView,
+} from './proof-evidence'
+import {
   hasCallableServiceSurface,
   hasIdentityAnchor,
   hasProfileMetadata,
-  hasProofSurface,
   type AensResolvedProfile,
 } from './profile'
 import type { LinkedRecordSummary } from './linked-records'
@@ -81,38 +86,19 @@ function buildCapabilityAuthoritySection(
   })
 }
 
-function buildLinkedProofMaterialSection(
-  profile: AensResolvedProfile,
-  linkedRecords: LinkedRecordSummary[],
-): ReportSection {
+function buildLinkedProofMaterialSection(declared: DeclaredProofMaterialView): ReportSection {
   const lines = [
-    `Proof surface present: ${hasProofSurface(profile) ? 'yes' : 'no'}`,
+    `Proof surface present: ${declared.proofSurfacePresent ? 'yes' : 'no'}`,
   ]
 
-  if (profile.records.proofsUrl) {
-    lines.push(`Proofs URL: ${profile.records.proofsUrl}`)
+  if (declared.proofsUrl) {
+    lines.push(`Proofs URL: ${declared.proofsUrl}`)
   }
-  if (profile.records.receiptsUrl) {
-    lines.push(`Receipts URL: ${profile.records.receiptsUrl}`)
-  }
-
-  for (const record of linkedRecords) {
-    lines.push(
-      `${record.kind}: ${record.summary}`,
-      `${record.kind} URL: ${record.url}`,
-    )
-
-    if (record.itemCount !== null) {
-      lines.push(`${record.kind} item count: ${record.itemCount}`)
-    }
-    if (record.keyCount !== null) {
-      lines.push(`${record.kind} key count: ${record.keyCount}`)
-    }
+  if (declared.receiptsUrl) {
+    lines.push(`Receipts URL: ${declared.receiptsUrl}`)
   }
 
-  if (lines.length === 1 && lines[0] === 'Proof surface present: no') {
-    lines.push('No linked proof material declared.')
-  }
+  lines.push(declared.note)
 
   return createSection({
     key: 'linked-proof-material',
@@ -123,12 +109,10 @@ function buildLinkedProofMaterialSection(
   })
 }
 
-function buildLiveObservationsSection(linkedRecords: LinkedRecordSummary[]): ReportSection {
-  const lines = linkedRecords.flatMap((record) => {
+function buildLiveObservationsSection(observed: ObservedProofFetchView[]): ReportSection {
+  const lines = observed.map((record) => {
     const status = record.status !== null ? String(record.status) : 'not available'
-    return [
-      `${record.kind}: reachable=${record.reachable ? 'yes' : 'no'}, valid JSON=${record.validJson ? 'yes' : 'no'}, http status=${status}`,
-    ]
+    return `${record.kind}: reachable=${record.reachable ? 'yes' : 'no'}, valid JSON=${record.validJson ? 'yes' : 'no'}, http status=${status}`
   })
 
   return createSection({
@@ -140,12 +124,19 @@ function buildLiveObservationsSection(linkedRecords: LinkedRecordSummary[]): Rep
   })
 }
 
-function buildInferredClaimsSection(linkedRecords: LinkedRecordSummary[]): ReportSection {
-  const lines = linkedRecords.flatMap((record) => {
+function buildInferredClaimsSection(inferred: InferredProofInterpretationView[]): ReportSection {
+  const lines = inferred.flatMap((record) => {
     const recordLines = [
+      `${record.kind}: summary=${record.summary}`,
       `${record.kind}: shape=${record.shape}, proof strength=${record.proofStrength}`,
     ]
 
+    if (record.itemCount !== null) {
+      recordLines.push(`${record.kind}: item count=${record.itemCount}`)
+    }
+    if (record.keyCount !== null) {
+      recordLines.push(`${record.kind}: key count=${record.keyCount}`)
+    }
     if (record.coreFieldsPresent.length > 0) {
       recordLines.push(`${record.kind}: core fields present: ${record.coreFieldsPresent.join(', ')}`)
     }
@@ -170,12 +161,14 @@ export function createReportSections(
   linkedRecords: LinkedRecordSummary[] = [],
   capabilityAuthorization?: CapabilityAuthorization,
 ): ReportSection[] {
+  const proofEvidenceViews = createProofEvidenceViews(profile, linkedRecords)
+
   return [
     buildIdentityAnchorSection(profile),
     buildCapabilityAuthoritySection(profile, capabilityAuthorization),
-    buildLinkedProofMaterialSection(profile, linkedRecords),
-    buildLiveObservationsSection(linkedRecords),
-    buildInferredClaimsSection(linkedRecords),
+    buildLinkedProofMaterialSection(proofEvidenceViews.declared),
+    buildLiveObservationsSection(proofEvidenceViews.observed),
+    buildInferredClaimsSection(proofEvidenceViews.inferred),
   ]
 }
 
