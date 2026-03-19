@@ -141,6 +141,19 @@ It fixes the immediate semantics contradiction while preserving room for later w
 3. Update tests to cover an ordinary ENS profile where metadata richness no longer implies service discovery.
 4. Keep the existing capability-authorization model intact.
 
+## Design rationale — avoid boolean blindness
+A supporting software-design lesson from `books_and_papers/003_solid_software.pdf`:
+- booleans should ask a real yes/no question,
+- avoid misleading names,
+- and promote domain variants/state machines instead of compressing non-binary concepts into a single flag.
+
+Applied to AENS:
+- `hasDiscoverySurface()` is too lossy for the actual domain,
+- because discovery here is not one binary state,
+- it is a compact set of distinct trust/discovery states.
+
+That means the next build slice should promote discovery from a boolean helper into a small explicit state model.
+
 ## Bottom line
 The next build slice should not try to make the report more beautiful.
 It should make the report **more honest** by separating:
