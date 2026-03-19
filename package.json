@@ -6,6 +6,7 @@
   "scripts": {
     "inspect": "bun run src/cli.ts",
     "capture-proof": "bash scripts/capture-live-proof.sh",
+    "check-public-surface": "bun run src/check-public-surface.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit"
   },

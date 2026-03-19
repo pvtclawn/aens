@@ -1,6 +1,7 @@
 import { expect, test } from 'bun:test'
 import { getExampleScenario, listExampleIds } from './examples'
 import { parseCliArgs } from './cli'
+import { PAGES_RESEARCH_STUB_URL } from './public-surface'
 import { renderProfileReport } from './report'
 
 test('example registry exposes contrasting capability authority demos', () => {
@@ -15,7 +16,7 @@ test('example registry exposes contrasting capability authority demos', () => {
   expect(parentAuthorized?.capabilityAuthorization.status).toBe('parent-authorized')
   expect(parentAuthorized?.profile.ensName).toBe('research.pvtclawn.eth')
   expect(parentAuthorized?.profile.records.parentName).toBe('pvtclawn.eth')
-  expect(parentAuthorized?.profile.records.serviceUrl).toBe('https://pvtclawn.github.io/aens/research-capability/')
+  expect(parentAuthorized?.profile.records.serviceUrl).toBe(PAGES_RESEARCH_STUB_URL)
   expect(parentAuthorized?.parentProfile?.records.capabilities).toEqual(['research.pvtclawn.eth'])
 
   const unlistedChild = getExampleScenario('unlisted-child-capability')
