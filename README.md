@@ -1,0 +1,155 @@
+# AENS
+
+**AENS is an ENS-native CLI trust debugger for agent profiles and capability subnames.**
+
+Today, AENS is not yet a full invocation/payment protocol.
+Its current product truth is simpler: given an ENS name, it resolves the name, reads relevant ENS records, classifies capability authority, optionally fetches linked proof material, and prints a trust-tier report that makes the result legible.
+
+## What it does today
+
+AENS currently supports:
+- live ENS lookup via `bun run inspect <ens-name>`
+- capability-authority classification for ENS child capability surfaces
+- optional linked proof/receipt fetching via `--with-links`
+- trust-tier report rendering with explicit sections for:
+  - identity anchor
+  - capability authority
+  - linked proof material
+  - live observations
+  - inferred claims / caveats
+- deterministic offline example scenarios for contrasting authority states
+
+In plain English: AENS helps answer questions like:
+- “Is this ENS name just a profile, or does it look like a callable agent/service surface?”
+- “If this is a child capability subname, is it actually authorized by the parent?”
+- “Does the name declare proof/receipt links, and what do those links appear to contain?”
+
+## ENS records AENS reads today
+
+### Standard ENS/profile records
+- `description`
+- `url`
+- `avatar`
+- `com.twitter`
+- `com.github`
+- `org.telegram`
+
+### Current AENS-specific records
+- `aens.agentId`
+- `aens.service`
+- `aens.proofs`
+- `aens.receipts`
+- `aens.runtime`
+- `aens.parent`
+- `aens.capabilities`
+
+These are read-only today.
+AENS currently does **not** publish or modify ENS records.
+
+## Quickstart
+
+```bash
+bun install
+```
+
+### 1) Live ordinary ENS lookup
+```bash
+bun run inspect vitalik.eth
+```
+
+Optional linked-proof fetch pass:
+```bash
+bun run inspect vitalik.eth --with-links
+```
+
+### 2) Deterministic authority examples
+```bash
+bun run inspect --example parent-authorized-capability
+bun run inspect --example unlisted-child-capability
+bun run inspect --example identity-mismatch-capability
+```
+
+These examples are offline and deterministic.
+They exist so the authority model is visible from the CLI without waiting on live ENS publication.
+
+## How to interpret capability-authority states
+
+### `parent-authorized`
+The child capability subname:
+- declares a parent
+- matches that parent identity
+- and is explicitly listed by the parent profile
+
+Example meaning:
+> this looks like an officially authorized capability surface of the parent ENS identity.
+
+### `unlisted-child`
+The child capability subname:
+- matches the parent identity
+- but is **not** listed by the parent profile
+
+Example meaning:
+> this may be related to the same agent identity, but the parent has not explicitly authorized it as an official capability surface.
+
+### `identity-mismatch`
+The child capability subname has a broken authority relationship, for example:
+- the parent relationship is inconsistent
+- or the child agent identity does not match the parent identity
+
+Example meaning:
+> this should not be treated as an authorized capability surface.
+
+### `not-a-capability-surface`
+The ENS name does not currently look like a declared parent/child capability surface.
+
+Example meaning:
+> this is an ordinary ENS identity/profile path, not an authorized child capability.
+
+## What is implemented now
+
+- ENS name resolution via `viem`
+- ENS text-record ingestion + normalization
+- capability-authority classification
+- linked proof/receipt fetch + lightweight structure summary
+- trust-tier report rendering
+- deterministic example/demo registry for contrasting authority outcomes
+- tests for resolver/config, authority classification, proof summaries, reports, and example coverage
+
+## What is **not** implemented yet
+
+- writing/publishing ENS records
+- live public positive example publication
+- invocation or payment flow
+- x402 / ERC-8128 execution path
+- onchain proof writes or attestation flow
+- polished end-user app/UI beyond the CLI report
+
+## Minimal architecture
+
+- `src/resolver.ts` — ENS resolution + text record reads
+- `src/profile.ts` — normalized AENS profile model
+- `src/capability-authorization.ts` — authority classification for child capability names
+- `src/linked-records.ts` — linked proof/receipt fetch + lightweight structure summaries
+- `src/report.ts` — trust-tier report rendering
+- `src/examples.ts` — deterministic CLI demo scenarios
+- `src/cli.ts` — command entrypoint
+
+## Why the repo looks the way it does
+
+AENS is being built as a sequence of small, evidence-backed slices.
+The research notes in `docs/research/` are there to freeze product decisions and verification passes, but the intended first-touch surface is now this README plus the CLI commands above.
+
+## Current product truth, one more time
+
+AENS currently proves:
+- ENS can be a load-bearing entrypoint for agent identity and capability authority inspection
+- child capability subnames can be classified in a legible way
+- declared proof material can be kept distinct from live observations and inferred claims
+
+AENS does **not yet** prove:
+- live invocation
+- payment flows
+- broad public deployment
+- a finished protocol surface
+
+That boundary is intentional.
