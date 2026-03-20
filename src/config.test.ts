@@ -1,20 +1,17 @@
-import { afterEach, expect, test } from 'bun:test'
-import { DEFAULT_RPC_URLS, getRpcUrls } from './config'
-
-afterEach(() => {
-  delete process.env.AENS_RPC_URL
-  delete process.env.AENS_RPC_URLS
-})
+import { expect, test } from 'bun:test'
+import { DEFAULT_RPC_URLS, getRpcUrls, getRpcUrlsFromSources } from './config'
 
 test('getRpcUrls returns an explicit input RPC without defaults', () => {
   expect(getRpcUrls('https://example.com')).toEqual(['https://example.com'])
 })
 
-test('getRpcUrls merges env RPCs with defaults and de-duplicates them', () => {
-  process.env.AENS_RPC_URLS = `https://example.com, ${DEFAULT_RPC_URLS[0]}, https://example.com`
-  process.env.AENS_RPC_URL = DEFAULT_RPC_URLS[1]
-
-  expect(getRpcUrls()).toEqual([
+test('getRpcUrlsFromSources merges env RPCs with defaults and de-duplicates them', () => {
+  expect(
+    getRpcUrlsFromSources({
+      envRpcUrls: `https://example.com, ${DEFAULT_RPC_URLS[0]}, https://example.com`,
+      envRpcUrl: DEFAULT_RPC_URLS[1],
+    }),
+  ).toEqual([
     'https://example.com',
     DEFAULT_RPC_URLS[0],
     DEFAULT_RPC_URLS[1],

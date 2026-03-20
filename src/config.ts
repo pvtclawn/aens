@@ -7,24 +7,38 @@ export const DEFAULT_RPC_URLS = [
 
 export const RPC_REQUEST_TIMEOUT_MS = 10_000
 
+export interface RpcUrlSources {
+  inputRpcUrl?: string
+  envRpcUrls?: string | null
+  envRpcUrl?: string | null
+}
+
 function normalizeRpcUrls(urls: string[]): string[] {
   return [...new Set(urls.map((url) => url.trim()).filter(Boolean))]
 }
 
-export function getRpcUrls(inputRpcUrl?: string): string[] {
-  if (inputRpcUrl) {
-    return normalizeRpcUrls([inputRpcUrl])
+export function getRpcUrlsFromSources(input: RpcUrlSources = {}): string[] {
+  if (input.inputRpcUrl) {
+    return normalizeRpcUrls([input.inputRpcUrl])
   }
 
-  const envList = process.env.AENS_RPC_URLS
-    ? process.env.AENS_RPC_URLS.split(',')
+  const envList = input.envRpcUrls
+    ? input.envRpcUrls.split(',')
     : []
 
-  const envSingle = process.env.AENS_RPC_URL ? [process.env.AENS_RPC_URL] : []
+  const envSingle = input.envRpcUrl ? [input.envRpcUrl] : []
 
   return normalizeRpcUrls([
     ...envList,
     ...envSingle,
     ...DEFAULT_RPC_URLS,
   ])
+}
+
+export function getRpcUrls(inputRpcUrl?: string): string[] {
+  return getRpcUrlsFromSources({
+    inputRpcUrl,
+    envRpcUrls: process.env.AENS_RPC_URLS,
+    envRpcUrl: process.env.AENS_RPC_URL,
+  })
 }
