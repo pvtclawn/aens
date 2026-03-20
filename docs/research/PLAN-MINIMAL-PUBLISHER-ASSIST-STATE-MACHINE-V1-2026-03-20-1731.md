@@ -20,6 +20,7 @@ It is a tiny publisher-assist primitive that makes legal next steps clearer with
 ## Guardrails
 - v1 must be **read-only**: no hidden signing, no write execution, no bypass of wallet approval
 - v1 must be **evidence-derived**: states come from fresh observed truth, not button progression
+- v1 must be **stateless in the strong sense**: the tool's own prior outputs or local session memory are not part of the source of truth
 - v1 must preserve **human judgment** before each real write
 - v1 must stay **small**: model only the states that change safety, proof validity, or the legal next move
 - v1 may be scoped to the current root+child publish pattern, but state names should describe reusable publish phases rather than personal one-off labels
@@ -35,6 +36,18 @@ The minimal publisher-assist v1 should:
 
 This is **not** a wizard that auto-advances from internal memory.
 It is a read-only state derivation tool anchored to fresh evidence.
+
+### Source-of-truth rule
+For v1, current publish state should be derived fresh on every run from external truth in this order:
+1. live ENS reads
+2. live public-surface truth
+3. proof artifacts on disk
+4. current tool invocation output
+
+Not from:
+- remembered workflow progress
+- previous tool output copied forward as if it were durable state
+- local session state that outranks fresh chain/public truth
 
 ## Minimal v1 state set
 Keep the first state set deliberately tiny:
@@ -64,7 +77,8 @@ Make every state transition come from fresh observed truth instead of operator c
 - `child-verified-provisional` requires fresh child inspection output
 - `parent-authorized-verified` requires fresh authority evidence from current inspection output
 - `proof-captured` requires a real artifact path plus current public-truth snapshot
-- if required evidence is missing or contradictory, the tool must classify `needs-operator-reconcile` or `aborted`, not silently progress
+- current state is derived fresh on each run; internal session memory cannot outrank live ENS/public/artifact truth
+- if required evidence is missing or contradictory, the tool must classify `needs-operator-reconcile` rather than silently progress
 
 ## Task 2 — freeze human-review checkpoints before each write
 ### Goal
@@ -85,7 +99,7 @@ Keep the first implementation small, honest, and resistant to workflow theater.
 
 ### Acceptance criteria
 - the plan defines when the tool should emit `needs-operator-reconcile`
-- the plan defines when the tool should emit `aborted`
+- the plan treats `needs-operator-reconcile` as the main honest divergence state for the current read-only v1
 - the plan explicitly says v1 does **not** yet support broad multi-child/multi-session recovery flows
 - the plan explicitly says v1 does **not** perform writes or wallet automation
 - the plan explicitly says internal session memory cannot outrank fresh chain/public truth
