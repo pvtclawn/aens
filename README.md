@@ -1,5 +1,13 @@
 # ÆNS
 
+ÆNS lets an ENS identity publish official machine-readable capabilities — like research, payment, chat, or API endpoints — so people and software can tell which services actually belong to it.
+
+A parent ENS name authorizes child capabilities like `research.pvtclawn.eth`, making the relationship between the main identity and its official sub-tools explicit and machine-readable.
+
+**Current proof status:** ÆNS currently proves ENS-backed authorization of child capabilities under a parent identity. It does **not** yet prove that every child service is fully live end-to-end.
+
+**Example:** if `pvtclawn.eth` is the parent identity, then `research.pvtclawn.eth` can act as an officially authorized research capability under that parent.
+
 ## Synthesis snapshot
 
 ÆNS makes `<capability>.<agent>.eth` load-bearing.
