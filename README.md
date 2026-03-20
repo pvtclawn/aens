@@ -1,5 +1,21 @@
 # ÆNS
 
+## Synthesis snapshot
+
+ÆNS makes `<capability>.<agent>.eth` load-bearing.
+
+The core model is simple:
+- `pvtclawn.eth` = identity anchor
+- `research.pvtclawn.eth` = child capability
+- `parent-authorized` = the key trust milestone
+
+This repo is building toward ENS-native **child capability authority**, not just generic discovery or endpoint metadata.
+
+Submission-facing docs:
+- `docs/submission/SYNTHESIS-CORE-SUBMISSION-2026-03-20.md`
+- `docs/submission/SYNTHESIS-DEMO-SCRIPT-2026-03-20.md`
+- `docs/submission/SYNTHESIS-SUBMISSION-BLURB-2026-03-20.md`
+
 **ÆNS is an ENS-native CLI trust debugger for agent profiles and capability subnames.**
 
 Today, ÆNS is not yet a full invocation/payment protocol.
