@@ -41,8 +41,11 @@ Before starting, confirm all of the following:
 - [ ] `app.ens.domains` is reachable
 - [ ] `https://tools.ens.xyz` is reachable as fallback/power-user path
 - [ ] current public service target is chosen honestly:
-  - preferred target (only if live): `https://aens-nine.vercel.app/research-capability/`
-  - bootstrap fallback target (only if preferred route still not live): `https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md`
+  - preferred mainline target (default when `Preferred public surface ready = yes`): `https://aens-nine.vercel.app/research-capability/`
+  - bootstrap regression target (only if the preferred route is not live at baseline or regresses before final capture): `https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md`
+
+The preferred target is the honest current default because it is the strongest publicly reachable capability-scoped surface under project control.
+Do **not** downgrade to bootstrap mode unless the verifier says the preferred route is not currently ready.
 
 ## Frozen values
 ### Current ENS Public Resolver
@@ -65,8 +68,8 @@ Before starting, confirm all of the following:
 
 ### Publication-mode service URL
 Choose exactly one before the session and keep proof capture aligned with it:
-- `preferred` → `https://aens-nine.vercel.app/research-capability/`
-- `bootstrap` → `https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md`
+- `preferred` → `https://aens-nine.vercel.app/research-capability/` (**default mainline path when `Preferred public surface ready = yes`**)
+- `bootstrap` → `https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md` (**explicit regression path only**)
 
 ## Tools to use
 ### Preferred UI flow
@@ -90,8 +93,16 @@ Before any write, save a baseline.
 ```bash
 cd /home/clawn/.openclaw/workspace/aens
 bun run check-public-surface
-export AENS_PROOF_PUBLICATION_MODE=<preferred|bootstrap>
-export AENS_PROOF_SERVICE_URL=<selected service URL>
+
+# default mainline path when the verifier reports "Preferred public surface ready: yes"
+export AENS_PROOF_PUBLICATION_MODE=preferred
+export AENS_PROOF_SERVICE_URL=https://aens-nine.vercel.app/research-capability/
+
+# use this only as an explicit regression path if the preferred route is not ready
+# at baseline (or if the session is intentionally restarted after a later regression)
+# export AENS_PROOF_PUBLICATION_MODE=bootstrap
+# export AENS_PROOF_SERVICE_URL=https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md
+
 bun run inspect pvtclawn.eth
 bun run inspect research.pvtclawn.eth
 bun run capture-proof -- baseline
@@ -99,6 +110,8 @@ bun run capture-proof -- baseline
 
 ### Required capture
 - [ ] save output for `bun run check-public-surface`
+- [ ] record the chosen `AENS_PROOF_PUBLICATION_MODE`
+- [ ] record the exact `AENS_PROOF_SERVICE_URL`
 - [ ] save output for `pvtclawn.eth`
 - [ ] save output for `research.pvtclawn.eth`
 - [ ] note current time
@@ -106,6 +119,7 @@ bun run capture-proof -- baseline
 ### Abort conditions
 - [ ] abort if baseline commands do not run locally
 - [ ] abort if the connected wallet is not the wrapped owner
+- [ ] abort or explicitly switch to the regression/bootstrap path if the baseline verifier does not support the selected publication-mode story
 
 ## Phase 1 — resolver modernization on `pvtclawn.eth`
 ### Goal
@@ -220,14 +234,16 @@ Before parent authorization, the child should already show:
 - `Parent Name: pvtclawn.eth`
 - `Agent ID: 1391`
 - `Runtime: openclaw-gateway`
-- service URL set to the stub page
+- service URL set to the selected service URL (preferred mainline by default)
+- explicit understanding that this state is **PROVISIONAL — not yet `parent-authorized`**
 
-It is okay if authority is not yet `parent-authorized` at this stage.
+Do **not** draft the final proof note or take celebratory screenshots yet.
+The strongest ÆNS claim lands only after the parent capability list is written and verified.
 
 ### Abort conditions
 - [ ] abort if child resolver is wrong and cannot be changed cleanly
 - [ ] abort if child records remain inconsistent with the root
-- [ ] abort if the service URL is not the frozen stub URL
+- [ ] abort if the service URL is not the selected honest current target
 
 ## Phase 5 — parent capability list last
 ### Goal
@@ -240,6 +256,8 @@ Flip the live authority state only after the child is fully coherent.
 ```bash
 bun run inspect pvtclawn.eth
 bun run inspect research.pvtclawn.eth
+bun run check-public-surface
+bun run capture-proof -- final
 ```
 
 ### Required final result
@@ -250,8 +268,15 @@ The child report must show:
 
 The root report should show a coherent root identity plus the declared capability list.
 
+### Required final public-truth recheck
+- if this is still a preferred-mode session, `bun run check-public-surface` must still show `Preferred public surface ready: yes`
+- if that line is no longer `yes`, stop and treat the run as an abort or an explicitly restarted regression/bootstrap session
+- run `bun run capture-proof -- final` only after the recheck still supports the selected session story
+- do **not** capture final proof on stale baseline truth alone
+
 ### Abort conditions
 - [ ] do not call the slice complete if the child is anything other than `parent-authorized`
+- [ ] abort if the final public-surface recheck contradicts the selected preferred-mode story
 - [ ] abort celebratory proof-writing if the final report is mixed, stale, or contradictory
 
 ## Proof-capture checklist
@@ -275,7 +300,7 @@ Use `docs/research/FIRST-LIVE-AENS-PROOF-SCOPE-TEMPLATE-2026-03-19-2045.md` for 
 ### Machine-verifiable scope
 The final proof note must say:
 - [ ] this proves one live ENS-backed ÆNS authority path
-- [ ] this section is limited to machine-verifiable structure such as ENS records, final CLI authority output, publication mode, exact service URL, and commit-pinned bootstrap source reference
+- [ ] this section is limited to machine-verifiable structure such as ENS records, final CLI authority output, publication mode, exact service URL, and any commit-pinned bootstrap source reference only if bootstrap mode is actually used
 
 ### Observed public-alias state (time-scoped)
 The final proof note must say:
@@ -285,7 +310,8 @@ The final proof note must say:
 
 ### Unresolved human control-plane state
 The final proof note must say:
-- [ ] if the preferred route is still blocked, that blocker is described as unresolved human-controlled deployment/control-plane state
+- [ ] if the preferred route is still live at capture time, the note says plainly that no unresolved preferred-route control-plane blocker remained visible at capture time
+- [ ] if the preferred route is blocked or regressed at capture time, that blocker is described narrowly as unresolved human-controlled deployment/control-plane state
 - [ ] the note does **not** flatten that boundary into vague language like `deployment weirdness`, `basically fixed`, or implied preferred-route readiness
 
 ### Not yet proven
@@ -301,6 +327,7 @@ The session is done only if **all** are true:
 - [ ] root records coherent
 - [ ] child exists and is coherent
 - [ ] child renders `parent-authorized`
+- [ ] final public-truth recheck was captured honestly
 - [ ] proof artifacts captured
 - [ ] final note remains narrowly honest
 

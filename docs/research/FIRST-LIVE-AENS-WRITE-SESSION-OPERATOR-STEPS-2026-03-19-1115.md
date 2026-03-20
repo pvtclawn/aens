@@ -13,16 +13,19 @@ bun run check-public-surface
 
 Then choose the publication mode.
 
-### If the preferred child route is live
-Use this only if `bun run check-public-surface` reports the preferred surface ready:
+### Mainline path — preferred route live
+Use this when `bun run check-public-surface` reports `Preferred public surface ready: yes`.
+This is the honest current default because it is the strongest publicly reachable capability-scoped surface under project control.
+
 ```bash
 cd /home/clawn/.openclaw/workspace/aens
 export AENS_PROOF_PUBLICATION_MODE=preferred
 export AENS_PROOF_SERVICE_URL=https://aens-nine.vercel.app/research-capability/
 ```
 
-### If the preferred child route is still not live, but bootstrap fallback is acceptable
-Use this only if the fallback remains capability-scoped and bootstrap-labeled:
+### Regression path — preferred route not live
+Use bootstrap mode only if the preferred route is not ready at baseline, or if the session is explicitly restarted after a later regression.
+
 ```bash
 cd /home/clawn/.openclaw/workspace/aens
 export AENS_PROOF_PUBLICATION_MODE=bootstrap
@@ -34,11 +37,17 @@ Then capture the baseline:
 bun run capture-proof -- baseline
 ```
 
+Before moving on, record four things explicitly:
+1. current `AENS_PROOF_PUBLICATION_MODE`
+2. exact `AENS_PROOF_SERVICE_URL`
+3. current verifier truth (`Preferred public surface ready` / `Bootstrap proof ready`)
+4. current time
+
 Open these tabs:
 - `https://app.ens.domains`
 - `https://tools.ens.xyz`
 - preferred child route: `https://aens-nine.vercel.app/research-capability/`
-- bootstrap fallback page: `https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md`
+- bootstrap fallback page: open only if the session is actually using the regression path
 
 Also keep this wording template open for the final proof note:
 - `docs/research/FIRST-LIVE-AENS-PROOF-SCOPE-TEMPLATE-2026-03-19-2045.md`
@@ -87,6 +96,8 @@ bun run inspect research.pvtclawn.eth
 ```
 
 Do not continue unless the child is coherent on its own.
+Treat this state as **PROVISIONAL — not yet `parent-authorized`**.
+Do **not** draft the final proof note or take celebratory screenshots yet.
 
 ## Phase 3 — authorize the child from the parent
 ### On `pvtclawn.eth`
@@ -98,8 +109,14 @@ In terminal:
 ```bash
 bun run inspect pvtclawn.eth
 bun run inspect research.pvtclawn.eth
+bun run check-public-surface
 bun run capture-proof -- final
 ```
+
+Fail closed here:
+- if this is still a preferred-mode session, `bun run check-public-surface` must still show `Preferred public surface ready: yes`
+- if that line is no longer `yes`, stop and treat the run as an abort or an explicitly restarted regression/bootstrap session
+- do **not** capture final proof on stale baseline truth alone
 
 ## Success bar
 The session only counts if the final child output shows:
@@ -113,6 +130,7 @@ The session only counts if the final child output shows:
 - root remains empty after root-record writes
 - child cannot be edited cleanly after creation
 - final child output is not `parent-authorized`
+- the final public-surface recheck contradicts the selected preferred-mode story
 
 ## Proof to save
 - tx hashes for every write
@@ -129,8 +147,10 @@ The final note must use these top-level sections in order:
 3. `Unresolved human control-plane state`
 4. `Not yet proven`
 
-For the current bootstrap-mode case, keep the note narrow:
-- machine-verifiable scope = ENS authority path, publication mode, exact service URL, commit-pinned bootstrap source
+Keep the note narrow, but branch section 3 honestly based on capture-time truth:
+- machine-verifiable scope = ENS authority path, publication mode, exact service URL, and any commit-pinned bootstrap source only if bootstrap mode is actually used
 - observed public-alias state = what the verifier saw at capture time, not a timeless claim about the URL forever
-- unresolved human control-plane state = the preferred Vercel child route is still blocked by unresolved deployment control-plane state
-- not yet proven = invocation, payment flow, runtime auth, end-to-end machine closure, or preferred-route readiness
+- unresolved human control-plane state has two allowed branches:
+  - preferred route live at capture time → say plainly that no unresolved preferred-route blocker was visible at capture time
+  - preferred route blocked/regressed at capture time → describe that blocker narrowly as unresolved deployment/control-plane state
+- not yet proven = invocation, payment flow, runtime auth, end-to-end machine closure, or broad production readiness
