@@ -67,8 +67,10 @@ Meaning:
    - resolver target
    - `aens.*` keys
 3. The tool prints the verification commands and proof-capture steps.
-4. The tool does **not** attempt to silently sign or bypass wallet approval.
-5. The second publication attempt should feel materially easier than the first.
+4. The tool models the publish flow as explicit states/transitions, so the next step is shown only after the previous step is machine-verified.
+5. The tool exposes an explicit terminal outcome of either `proof-captured` or `aborted`; partial execution is not presented as success.
+6. The tool does **not** attempt to silently sign or bypass wallet approval.
+7. The second publication attempt should feel materially easier than the first.
 
 ## What this slice should not be
 - not a full automated publisher with hidden signing
@@ -78,6 +80,20 @@ Meaning:
 
 ## Relationship to the current live proof path
 This plan does **not** replace the immediate next step.
+
+Immediate next step remains:
+- resolve the Pages settings boundary if needed
+- run the first live publication with the current checklist/runbook
+
+This plan only freezes what comes **right after** the first live proof.
+
+## Next task after first live proof
+# **Build the smallest publisher-assist UX that turns the current runbook into one prepared publication flow with human approval still required.**
+
+## Bottom line
+The right answer to the publisher-UX criticism is not to abandon ÆNS.
+It is to prove the model once under secure manual custody, then make future publication feel prepared and intentional instead of improvised and annoying.
+lan does **not** replace the immediate next step.
 
 Immediate next step remains:
 - resolve the Pages settings boundary if needed
