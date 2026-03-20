@@ -7,6 +7,7 @@ import {
   DEFAULT_PUBLISH_ROOT_NAME,
   derivePublishAssistResult,
   parsePublishAssistArgs,
+  renderPublishAssistResult,
   type PublishAssistSnapshot,
 } from './publish-assist'
 import type { PublicProofState } from './public-proof-state'
@@ -316,4 +317,45 @@ test('derivePublishAssistResult keeps weak proof artifacts advisory-only', () =>
 
   expect(proofCaptured.state).toBe('proof-captured')
   expect(proofCaptured.evidenceLines.some((line) => line.includes('/tmp/proof/final.md'))).toBe(true)
+})
+
+test('renderPublishAssistResult keeps write-oriented guidance bounded and tied to human review', () => {
+  const result = derivePublishAssistResult(buildSnapshot())
+  const rendered = renderPublishAssistResult(result)
+
+  expect(rendered).toContain('Phase-boundary guidance:')
+  expect(rendered).toContain('Use this after verification and before the next write.')
+  expect(rendered).toContain('not a replacement for the runbook')
+  expect(rendered).toContain('FIRST-LIVE-AENS-WRITE-SESSION-OPERATOR-STEPS-2026-03-19-1115.md')
+  expect(rendered).toContain('Human review required before write (guidance only — this tool does not approve wallet prompts):')
+})
+
+test('renderPublishAssistResult does not add pre-write guidance to non-write states', () => {
+  const rootProfile = buildReadyRootProfile({
+    capabilities: [DEFAULT_PUBLISH_CHILD_NAME],
+  })
+  const childProfile = buildReadyChildProfile()
+  const capabilityAuthorization = classifyCapabilityAuthorization({
+    profile: childProfile,
+    parentProfile: rootProfile,
+  })
+
+  const result = derivePublishAssistResult(
+    buildSnapshot({
+      root: {
+        profile: rootProfile,
+        error: null,
+      },
+      child: {
+        profile: childProfile,
+        error: null,
+      },
+      capabilityAuthorization,
+    }),
+  )
+
+  const rendered = renderPublishAssistResult(result)
+  expect(result.state).toBe('parent-authorized-verified')
+  expect(rendered).not.toContain('Phase-boundary guidance:')
+  expect(rendered).not.toContain('Human review required before write (guidance only — this tool does not approve wallet prompts):')
 })

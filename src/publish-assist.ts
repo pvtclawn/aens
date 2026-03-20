@@ -80,6 +80,9 @@ export interface PublishAssistResult {
   evidenceLines: string[]
 }
 
+const OPERATOR_RUNBOOK_PATH =
+  'docs/research/FIRST-LIVE-AENS-WRITE-SESSION-OPERATOR-STEPS-2026-03-19-1115.md'
+
 function repoRootFromModule(): string {
   return resolve(fileURLToPath(new URL('..', import.meta.url)))
 }
@@ -707,6 +710,8 @@ export function derivePublishAssistResult(snapshot: PublishAssistSnapshot): Publ
 }
 
 export function renderPublishAssistResult(result: PublishAssistResult): string {
+  const isWriteOrientedState = result.humanReviewRequired.length > 0
+
   const lines = [
     'ÆNS publisher assist v1',
     '',
@@ -720,15 +725,22 @@ export function renderPublishAssistResult(result: PublishAssistResult): string {
     '',
     'Next legal step:',
     `- ${result.nextLegalStep}`,
-    '',
-    'Evidence snapshot:',
-    ...result.evidenceLines.map((line) => `- ${line}`),
   ]
 
-  if (result.humanReviewRequired.length > 0) {
-    lines.push('', 'Human review required before write:')
-    lines.push(...result.humanReviewRequired.map((line) => `- ${line}`))
+  if (isWriteOrientedState) {
+    lines.push(
+      '',
+      'Phase-boundary guidance:',
+      '- Use this after verification and before the next write.',
+      '- This is guidance for the next phase boundary, not a replacement for the runbook.',
+      `- For exact write details and browser steps, return to: ${OPERATOR_RUNBOOK_PATH}`,
+      '',
+      'Human review required before write (guidance only — this tool does not approve wallet prompts):',
+      ...result.humanReviewRequired.map((line) => `- ${line}`),
+    )
   }
+
+  lines.push('', 'Evidence snapshot:', ...result.evidenceLines.map((line) => `- ${line}`))
 
   if (result.followUpVerificationCommands.length > 0) {
     lines.push('', 'After the step, run:')
