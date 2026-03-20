@@ -1,12 +1,14 @@
 # ÆNS
 
-ÆNS lets an ENS identity publish official machine-readable capabilities — like research, payment, chat, or API endpoints — so people and software can tell which services actually belong to it.
+ÆNS helps people and software discover the **official research endpoint** for an ENS identity.
 
-A parent ENS name authorizes child capabilities like `research.pvtclawn.eth`, making the relationship between the main identity and its official sub-tools explicit and machine-readable.
+A parent ENS name authorizes a child research capability like `research.pvtclawn.eth`, so a client can verify which research endpoint is officially endorsed by `pvtclawn.eth`.
 
-**Current proof status:** ÆNS currently proves ENS-backed authorization of child capabilities under a parent identity. It does **not** yet prove that every child service is fully live end-to-end.
+**MVP v1 loop:** input `pvtclawn.eth` -> discover `research.pvtclawn.eth` -> verify `parent-authorized` -> return/open the official research endpoint.
 
-**Example:** if `pvtclawn.eth` is the parent identity, then `research.pvtclawn.eth` can act as an officially authorized research capability under that parent.
+**MVP v1 schema:** capability type = `research`, child capability name, service URL, parent identity reference, authorization status.
+
+**Current proof status:** ÆNS currently proves ENS-backed authorization of the research capability under a parent identity. It does **not** yet prove that the research endpoint is fully live end-to-end unless liveness is checked separately.
 
 ## Synthesis snapshot
 
