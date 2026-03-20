@@ -161,7 +161,13 @@ Make the upgraded root immediately legible, not just technically modernized.
 - ENS App for ETH address / description
 - ENS App `Edit Records` or `tools.ens.xyz` for `aens.*` text keys
 
+Default posture for the first live session:
+- confirm the resolver tx landed
+- attempt post-resolver record editing in ENS App first
+- if required editability still is not available after one reasonable retry/reopen check, switch to `tools.ens.xyz`
+
 This is still the same root phase even if the edit path crosses ENS App and `tools.ens.xyz` after the resolver write.
+Treat `tools.ens.xyz` as a contingency surface, not a defeat state.
 
 ### Checkpoint command
 ```bash
@@ -179,9 +185,14 @@ The root phase is not operationally complete until `bun run inspect pvtclawn.eth
 ### If resolver landed but root records stalled
 If the resolver update tx succeeded but the root records do not become cleanly writable:
 - [ ] save the resolver tx hash
+- [ ] allow one reasonable ENS App retry/reopen check before declaring fallback necessary
+- [ ] if required editability still fails, switch to `tools.ens.xyz`
 - [ ] run `bun run inspect pvtclawn.eth`
-- [ ] record the exact blocked record/editability point
-- [ ] stop here and do **not** drift into child creation
+- [ ] record the exact blocked record/editability point and failure class, for example:
+  - `editability missing after resolver update`
+  - `text-record path unavailable`
+  - `wrapped-name manager friction`
+- [ ] stop here and do **not** drift into child creation if the root still cannot be made coherent
 
 ### Abort conditions
 - [ ] abort child creation if the root still looks empty or contradictory
