@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test'
+import { CliUsageError, parseCliArgs } from './cli-args'
 import { getExampleScenario, listExampleIds } from './examples'
-import { parseCliArgs } from './cli'
 import { DEFAULT_RESEARCH_CAPABILITY_URL } from './public-surface'
 import { renderProfileReport } from './report'
 
