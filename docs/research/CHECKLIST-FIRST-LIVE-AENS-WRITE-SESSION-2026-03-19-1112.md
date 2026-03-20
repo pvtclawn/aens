@@ -138,6 +138,8 @@ In ENS App:
 
 ### Immediate checkpoint
 Do **not** stop the session here.
+The root phase remains one continuous goal even if it spans multiple UI surfaces after the resolver update.
+Resolver modernization is only the opening sub-action of the root phase.
 Proceed directly to root records.
 
 ### Abort conditions
@@ -159,18 +161,27 @@ Make the upgraded root immediately legible, not just technically modernized.
 - ENS App for ETH address / description
 - ENS App `Edit Records` or `tools.ens.xyz` for `aens.*` text keys
 
+This is still the same root phase even if the edit path crosses ENS App and `tools.ens.xyz` after the resolver write.
+
 ### Checkpoint command
 ```bash
 bun run inspect pvtclawn.eth
 ```
 
 ### Required checkpoint result
-The root report should be visibly non-empty and coherent, including:
+The root phase is not operationally complete until `bun run inspect pvtclawn.eth` shows a visibly non-empty and coherent root, including:
 - non-empty identity anchor
 - ETH address present
 - description present
 - `Agent ID: 1391`
 - `Runtime: openclaw-gateway`
+
+### If resolver landed but root records stalled
+If the resolver update tx succeeded but the root records do not become cleanly writable:
+- [ ] save the resolver tx hash
+- [ ] run `bun run inspect pvtclawn.eth`
+- [ ] record the exact blocked record/editability point
+- [ ] stop here and do **not** drift into child creation
 
 ### Abort conditions
 - [ ] abort child creation if the root still looks empty or contradictory
