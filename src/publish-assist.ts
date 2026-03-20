@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+import { spawnSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -7,7 +8,11 @@ import {
   type CapabilityAuthorization,
 } from './capability-authorization'
 import { type AensResolvedProfile } from './profile'
-import { DEFAULT_PROOF_DIR } from './proof-capture'
+import {
+  classifyProofServiceUrlFamily,
+  DEFAULT_PROOF_DIR,
+  sanitizeProofLabel,
+} from './proof-capture'
 import {
   fetchPublicProofState,
   summarizePublicProofStateLines,
@@ -52,12 +57,14 @@ export interface PublishAssistSnapshot {
   childName: string
   expectedServiceUrl: string
   proofDir: string
+  repoCommit: string | null
   root: PublishAssistObservedProfile
   child: PublishAssistObservedProfile
   publicProofState: PublicProofState | null
   publicProofStateError: string | null
   capabilityAuthorization: CapabilityAuthorization | null
   proofArtifactPaths: string[]
+  proofArtifactCandidatePaths: string[]
 }
 
 export interface PublishAssistResult {
@@ -89,6 +96,93 @@ function normalizeUrl(value: string): string {
   return value.trim().replace(/\/+$/, '')
 }
 
+interface ParsedProofArtifactMetadata {
+  label: string | null
+  publicationMode: string | null
+  serviceUrl: string | null
+  repoCommit: string | null
+  hasPublicTruthSnapshot: boolean
+  mentionsChildName: boolean
+  hasChildInspectCommand: boolean
+  hasParentAuthorizedResult: boolean
+}
+
+export type ProofArtifactMatchClass = 'strong-final-match' | 'advisory-candidate' | 'not-a-match'
+
+function extractMarkdownField(body: string, label: string): string | null {
+  const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const match = body.match(new RegExp('^- ' + escaped + ': `([^`]+)`$', 'm'))
+  return match?.[1]?.trim() ?? null
+}
+
+function parseProofArtifactMetadata(input: {
+  body: string
+  childName: string
+}): ParsedProofArtifactMetadata {
+  const { body, childName } = input
+  const labelMatch = body.match(/^# ÆNS live proof capture — (.+)$/m)
+
+  return {
+    label: labelMatch?.[1]?.trim() ?? null,
+    publicationMode: extractMarkdownField(body, 'Publication mode'),
+    serviceUrl: extractMarkdownField(body, 'Service URL'),
+    repoCommit: extractMarkdownField(body, 'Repo commit'),
+    hasPublicTruthSnapshot: body.includes('## Public truth snapshot'),
+    mentionsChildName: body.includes(childName),
+    hasChildInspectCommand: body.includes(`bun run inspect ${childName}`),
+    hasParentAuthorizedResult: body.includes('Capability authorization: parent-authorized'),
+  }
+}
+
+export function classifyProofArtifactBody(input: {
+  body: string
+  childName: string
+  expectedServiceUrl: string
+  repoCommit: string | null
+}): ProofArtifactMatchClass {
+  const metadata = parseProofArtifactMetadata({
+    body: input.body,
+    childName: input.childName,
+  })
+
+  const advisoryCandidate = Boolean(
+    metadata.label
+      && metadata.publicationMode
+      && metadata.serviceUrl
+      && metadata.hasPublicTruthSnapshot
+      && metadata.mentionsChildName,
+  )
+
+  if (!advisoryCandidate) {
+    return 'not-a-match'
+  }
+
+  const expectedServiceUrlFamily = classifyProofServiceUrlFamily(input.expectedServiceUrl)
+  const serviceUrlMatches = metadata.serviceUrl
+    ? normalizeUrl(metadata.serviceUrl) === normalizeUrl(input.expectedServiceUrl)
+    : false
+  const publicationModeMatches = expectedServiceUrlFamily
+    ? metadata.publicationMode === expectedServiceUrlFamily
+    : false
+  const repoCommitMatches = input.repoCommit
+    ? metadata.repoCommit === input.repoCommit
+    : false
+  const finalPhaseMatches = metadata.label ? sanitizeProofLabel(metadata.label) === 'final' : false
+
+  if (
+    finalPhaseMatches
+    && publicationModeMatches
+    && serviceUrlMatches
+    && repoCommitMatches
+    && metadata.hasChildInspectCommand
+    && metadata.hasParentAuthorizedResult
+  ) {
+    return 'strong-final-match'
+  }
+
+  return 'advisory-candidate'
+}
+
 function getObservedErrorMessage(error: unknown): string {
   if (error instanceof Error) {
     return error.message
@@ -101,6 +195,20 @@ function observeProfile(profilePromise: Promise<AensResolvedProfile>): Promise<P
   return profilePromise
     .then((profile) => ({ profile, error: null }))
     .catch((error: unknown) => ({ profile: null, error: getObservedErrorMessage(error) }))
+}
+
+function readRepoCommit(repoRoot: string): string | null {
+  const result = spawnSync('git', ['rev-parse', 'HEAD'], {
+    cwd: repoRoot,
+    encoding: 'utf8',
+  })
+
+  if (result.status !== 0) {
+    return null
+  }
+
+  const commit = result.stdout.trim()
+  return commit.length > 0 ? commit : null
 }
 
 function missingRootFields(profile: AensResolvedProfile | null): string[] {
@@ -298,11 +406,38 @@ function listMarkdownFiles(dir: string): string[] {
 function findProofArtifacts(input: {
   proofDir: string
   childName: string
-}): string[] {
-  return listMarkdownFiles(input.proofDir).filter((path) => {
+  expectedServiceUrl: string
+  repoCommit: string | null
+}): {
+  strongFinalMatchPaths: string[]
+  advisoryCandidatePaths: string[]
+} {
+  const strongFinalMatchPaths: string[] = []
+  const advisoryCandidatePaths: string[] = []
+
+  for (const path of listMarkdownFiles(input.proofDir)) {
     const body = readFileSync(path, 'utf8')
-    return body.includes('## Public truth snapshot') && body.includes(input.childName)
-  })
+    const classification = classifyProofArtifactBody({
+      body,
+      childName: input.childName,
+      expectedServiceUrl: input.expectedServiceUrl,
+      repoCommit: input.repoCommit,
+    })
+
+    if (classification === 'strong-final-match') {
+      strongFinalMatchPaths.push(path)
+      continue
+    }
+
+    if (classification === 'advisory-candidate') {
+      advisoryCandidatePaths.push(path)
+    }
+  }
+
+  return {
+    strongFinalMatchPaths,
+    advisoryCandidatePaths,
+  }
 }
 
 export function parsePublishAssistArgs(args: string[]): PublishAssistCliOptions {
@@ -378,7 +513,8 @@ export function derivePublishAssistResult(snapshot: PublishAssistSnapshot): Publ
     `Child publish fields complete: ${childReady ? 'yes' : 'no'}`,
     childMissing.length > 0 ? `Child publish fields missing: ${childMissing.join(', ')}` : 'Child publish fields missing: none',
     `Capability authorization: ${snapshot.capabilityAuthorization?.status ?? 'unknown'}`,
-    `Proof artifact detected: ${snapshot.proofArtifactPaths.length > 0 ? 'yes' : 'no'}`,
+    `Final proof artifact match detected: ${snapshot.proofArtifactPaths.length > 0 ? 'yes' : 'no'}`,
+    `Advisory proof artifact candidate detected: ${snapshot.proofArtifactCandidatePaths.length > 0 ? 'yes' : 'no'}`,
   ]
 
   if (reconcileReasons.length > 0) {
@@ -493,13 +629,14 @@ export function derivePublishAssistResult(snapshot: PublishAssistSnapshot): Publ
         proofDir: snapshot.proofDir,
         expectedServiceUrl: snapshot.expectedServiceUrl,
         state: 'proof-captured',
-        summary: 'Parent authorization is verified and proof capture artifacts are already present.',
-        nextLegalStep: 'No further write is required. Review the captured proof artifacts and the note draft.',
+        summary: 'Parent authorization is verified and a strong final-proof artifact match is present.',
+        nextLegalStep: 'No further write is required. Review the captured final proof artifact and the note draft.',
         humanReviewRequired: [],
         followUpVerificationCommands: [],
         evidenceLines: [
           ...evidenceLines,
-          ...snapshot.proofArtifactPaths.map((path) => `Proof artifact: ${path}`),
+          ...snapshot.proofArtifactPaths.map((path) => `Final proof artifact: ${path}`),
+          ...snapshot.proofArtifactCandidatePaths.map((path) => `Advisory proof artifact candidate: ${path}`),
         ],
       }
     }
@@ -517,7 +654,10 @@ export function derivePublishAssistResult(snapshot: PublishAssistSnapshot): Publ
         'bun run check-public-surface',
         buildCaptureCommand('final', snapshot.expectedServiceUrl),
       ],
-      evidenceLines,
+      evidenceLines: [
+        ...evidenceLines,
+        ...snapshot.proofArtifactCandidatePaths.map((path) => `Advisory proof artifact candidate: ${path}`),
+      ],
     }
   }
 
@@ -611,6 +751,7 @@ export async function resolvePublishAssistSnapshot(input: {
   const childName = input.childName ?? DEFAULT_PUBLISH_CHILD_NAME
   const proofDir = resolve(repoRoot, input.proofDir ?? DEFAULT_PROOF_DIR)
   const expectedServiceUrl = input.expectedServiceUrl ?? DEFAULT_RESEARCH_CAPABILITY_URL
+  const repoCommit = readRepoCommit(repoRoot)
   const preferredBaseUrl = resolvePreferredPublicBaseUrl({
     envValue: input.publicBaseUrlEnv,
   })
@@ -630,9 +771,11 @@ export async function resolvePublishAssistSnapshot(input: {
     })
     : null
 
-  const proofArtifactPaths = findProofArtifacts({
+  const proofArtifacts = findProofArtifacts({
     proofDir,
     childName,
+    expectedServiceUrl,
+    repoCommit,
   })
 
   return {
@@ -640,12 +783,14 @@ export async function resolvePublishAssistSnapshot(input: {
     childName,
     expectedServiceUrl,
     proofDir,
+    repoCommit,
     root,
     child,
     publicProofState: publicProofStateResult.state,
     publicProofStateError: publicProofStateResult.error,
     capabilityAuthorization,
-    proofArtifactPaths,
+    proofArtifactPaths: proofArtifacts.strongFinalMatchPaths,
+    proofArtifactCandidatePaths: proofArtifacts.advisoryCandidatePaths,
   }
 }
 
