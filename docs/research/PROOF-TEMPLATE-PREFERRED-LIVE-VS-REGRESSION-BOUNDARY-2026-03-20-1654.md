@@ -36,6 +36,30 @@ Use this when capture-time verifier truth shows:
 - preferred child route not ready / regressed / blocked
 - bootstrap fallback is the honest currently reachable public proof surface
 
+## Why this boundary matters
+Two applied lessons sharpen the patch target:
+
+### 1) Distributed-systems view: observation is not global closure
+From `006_think_distributed_systems.pdf`:
+- an all-knowing observer has a global view
+- a component has only a limited local view
+- determining global system state requires cooperation from other components
+
+Applied here:
+- public reachability of the preferred child route at capture time is an **observed view**, not proof that the whole service path is machine-closed forever
+- so section 2 must stay time-scoped and observational even in the preferred-live branch
+- and section 3 must not invent a blocker when none is visible, but also must not silently upgrade public observation into stronger proof than it really is
+
+### 2) Trust-engineering view: wording must expose where claims come from
+From `004_building_ethereum_products_and_protocols.pdf` (`Principle of Trust` / information architecture / error handling):
+- users need clear information about where data comes from and how it is auditable
+- confusing state changes or poorly explained errors reduce trust
+
+Applied here:
+- the template must make it obvious that the public-route claim comes from verifier output at capture time
+- the template should separate `machine-verifiable scope` from `observed public-alias state` instead of blurring them
+- when the preferred route is live, section 3 should say no blocker was visible at capture time rather than carrying stale bootstrap-era warning text forward by inertia
+
 ## Section-by-section wording boundary
 
 ### 1) Machine-verifiable scope
