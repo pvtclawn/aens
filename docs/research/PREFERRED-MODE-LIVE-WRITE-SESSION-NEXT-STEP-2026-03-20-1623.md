@@ -51,6 +51,22 @@ The smallest honest next move is now:
 5. set parent capability list last
 6. final proof capture in `preferred` mode
 
+## Applied trust-engineering rule
+A live preferred-mode session is not trustworthy just because the service URL is better.
+It also has to keep the operator oriented.
+
+Applied from `004_building_ethereum_products_and_protocols.pdf` (`Principle of Trust` + information architecture + error handling): every checkpoint in this session should make four things explicit before the next write:
+1. current publication mode
+2. exact service URL
+3. current verifier truth (`Preferred public surface ready` / `Bootstrap proof ready`)
+4. exact failed checkpoint if something breaks
+
+That means:
+- no stale bootstrap-default wording once the preferred route is live
+- no vague `deployment weirdness` language
+- no silent continuation after a failed checkpoint
+- no ambiguity about why the chosen service URL is the honest current target
+
 ## Proof-note implication
 The final proof note should still keep the same top-level structure:
 1. `Machine-verifiable scope`
