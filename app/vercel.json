@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "bun install",
+  "buildCommand": "bun run build",
+  "outputDirectory": "dist",
+  "trailingSlash": true,
+  "rewrites": [
+    {
+      "source": "/research-capability",
+      "destination": "/research-capability/index.html"
+    },
+    {
+      "source": "/research-capability/",
+      "destination": "/research-capability/index.html"
+    }
+  ]
+}
