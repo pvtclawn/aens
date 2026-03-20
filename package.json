@@ -10,7 +10,8 @@
     "check-public-surface": "bun run src/check-public-surface.ts",
     "test": "bun test src/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "test:all": "bun test"
+    "test:all": "bun test",
+    "discover-research": "bun run src/discover-research.ts"
   },
   "dependencies": {
     "viem": "^2.37.13"

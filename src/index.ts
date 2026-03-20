@@ -1,3 +1,4 @@
+export * from './discover-research'
 export * from './capability-authorization'
 export * from './cli'
 export * from './config'

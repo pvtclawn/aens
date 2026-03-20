@@ -34,6 +34,7 @@ Its current product truth is simpler: given an ENS name, it resolves the name, r
 ## What it does today
 
 ÆNS currently supports:
+- consumer-first research capability discovery via `bun run discover-research -- <parent-ens-name>`
 - live ENS lookup via `bun run inspect <ens-name>`
 - capability-authority classification for ENS child capability surfaces
 - optional linked proof/receipt fetching via `--with-links`
@@ -78,7 +79,15 @@ These are read-only today.
 bun install
 ```
 
-### 1) Live ordinary ENS lookup
+### 1) Consumer-first research discovery
+```bash
+bun run discover-research -- pvtclawn.eth
+```
+
+This is the narrow MVP loop:
+input parent ENS name -> derive the `research.<parent>` capability -> verify authorization -> return the official endpoint if one is declared.
+
+### 2) Live ordinary ENS lookup
 ```bash
 bun run inspect vitalik.eth
 ```
@@ -88,7 +97,7 @@ Optional linked-proof fetch pass:
 bun run inspect vitalik.eth --with-links
 ```
 
-### 2) Deterministic authority examples
+### 3) Deterministic authority examples
 ```bash
 bun run inspect --example parent-authorized-capability
 bun run inspect --example unlisted-child-capability
