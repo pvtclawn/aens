@@ -7,8 +7,9 @@
     "inspect": "bun run src/cli.ts",
     "capture-proof": "bash scripts/capture-live-proof.sh",
     "check-public-surface": "bun run src/check-public-surface.ts",
-    "test": "bun test",
-    "typecheck": "tsc --noEmit"
+    "test": "bun test src/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "test:all": "bun test"
   },
   "dependencies": {
     "viem": "^2.37.13"

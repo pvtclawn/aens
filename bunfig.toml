@@ -1,3 +1,2 @@
 [test]
 root = "src"
-pathIgnorePatterns = ["app/node_modules/**"]
