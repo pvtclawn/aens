@@ -120,6 +120,17 @@ bun run inspect --example identity-mismatch-capability
 These examples are offline and deterministic.
 They exist so the authority model is visible from the CLI without waiting on live ENS publication.
 
+### 4) Service endpoint (agent-friendly)
+```bash
+curl "https://aens-nine.vercel.app/api/discover-research?name=pvtclawn.eth"
+```
+
+Response contract is stable under `source: "aens-discover-research-v1"` and includes:
+- authorization status + summary,
+- endpoint fields (`capabilityName`, `serviceUrl`, `officialEndpointDeclared`),
+- notes,
+- resolve timestamp.
+
 ## How to interpret capability-authority states
 
 ### `parent-authorized`
