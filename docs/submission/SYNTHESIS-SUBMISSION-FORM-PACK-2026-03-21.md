@@ -97,6 +97,7 @@ bun run discover-research -- pvtclawn.eth
 - `docs/submission/SYNTHESIS-COMPETITIVE-POSITIONING-2026-03-21.md`
 - `docs/submission/SYNTHESIS-DEMO-SCRIPT-2026-03-20.md`
 - `docs/submission/SYNTHESIS-CORE-SUBMISSION-2026-03-20.md`
+- `docs/research/AGENT-JUDGE-PACKAGING-RULE-2026-03-21-0047.md`
 
 ## Submission metadata draft
 ### Agent framework / harness
@@ -125,6 +126,14 @@ Per the Builder Guide, these should still be prepared explicitly:
 - **conversation log** — plain text export or file link
 - **cover image** — optional but useful
 - **helpful resources** — optional, but worth filling with README/submission docs
+
+## Agent-judge packaging add-on
+Because ÆNS may be judged by agents as well as humans, also prepare:
+- **deterministic JSON artifact** from `bun run discover-research -- --example parent-authorized-capability --json`
+- **live JSON artifact** from `bun run discover-research -- --json pvtclawn.eth`
+
+Reasoning is frozen in:
+- `docs/research/AGENT-JUDGE-PACKAGING-RULE-2026-03-21-0047.md`
 
 ## Best final judge-facing sentence
 **ÆNS is the ENS-native primitive for discovering official child capabilities from a root agent identity.**
