@@ -79,7 +79,7 @@ bun run discover-research -- --example parent-authorized-capability --json
 bun run discover-research -- --json pvtclawn.eth
 bun run check-public-surface
 ```
-5. Treat the public discovery route as the intended deployed surface while production catches up:
+5. Use the live public discovery route as part of the current truth surface:
 - `https://aens-nine.vercel.app/discover-research/`
 
 ## Repo URL
@@ -153,7 +153,7 @@ Tiny human-reading legend:
 - **provenance** → when/how/from which commit it was produced
 - **live public status** → what is actually deployed right now
 
-Until the public discovery route is actually live on the preferred surface again, treat these wrapped JSON artifacts as the current machine-facing judge surface.
+The wrapped JSON artifacts remain the strongest machine-facing judge surface, now alongside a live preferred public discovery route.
 
 Reasoning is frozen in:
 - `docs/research/AGENT-JUDGE-PACKAGING-RULE-2026-03-21-0047.md`

@@ -3,15 +3,15 @@
   "artifactKind": "discover-research-result",
   "sourceMode": "live",
   "exampleId": null,
-  "generatedAt": "2026-03-21T01:07:34.675Z",
-  "gitCommit": "93a30f5822da4f0322c06ca29c8d5424994b86c8",
+  "generatedAt": "2026-03-21T08:46:27.373Z",
+  "gitCommit": "e1a81f17fe84144efe50f6fc38622b261d06e298",
   "command": "bun run discover-research -- --json pvtclawn.eth",
   "publicSurface": {
-    "checkedAt": "2026-03-21T01:07:34.675Z",
+    "checkedAt": "2026-03-21T08:46:27.373Z",
     "preferredPublicBaseUrl": "https://aens-nine.vercel.app/",
     "preferredResearchUrl": "https://aens-nine.vercel.app/research-capability/",
-    "preferredSurfaceReady": false,
-    "bootstrapProofReady": true,
+    "preferredSurfaceReady": true,
+    "bootstrapProofReady": false,
     "preferredResults": [
       {
         "label": "public root",
@@ -32,10 +32,10 @@
       {
         "label": "discover research page",
         "url": "https://aens-nine.vercel.app/discover-research/",
-        "status": 404,
+        "status": 200,
         "expectedMarker": "Discover the official research capability for an ENS identity",
-        "passed": false,
-        "summary": "discover research page: http 404 (https://aens-nine.vercel.app/discover-research/)"
+        "passed": true,
+        "summary": "discover research page: ok (https://aens-nine.vercel.app/discover-research/)"
       }
     ],
     "fallbackResult": {

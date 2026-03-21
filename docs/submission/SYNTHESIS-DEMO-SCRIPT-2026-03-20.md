@@ -36,11 +36,11 @@ Open:
 
 Point directly to:
 - `sourceMode: live`
-- `authorizationStatus: not-a-capability-surface` (or current live result)
-- `preferredSurfaceReady: false`
+- `authorizationStatus` (current live result)
+- `preferredSurfaceReady` and `bootstrapProofReady` (current public status)
 
 Say:
-"The important thing here is that ÆNS can say `not yet` honestly. The example artifact shows the target authority state; the live artifact shows the current namespace truth and current deployment boundary."
+"The important thing here is that ÆNS reports current truth honestly. The example artifact shows the target authority state; the live artifact shows the current namespace truth and the current public deployment status."
 
 ### 1:35–1:50 — Keep reproducibility visible
 Run:
@@ -53,14 +53,14 @@ bun run check-public-surface
 Narrate:
 "These commands reproduce the target-state artifact, the live-truth artifact, and the current public-surface status directly from the repo."
 
-### 1:50–2:00 — Close on the wedge and intended deployed surface
+### 1:50–2:00 — Close on the wedge and current deployed surface
 Say:
 "That’s the core of ÆNS: official capability discovery from ENS.
 - `pvtclawn.eth` = who
 - `research.pvtclawn.eth` = what
 - `parent-authorized` = why the endpoint is official
 
-The `/discover-research/` route is the intended deployed discovery surface; until production catches up, the wrapped artifacts are the current primary truth surface."
+The `/discover-research/` route is now live on the preferred public surface, and the wrapped artifacts stay as the strongest machine-facing truth surface."
 
 ## Optional honesty note if asked about live ENS state
 If a judge asks whether the live `pvtclawn.eth` namespace is already fully published under ENS, answer directly:
