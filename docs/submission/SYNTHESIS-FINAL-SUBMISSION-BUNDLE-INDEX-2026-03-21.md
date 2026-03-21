@@ -108,9 +108,9 @@ Use this as the commit-pinned checklist right before submit.
 - last_reminder_at: `2026-03-21T10:54:00Z`
 - reminder_ack: `pending` (`yes` | `no` | `pending`)
 - eta_signal: `none` (`none` | `tentative` | `committed`)
-- marker_updated_at: `2026-03-21T13:04:00Z`
-- requirements_sync: `unchanged @ 2026-03-21T13:04:00Z`
-- requirements_checked_at: `2026-03-21T13:04:00Z`
+- marker_updated_at: `2026-03-21T13:39:00Z`
+- requirements_sync: `unchanged @ 2026-03-21T13:39:00Z`
+- requirements_checked_at: `2026-03-21T13:39:00Z`
 - requirements_summary: `Builder Guide required assets still include demo video URL + conversation log.`
 - requirements_source_ref: `https://synthesis.md/hack/ (Builder Guide / submission requirements)`
 
