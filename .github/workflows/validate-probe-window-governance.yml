@@ -1,0 +1,36 @@
+name: Validate Probe Window Governance
+
+on:
+  pull_request:
+    paths:
+      - 'docs/research/PRIVILEGED-PROBE-WINDOW-CHECKLIST.md'
+      - 'docs/research/SIXTY-SIXTH-SLICE-RESEARCH-CONTROLLED-PROBE-ENABLE-PROCEDURE-2026-03-21-1659.md'
+      - 'src/validate-probe-window-metadata.ts'
+      - 'src/validate-probe-window-metadata.test.ts'
+      - 'package.json'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/research/PRIVILEGED-PROBE-WINDOW-CHECKLIST.md'
+      - 'docs/research/SIXTY-SIXTH-SLICE-RESEARCH-CONTROLLED-PROBE-ENABLE-PROCEDURE-2026-03-21-1659.md'
+      - 'src/validate-probe-window-metadata.ts'
+      - 'src/validate-probe-window-metadata.test.ts'
+      - 'package.json'
+
+jobs:
+  validate-probe-window:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Validate probe checklist template
+        run: bun run validate:probe-window --template docs/research/PRIVILEGED-PROBE-WINDOW-CHECKLIST.md
+
+      - name: Run validator unit tests
+        run: bun test src/validate-probe-window-metadata.test.ts

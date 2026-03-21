@@ -3,6 +3,7 @@
 Use this checklist for any temporary production failure-probe window.
 
 ## Window control record
+- policy_version: probe-window-v1
 - window_id (globally unique):
 - window_owner:
 - window_started_at:

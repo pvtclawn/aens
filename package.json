@@ -12,7 +12,8 @@
     "test": "bun test src/*.test.ts",
     "typecheck": "tsc --noEmit",
     "test:all": "bun test",
-    "discover-research": "bun run src/discover-research.ts"
+    "discover-research": "bun run src/discover-research.ts",
+    "validate:probe-window": "bun run src/validate-probe-window-metadata.ts"
   },
   "dependencies": {
     "viem": "^2.37.13"

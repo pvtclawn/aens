@@ -13,6 +13,7 @@ Companion checklist: `docs/research/PRIVILEGED-PROBE-WINDOW-CHECKLIST.md`
 ## Controlled enable procedure
 0. **Open a window control record**
    - Record:
+     - `policy_version` (current: `probe-window-v1`)
      - `window_id` (unique)
      - `window_owner`
      - `window_started_at`
