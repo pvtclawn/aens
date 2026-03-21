@@ -1,10 +1,12 @@
 #!/usr/bin/env bun
 import { classifyCapabilityAuthorization } from './capability-authorization'
+import { getExampleScenario } from './examples'
 import { type AensResolvedProfile } from './profile'
 import { resolveAensProfile } from './resolver'
 
 export interface DiscoverResearchCliOptions {
-  parentName: string
+  parentName: string | null
+  exampleId: string | null
   json: boolean
 }
 
@@ -23,8 +25,8 @@ export interface DiscoverResearchResult {
   parentListsChild: boolean
   childDeclaresParent: boolean
   serviceUrl: string | null
+  officialEndpointDeclared: boolean
   livenessChecked: boolean
-  readyToUse: boolean
   notes: string[]
 }
 
@@ -48,6 +50,7 @@ function observeProfile(profilePromise: Promise<AensResolvedProfile>): Promise<D
 
 export function parseDiscoverResearchArgs(args: string[]): DiscoverResearchCliOptions {
   let parentName: string | null = null
+  let exampleId: string | null = null
   let json = false
 
   for (let index = 0; index < args.length; index += 1) {
@@ -55,6 +58,24 @@ export function parseDiscoverResearchArgs(args: string[]): DiscoverResearchCliOp
 
     if (arg === '--json') {
       json = true
+      continue
+    }
+
+    if (arg === '--example') {
+      const next = args[index + 1]
+      if (!next || next.startsWith('--')) {
+        throw new DiscoverResearchUsageError('Missing example id after --example')
+      }
+      exampleId = next
+      index += 1
+      continue
+    }
+
+    if (arg.startsWith('--example=')) {
+      exampleId = arg.slice('--example='.length)
+      if (!exampleId) {
+        throw new DiscoverResearchUsageError('Missing example id after --example=')
+      }
       continue
     }
 
@@ -69,12 +90,17 @@ export function parseDiscoverResearchArgs(args: string[]): DiscoverResearchCliOp
     parentName = arg
   }
 
-  if (!parentName) {
-    throw new DiscoverResearchUsageError('Missing parent ENS name')
+  if (exampleId && parentName) {
+    throw new DiscoverResearchUsageError('Choose either a parent ENS name or --example, not both')
+  }
+
+  if (!exampleId && !parentName) {
+    throw new DiscoverResearchUsageError('Provide a parent ENS name or --example <id>')
   }
 
   return {
     parentName,
+    exampleId,
     json,
   }
 }
@@ -162,10 +188,10 @@ export function deriveDiscoverResearchResult(input: {
     authorizationSummary = 'Could not read the parent ENS identity, so authorization cannot be confirmed.'
   }
 
-  const readyToUse = authorizationStatus === 'parent-authorized' && Boolean(serviceUrl)
+  const officialEndpointDeclared = authorizationStatus === 'parent-authorized' && Boolean(serviceUrl)
 
-  if (readyToUse) {
-    notes.push('authorization is parent-authorized, but liveness still needs to be checked separately if required')
+  if (officialEndpointDeclared) {
+    notes.push('official research endpoint is declared under parent authorization, but liveness still needs to be checked separately if required')
   }
 
   return {
@@ -176,8 +202,8 @@ export function deriveDiscoverResearchResult(input: {
     parentListsChild,
     childDeclaresParent,
     serviceUrl,
+    officialEndpointDeclared,
     livenessChecked: false,
-    readyToUse,
     notes,
   }
 }
@@ -193,12 +219,12 @@ export function renderDiscoverResearchResult(result: DiscoverResearchResult): st
     `Parent lists child: ${result.parentListsChild ? 'yes' : 'no'}`,
     `Child declares parent: ${result.childDeclaresParent ? 'yes' : 'no'}`,
     `Official research endpoint: ${result.serviceUrl ?? '(none declared)'}`,
+    `Official endpoint declared: ${result.officialEndpointDeclared ? 'yes' : 'no'}`,
     `Liveness checked: ${result.livenessChecked ? 'yes' : 'no'}`,
-    `Ready to use now: ${result.readyToUse ? 'yes' : 'no'}`,
   ]
 
-  if (result.readyToUse && result.serviceUrl) {
-    lines.push('', 'Next action:', `- Open or use: ${result.serviceUrl}`)
+  if (result.officialEndpointDeclared && result.serviceUrl) {
+    lines.push('', 'Next action:', `- Open or verify: ${result.serviceUrl}`)
   }
 
   if (result.notes.length > 0) {
@@ -223,11 +249,37 @@ export async function resolveDiscoverResearchResult(parentName: string): Promise
   })
 }
 
+export function resolveDiscoverResearchExampleResult(exampleId: string): DiscoverResearchResult {
+  const scenario = getExampleScenario(exampleId)
+  if (!scenario) {
+    throw new DiscoverResearchUsageError(`Unknown example id: ${exampleId}`)
+  }
+
+  if (!scenario.parentProfile) {
+    throw new DiscoverResearchUsageError(`Example ${exampleId} does not include a parent profile`)
+  }
+
+  const researchCapabilityName = normalizeEnsName(scenario.profile.ensName)
+  if (!researchCapabilityName.startsWith('research.')) {
+    throw new DiscoverResearchUsageError(`Example ${exampleId} is not a research capability example`)
+  }
+
+  return deriveDiscoverResearchResult({
+    parentName: scenario.parentProfile.ensName,
+    parent: { profile: scenario.parentProfile, error: null },
+    child: { profile: scenario.profile, error: null },
+    researchCapabilityName,
+  })
+}
+
 function usageText(): string {
   return [
     'Usage: bun run discover-research -- <parent-ens-name> [--json]',
+    '   or: bun run discover-research -- --example <id> [--json]',
     '',
-    'Example: bun run discover-research -- pvtclawn.eth',
+    'Examples:',
+    '  bun run discover-research -- pvtclawn.eth',
+    '  bun run discover-research -- --example parent-authorized-capability',
   ].join('\n')
 }
 
@@ -249,7 +301,9 @@ export async function runDiscoverResearchCli(
     throw error
   }
 
-  const result = await resolveDiscoverResearchResult(options.parentName)
+  const result = options.exampleId
+    ? resolveDiscoverResearchExampleResult(options.exampleId)
+    : await resolveDiscoverResearchResult(options.parentName!)
 
   if (options.json) {
     io.log(JSON.stringify(result, null, 2))
@@ -257,7 +311,7 @@ export async function runDiscoverResearchCli(
     io.log(renderDiscoverResearchResult(result))
   }
 
-  return result.readyToUse ? 0 : 2
+  return result.officialEndpointDeclared ? 0 : 2
 }
 
 function isMainInvocation(): boolean {

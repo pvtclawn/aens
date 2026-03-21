@@ -1,23 +1,22 @@
 # Synthesis submission blurb — ÆNS
 
 ## Short blurb
-ÆNS makes `<capability>.<agent>.eth` load-bearing.
+ÆNS lets software discover an agent’s official capability endpoints from its ENS root identity.
 
-Instead of using one ENS name as a generic profile or endpoint, ÆNS treats the parent name as the identity anchor and a child subname as an authorized capability surface. In the demo, `pvtclawn.eth` anchors identity and `research.pvtclawn.eth` represents a concrete capability. The key milestone is that the child is classified as `parent-authorized`, making the parent/child relationship meaningful instead of decorative.
+Instead of treating one ENS name as a generic profile, ÆNS treats the parent name as identity and child subnames as official capability surfaces. In the current MVP, the key question is: given `pvtclawn.eth`, how do you discover the official research endpoint and verify that it is actually endorsed by that identity?
 
 ## Medium blurb
-Most agent identity systems can tell you who an agent is, or where some endpoint lives. ÆNS is about something more precise: making ENS hierarchy carry capability trust semantics.
+Most agent identity systems can tell you who an agent is, or where some endpoint lives. ÆNS is about something more precise: official capability discovery from ENS hierarchy.
 
 In ÆNS, the parent name is the identity anchor and a child subname is a concrete capability surface. That means:
 - `pvtclawn.eth` answers who the agent is
 - `research.pvtclawn.eth` answers what capability it exposes
+- `parent-authorized` answers why the endpoint should be treated as official
 
-The real protocol milestone is not just that a subname exists or a URL is reachable. It is that the child capability is recognized as `parent-authorized` under the parent identity.
-
-This submission demonstrates one live ENS-backed authority path using that model. It does not overclaim full runtime or payment closure; it proves the narrower but more important primitive first: ENS-native parent-authorized child capability authority.
+The current build demonstrates that primitive through a consumer-first CLI, a deterministic positive-path demo, and a live deployed public research page. It does not overclaim full runtime or payment closure, and it does not pretend the live `pvtclawn.eth` namespace is already fully published under ENS today.
 
 ## Form-field version
-ÆNS turns ENS subnames into agent capability primitives. The parent ENS name anchors identity, the child subname expresses a concrete capability, and the system can classify whether that capability is actually authorized under the parent. In the live demo, `pvtclawn.eth` is the identity anchor and `research.pvtclawn.eth` is the child capability, with `parent-authorized` as the key milestone. This makes `<capability>.<agent>.eth` load-bearing instead of decorative.
+ÆNS is an ENS-native capability discovery system for agents. The parent ENS name anchors identity, a child subname expresses a concrete capability, and the system can classify whether that capability is actually parent-authorized under the parent. In the current MVP, the consumer flow is: input `pvtclawn.eth`, derive `research.pvtclawn.eth`, verify whether it is official, and return the endpoint it declares.
 
 ## One-sentence pitch
-ÆNS makes ENS hierarchy meaningful for agents by turning child subnames into parent-authorized capability surfaces.
+ÆNS is the ENS-native primitive for discovering official child capabilities from a root agent identity.

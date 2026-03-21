@@ -8,7 +8,7 @@ A parent ENS name authorizes a child research capability like `research.pvtclawn
 
 **MVP v1 schema:** capability type = `research`, child capability name, service URL, parent identity reference, authorization status.
 
-**Current proof status:** ÆNS currently proves ENS-backed authorization of the research capability under a parent identity. It does **not** yet prove that the research endpoint is fully live end-to-end unless liveness is checked separately.
+**Current proof status:** ÆNS currently demonstrates the research-capability authority model through a consumer-first CLI and a deterministic positive-path example, and it verifies the preferred public research page separately. It does **not** yet prove that `pvtclawn.eth` is already live end-to-end as a parent-authorized research capability, and it does **not** prove endpoint liveness unless that is checked separately.
 
 ## Synthesis snapshot
 
@@ -22,6 +22,8 @@ The core model is simple:
 This repo is building toward ENS-native **child capability authority**, not just generic discovery or endpoint metadata.
 
 Submission-facing docs:
+- `docs/submission/SYNTHESIS-COMPETITIVE-POSITIONING-2026-03-21.md`
+- `docs/submission/SYNTHESIS-SUBMISSION-FORM-PACK-2026-03-21.md`
 - `docs/submission/SYNTHESIS-CORE-SUBMISSION-2026-03-20.md`
 - `docs/submission/SYNTHESIS-DEMO-SCRIPT-2026-03-20.md`
 - `docs/submission/SYNTHESIS-SUBMISSION-BLURB-2026-03-20.md`
@@ -35,6 +37,7 @@ Its current product truth is simpler: given an ENS name, it resolves the name, r
 
 ÆNS currently supports:
 - consumer-first research capability discovery via `bun run discover-research -- <parent-ens-name>`
+- deterministic positive-path consumer demo via `bun run discover-research -- --example parent-authorized-capability`
 - live ENS lookup via `bun run inspect <ens-name>`
 - capability-authority classification for ENS child capability surfaces
 - optional linked proof/receipt fetching via `--with-links`
@@ -80,12 +83,20 @@ bun install
 ```
 
 ### 1) Consumer-first research discovery
+Live current namespace check:
 ```bash
 bun run discover-research -- pvtclawn.eth
 ```
 
+Deterministic positive-path consumer demo:
+```bash
+bun run discover-research -- --example parent-authorized-capability
+```
+
 This is the narrow MVP loop:
 input parent ENS name -> derive the `research.<parent>` capability -> verify authorization -> return the official endpoint if one is declared.
+
+Today, the second command is the cleanest way to demonstrate the exact target state without pretending the live `pvtclawn.eth` publication is already finished.
 
 ### 2) Live ordinary ENS lookup
 ```bash

@@ -5,21 +5,30 @@ import {
   deriveResearchCapabilityName,
   parseDiscoverResearchArgs,
   renderDiscoverResearchResult,
+  resolveDiscoverResearchExampleResult,
 } from './discover-research'
 
 const PARENT = 'pvtclawn.eth'
 const CHILD = 'research.pvtclawn.eth'
 const SERVICE_URL = 'https://aens-nine.vercel.app/research-capability/'
 
-test('parseDiscoverResearchArgs accepts a parent name and optional json flag', () => {
+test('parseDiscoverResearchArgs accepts a parent name, example mode, and optional json flag', () => {
   expect(parseDiscoverResearchArgs(['pvtclawn.eth'])).toEqual({
     parentName: 'pvtclawn.eth',
+    exampleId: null,
     json: false,
   })
 
   expect(parseDiscoverResearchArgs(['--json', 'pvtclawn.eth'])).toEqual({
     parentName: 'pvtclawn.eth',
+    exampleId: null,
     json: true,
+  })
+
+  expect(parseDiscoverResearchArgs(['--example', 'parent-authorized-capability'])).toEqual({
+    parentName: null,
+    exampleId: 'parent-authorized-capability',
+    json: false,
   })
 })
 
@@ -36,7 +45,7 @@ test('deriveResearchCapabilityName prefers listed research capability when prese
   expect(deriveResearchCapabilityName(PARENT)).toBe(CHILD)
 })
 
-test('deriveDiscoverResearchResult reports a ready-to-use official research endpoint', () => {
+test('deriveDiscoverResearchResult reports an officially declared research endpoint without implying liveness', () => {
   const parentProfile = buildAensProfile({
     ensName: PARENT,
     address: '0x000000000000000000000000000000000000dEaD',
@@ -62,9 +71,13 @@ test('deriveDiscoverResearchResult reports a ready-to-use official research endp
   })
 
   expect(result.authorizationStatus).toBe('parent-authorized')
-  expect(result.readyToUse).toBe(true)
+  expect(result.officialEndpointDeclared).toBe(true)
+  expect(result.livenessChecked).toBe(false)
   expect(result.serviceUrl).toBe(SERVICE_URL)
-  expect(renderDiscoverResearchResult(result)).toContain(`Open or use: ${SERVICE_URL}`)
+  const rendered = renderDiscoverResearchResult(result)
+  expect(rendered).toContain('Official endpoint declared: yes')
+  expect(rendered).toContain(`Open or verify: ${SERVICE_URL}`)
+  expect(rendered).not.toContain('Ready to use now: yes')
 })
 
 test('deriveDiscoverResearchResult keeps authorization separate from liveness and flags missing authorization', () => {
@@ -93,7 +106,7 @@ test('deriveDiscoverResearchResult keeps authorization separate from liveness an
   })
 
   expect(result.authorizationStatus).toBe('unlisted-child')
-  expect(result.readyToUse).toBe(false)
+  expect(result.officialEndpointDeclared).toBe(false)
   expect(result.livenessChecked).toBe(false)
   expect(result.notes.some((note) => note.includes('parent identity does not currently list'))).toBe(true)
 })
@@ -115,6 +128,16 @@ test('deriveDiscoverResearchResult reports missing child cleanly', () => {
   })
 
   expect(result.authorizationStatus).toBe('missing-child')
-  expect(result.readyToUse).toBe(false)
+  expect(result.officialEndpointDeclared).toBe(false)
   expect(result.notes.some((note) => note.includes('research capability read failed'))).toBe(true)
+})
+
+test('resolveDiscoverResearchExampleResult exposes the exact consumer-first positive path for demos', () => {
+  const result = resolveDiscoverResearchExampleResult('parent-authorized-capability')
+
+  expect(result.parentName).toBe(PARENT)
+  expect(result.researchCapabilityName).toBe(CHILD)
+  expect(result.authorizationStatus).toBe('parent-authorized')
+  expect(result.officialEndpointDeclared).toBe(true)
+  expect(result.serviceUrl).toBe(SERVICE_URL)
 })
