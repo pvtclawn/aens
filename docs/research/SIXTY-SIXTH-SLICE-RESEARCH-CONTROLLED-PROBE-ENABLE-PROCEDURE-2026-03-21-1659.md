@@ -13,12 +13,16 @@ Companion checklist: `docs/research/PRIVILEGED-PROBE-WINDOW-CHECKLIST.md`
 ## Controlled enable procedure
 0. **Open a window control record**
    - Record:
+     - `window_id` (unique)
      - `window_owner`
      - `window_started_at`
      - `window_expires_at`
      - `max_probe_calls` (recommended: `1`, hard cap: `3`)
      - `token_issued_at`
      - `token_expires_at`
+     - `token_fingerprint` (non-secret hash/prefix)
+     - `canonical_time_source` (`provider-utc|deployment-utc|local-utc`)
+     - `allowed_clock_skew_ms` (default `5000`)
 
 1. **Prepare short-lived token**
    - Generate one ephemeral token for this window only.
@@ -26,12 +30,15 @@ Companion checklist: `docs/research/PRIVILEGED-PROBE-WINDOW-CHECKLIST.md`
    - Enforce TTL policy:
      - recommended `<= 15 minutes`, hard cap `30 minutes`.
    - Record all lifecycle times in ISO-8601 UTC (`YYYY-MM-DDTHH:MM:SSZ`).
+   - Capture issuance provenance:
+     - `token_issue_evidence_ref` (artifact/log proving token creation context).
 
 2. **Enable gate briefly (fail-closed checks first)**
    - Set:
      - `AENS_ENABLE_FAILURE_PROBE=1`
      - `AENS_FAILURE_PROBE_TOKEN=<ephemeral>`
    - Redeploy.
+   - Record `enable_deploy_evidence_ref` (inspect/log artifact for deployment activation).
    - Fail-closed validation:
      - if enable flag is on but token is missing/invalid, disable immediately and redeploy.
    - Confirm normal requests unchanged.
@@ -61,13 +68,16 @@ Companion checklist: `docs/research/PRIVILEGED-PROBE-WINDOW-CHECKLIST.md`
      - `token_revoked_at`
      - `window_closed_at`
      - `revoke_evidence_ref` (log/artifact proving token invalidated)
+     - `disable_deploy_evidence_ref` (inspect/log artifact for post-disable deployment)
    - confirm probe parameter is inert again on public traffic.
 
 ## Safety guardrails
 - One-window use only (no persistent enable state).
 - Token never reused across windows.
-- Token lifecycle evidence is mandatory (`issued`, `expires`, `revoked`).
+- `window_id` and `token_fingerprint` must be unique per window.
+- Token lifecycle evidence is mandatory (`issued`, `expires`, `revoked`) with provenance refs.
 - Probe window must remain bounded by both duration and call-count cap.
+- Ordering checks must use `canonical_time_source`; if skew allowance is used, annotate with `allowed_clock_skew_ms`.
 - No extra debug fields in public response beyond contract.
 - Explicit rollback path: disable gate + redeploy if anything unexpected appears.
 
