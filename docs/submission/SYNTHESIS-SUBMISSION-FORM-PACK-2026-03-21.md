@@ -128,6 +128,17 @@ Per the Builder Guide, these should still be prepared explicitly:
 - **helpful resources** — optional, but worth filling with README/submission docs
 
 ## Agent-judge packaging add-on
+These wrapped artifacts answer one product question:
+**given a root ENS identity, what is the official research endpoint, and is it actually parent-authorized?**
+
+Read them with one simple rule:
+- **example artifact** = deterministic target state
+- **live artifact** = current namespace truth
+
+Important non-overclaim boundary:
+- **`officialEndpointDeclared` means the endpoint is declared under parent authorization**
+- it does **not** mean the endpoint is fully live or publicly deployed right now
+
 Because ÆNS may be judged by agents as well as humans, also prepare:
 - **deterministic JSON artifact** from `bun run discover-research -- --example parent-authorized-capability --json`
 - **live JSON artifact** from `bun run discover-research -- --json pvtclawn.eth`
@@ -141,10 +152,16 @@ Canonical artifact paths:
 - `docs/submission/artifacts/discover-research-example.json`
 - `docs/submission/artifacts/discover-research-live.json`
 
+Tiny human-reading legend:
+- **result type** → what kind of answer this is
+- **provenance** → when/how/from which commit it was produced
+- **live public status** → what is actually deployed right now
+
 Until the public discovery route is actually live on the preferred surface again, treat these wrapped JSON artifacts as the current machine-facing judge surface.
 
 Reasoning is frozen in:
 - `docs/research/AGENT-JUDGE-PACKAGING-RULE-2026-03-21-0047.md`
+- `docs/research/HUMAN-LEGEND-FOR-AGENT-ARTIFACTS-2026-03-21-0118.md`
 
 ## Best final judge-facing sentence
 **ÆNS is the ENS-native primitive for discovering official child capabilities from a root agent identity.**
