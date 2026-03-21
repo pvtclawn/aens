@@ -23,6 +23,7 @@ This repo is building toward ENS-native **child capability authority**, not just
 
 Submission-facing docs:
 - `docs/submission/SYNTHESIS-COMPETITIVE-POSITIONING-2026-03-21.md`
+- `docs/submission/SYNTHESIS-TRACK-FIT-2026-03-21.md`
 - `docs/submission/SYNTHESIS-SUBMISSION-FORM-PACK-2026-03-21.md`
 - `docs/submission/SYNTHESIS-CORE-SUBMISSION-2026-03-20.md`
 - `docs/submission/SYNTHESIS-DEMO-SCRIPT-2026-03-20.md`

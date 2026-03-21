@@ -5,6 +5,10 @@ Use this as the copy-paste pack for the actual submission form, aligned to the B
 ## Recommended tracks
 1. **ENS Open Integration**
 2. **ENS Identity**
+3. **Synthesis Open Track** — include only if the submission form exposes it as a separately selectable track
+
+Reasoning is frozen in:
+- `docs/submission/SYNTHESIS-TRACK-FIT-2026-03-21.md`
 
 ## Project name
 **ÆNS — Official Capability Discovery for Agents on ENS**
