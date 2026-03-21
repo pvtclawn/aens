@@ -73,6 +73,27 @@ export const REASON_TAXONOMY_V1: readonly Exclude<DiscoverReasonCode, 'lookup-fa
   'parent-authorized-with-service-url',
 ] as const
 
+export type DiscoverFailureClass = 'rpc-timeout' | 'rpc-unavailable' | 'lookup-error'
+
+export function classifyFailure(error: unknown): { failureClass: DiscoverFailureClass, retryable: boolean } {
+  const message = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase()
+
+  if (message.includes('timed out') || message.includes('timeout') || message.includes('etimedout')) {
+    return { failureClass: 'rpc-timeout', retryable: true }
+  }
+
+  if (
+    message.includes('network')
+    || message.includes('fetch failed')
+    || message.includes('econnrefused')
+    || message.includes('enotfound')
+  ) {
+    return { failureClass: 'rpc-unavailable', retryable: true }
+  }
+
+  return { failureClass: 'lookup-error', retryable: false }
+}
+
 export function classifyReasonCode(input: {
   parentListsChild: boolean
   childDeclaresParent: boolean
@@ -218,12 +239,15 @@ export default async function handler(req: VercelRequestLike, res: VercelRespons
     return res.status(200).json(payload)
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
+    const { failureClass, retryable } = classifyFailure(error)
     return res.status(502).json({
       error: 'Failed to resolve discover-research response',
       message,
       name: parentName,
       reasonCode: 'lookup-failed',
       reasonSchemaVersion: REASON_SCHEMA_VERSION,
+      failureClass,
+      retryable,
     })
   }
 }
