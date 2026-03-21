@@ -1,0 +1,46 @@
+# Privileged Probe Window Checklist
+
+Use this checklist for any temporary production failure-probe window.
+
+## Window control record
+- window_owner:
+- window_started_at:
+- window_expires_at:
+- max_probe_calls (<=3):
+- token_issued_at:
+- token_expires_at:
+
+## Enable phase
+- [ ] `AENS_ENABLE_FAILURE_PROBE=1` set
+- [ ] `AENS_FAILURE_PROBE_TOKEN` set
+- [ ] deployment id after enable:
+- [ ] fail-closed check passed (enable+token state valid)
+- [ ] normal non-probe request still returns expected success contract
+
+## Probe calls
+- probe_call_count:
+- [ ] call count <= max_probe_calls
+- probe_mode used (`timeout|network|...`):
+- [ ] probe response is `502`
+- [ ] `reasonCode=lookup-failed`
+- [ ] `reasonSchemaVersion=v1`
+- [ ] `failureClass` present
+- [ ] `retryable` present
+
+## Audit marker (non-secret)
+- probe_mode_activated_at:
+- deployment_id:
+- simulateFailure mode:
+- evidence artifact path:
+
+## Disable + closeout
+- [ ] `AENS_ENABLE_FAILURE_PROBE=0` or unset
+- [ ] `AENS_FAILURE_PROBE_TOKEN` unset/rotated
+- token_revoked_at:
+- window_closed_at:
+- deployment id after disable:
+- [ ] inertness check passed (`simulateFailure` param has no effect without gate)
+
+## Result
+- Decision: PASS / FAIL
+- Notes:
