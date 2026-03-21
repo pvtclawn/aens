@@ -14,7 +14,7 @@ Use this checklist for any temporary production failure-probe window.
 - token_fingerprint (non-secret hash/prefix):
 - token_issue_evidence_ref:
 - canonical_time_source (`provider-utc|deployment-utc|local-utc`):
-- allowed_clock_skew_ms (default: 5000):
+- allowed_clock_skew_ms (default 5000):
 
 ### Field format + TTL policy
 - Time fields MUST be ISO-8601 UTC (`YYYY-MM-DDTHH:MM:SSZ`).

@@ -62,7 +62,7 @@ export function parseMetadataFields(markdown: string): Map<string, string> {
     const trimmed = line.trimStart()
     if (!trimmed.startsWith('- ')) continue
     const body = trimmed.slice(2)
-    const sep = body.lastIndexOf(':')
+    const sep = body.indexOf(':')
     if (sep === -1) continue
     const keyRaw = body.slice(0, sep)
     const valueRaw = body.slice(sep + 1)
