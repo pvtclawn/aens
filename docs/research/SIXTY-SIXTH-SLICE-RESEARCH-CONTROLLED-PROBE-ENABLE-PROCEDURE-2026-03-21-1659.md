@@ -18,6 +18,7 @@ Companion checklist: `docs/research/PRIVILEGED-PROBE-WINDOW-CHECKLIST.md`
      - `window_expires_at`
      - `max_probe_calls` (recommended: `1`, hard cap: `3`)
      - `token_issued_at`
+     - `token_expires_at`
 
 1. **Prepare short-lived token**
    - Generate one ephemeral token for this window only.
