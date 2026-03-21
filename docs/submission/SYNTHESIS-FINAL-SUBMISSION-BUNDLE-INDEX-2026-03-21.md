@@ -69,6 +69,10 @@ Use this as the commit-pinned checklist right before submit.
 ### Boundary integrity
 - [ ] No wording overclaims liveness vs authorization boundary.
 
+### Per-refresh evidence line (mandatory)
+- [ ] Record one compact evidence line for each wait-loop refresh in the paired research note:
+  - `<timestamp> | checks: tsc/test/public-surface + asset fields | result: changed|unchanged | decision: NO-SUBMIT|SUBMIT-READY`
+
 ## No-change wait-loop operations (while required assets are still missing)
 ### Freshness window
 - Refresh boundary evidence at least once per 6 hours while status remains `NO-SUBMIT`.
@@ -89,12 +93,16 @@ Use this as the commit-pinned checklist right before submit.
 
 ## Wait-loop trend + requirement-sync markers
 - decision_severity: `NO-SUBMIT (required assets missing)`
+- blocker_vector: `video_status=missing, log_status=missing`
 - blocked_since: `2026-03-21T09:54:00Z`
 - windows_elapsed: `0` (6h windows elapsed since blocked_since; does not reduce blocker severity)
 - last_reminder_at: `2026-03-21T10:54:00Z`
 - reminder_ack: `pending` (`yes` | `no` | `pending`)
-- marker_updated_at: `2026-03-21T11:59:00Z`
-- requirements_sync: `unchanged @ 2026-03-21T11:24:00Z`
+- eta_signal: `none` (`none` | `tentative` | `committed`)
+- marker_updated_at: `2026-03-21T12:19:00Z`
+- requirements_sync: `unchanged @ 2026-03-21T12:19:00Z`
+- requirements_checked_at: `2026-03-21T12:19:00Z`
+- requirements_summary: `Builder Guide required assets still include demo video URL + conversation log.`
 - requirements_source_ref: `https://synthesis.md/hack/ (Builder Guide / submission requirements)`
 
 ## Closure gate
