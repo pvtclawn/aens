@@ -80,11 +80,11 @@ async function resolveAensProfileViaRpc(input: {
   })
 }
 
-export async function resolveAensProfile(input: {
+export async function resolveAensProfileWithRpcUrls(input: {
   ensName: string
-  rpcUrl?: string
+  rpcUrls: readonly string[]
 }): Promise<AensResolvedProfile> {
-  const rpcUrls = getRpcUrls(input.rpcUrl)
+  const rpcUrls = [...input.rpcUrls]
   const failures: string[] = []
 
   for (const rpcUrl of rpcUrls) {
@@ -108,4 +108,14 @@ export async function resolveAensProfile(input: {
   }
 
   throw new Error(`ÆNS lookup failed across ${rpcUrls.length} RPC endpoint(s): ${failures.join(' | ')}`)
+}
+
+export async function resolveAensProfile(input: {
+  ensName: string
+  rpcUrl?: string
+}): Promise<AensResolvedProfile> {
+  return resolveAensProfileWithRpcUrls({
+    ensName: input.ensName,
+    rpcUrls: getRpcUrls(input.rpcUrl),
+  })
 }

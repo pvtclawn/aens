@@ -29,7 +29,7 @@ test('resolvePreferredPublicBaseUrl prefers env, then deployed host, then defaul
   )
 })
 
-test('buildPreferredSurfaceTargets derives root and research-capability URLs from the preferred base', () => {
+test('buildPreferredSurfaceTargets derives root, research-capability, and discovery URLs from the preferred base', () => {
   expect(buildPreferredSurfaceTargets('https://aens-nine.vercel.app')).toEqual([
     {
       label: 'public root',
@@ -40,6 +40,11 @@ test('buildPreferredSurfaceTargets derives root and research-capability URLs fro
       label: 'research capability page',
       url: 'https://aens-nine.vercel.app/research-capability/',
       expectedMarker: 'PrivateClawn Research Capability',
+    },
+    {
+      label: 'discover research page',
+      url: 'https://aens-nine.vercel.app/discover-research/',
+      expectedMarker: 'Discover the official research capability for an ENS identity',
     },
   ])
 })
@@ -68,10 +73,22 @@ test('preferredSurfaceReady requires every checked preferred page to pass', () =
   expect(preferredSurfaceReady([
     buildResult({ label: 'public root', url: 'https://aens-nine.vercel.app/', expectedMarker: 'ÆNS', body: 'ÆNS public surface' }),
     buildResult(),
+    buildResult({
+      label: 'discover research page',
+      url: 'https://aens-nine.vercel.app/discover-research/',
+      expectedMarker: 'Discover the official research capability for an ENS identity',
+      body: 'Discover the official research capability for an ENS identity',
+    }),
   ])).toBe(true)
 
   expect(preferredSurfaceReady([
     buildResult({ label: 'public root', url: 'https://aens-nine.vercel.app/', expectedMarker: 'ÆNS' }),
     buildResult({ status: 404 }),
+    buildResult({
+      label: 'discover research page',
+      url: 'https://aens-nine.vercel.app/discover-research/',
+      expectedMarker: 'Discover the official research capability for an ENS identity',
+      body: 'Discover the official research capability for an ENS identity',
+    }),
   ])).toBe(false)
 })

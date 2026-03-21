@@ -12,6 +12,14 @@
     {
       "source": "/research-capability/",
       "destination": "/research-capability/index.html"
+    },
+    {
+      "source": "/discover-research",
+      "destination": "/discover-research/index.html"
+    },
+    {
+      "source": "/discover-research/",
+      "destination": "/discover-research/index.html"
     }
   ]
 }

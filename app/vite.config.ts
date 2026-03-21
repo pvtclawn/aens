@@ -11,6 +11,7 @@ export default defineConfig({
       input: {
         landing: resolve(__dirname, 'index.html'),
         researchCapability: resolve(__dirname, 'research-capability/index.html'),
+        discoverResearch: resolve(__dirname, 'discover-research/index.html'),
       },
     },
   },

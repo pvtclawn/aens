@@ -67,15 +67,17 @@ The differentiator is:
 - `parent-authorized` = why the endpoint is official
 
 ## Demo flow for judges
-1. Run the exact consumer-first positive-path demo:
+1. Open the public discovery route:
+- `https://aens-nine.vercel.app/discover-research/`
+2. Run the exact consumer-first positive-path demo locally if needed:
 ```bash
 bun run discover-research -- --example parent-authorized-capability
 ```
-2. Show the live preferred public surface:
+3. Show the live preferred public surface:
 ```bash
 bun run check-public-surface
 ```
-3. Open:
+4. Open:
 - `https://aens-nine.vercel.app/`
 - `https://aens-nine.vercel.app/research-capability/`
 

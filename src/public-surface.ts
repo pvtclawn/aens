@@ -1,6 +1,8 @@
 export const DEFAULT_PUBLIC_BASE_URL = 'https://aens-nine.vercel.app/'
 export const RESEARCH_CAPABILITY_PATH = 'research-capability/'
+export const DISCOVER_RESEARCH_PATH = 'discover-research/'
 export const DEFAULT_RESEARCH_CAPABILITY_URL = new URL(RESEARCH_CAPABILITY_PATH, DEFAULT_PUBLIC_BASE_URL).toString()
+export const DEFAULT_DISCOVER_RESEARCH_URL = new URL(DISCOVER_RESEARCH_PATH, DEFAULT_PUBLIC_BASE_URL).toString()
 export const GITHUB_BLOB_STUB_URL = 'https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md'
 
 export interface SurfaceCheckResult {
@@ -52,6 +54,11 @@ export function buildPreferredSurfaceTargets(baseUrl: string): SurfaceCheckTarge
       label: 'research capability page',
       url: new URL(RESEARCH_CAPABILITY_PATH, normalizedBaseUrl).toString(),
       expectedMarker: 'PrivateClawn Research Capability',
+    },
+    {
+      label: 'discover research page',
+      url: new URL(DISCOVER_RESEARCH_PATH, normalizedBaseUrl).toString(),
+      expectedMarker: 'Discover the official research capability for an ENS identity',
     },
   ]
 }

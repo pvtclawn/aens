@@ -54,6 +54,7 @@ Given a root ENS identity, ÆNS can:
 The current build includes:
 - a consumer-first CLI for research capability discovery
 - a deterministic positive-path demo of the exact target flow
+- a public web discovery route on the preferred surface
 - a trust-oriented ENS inspector for live and example namespaces
 - a live deployed public research capability page on the preferred surface
 
@@ -139,3 +140,4 @@ The parent ENS name anchors identity, the child subname expresses a concrete cap
 - the child capability is the center of the design
 - `parent-authorized` is the protocol milestone
 - the public surface is live, while the live ENS publication step is kept explicit rather than hand-waved
+icit rather than hand-waved

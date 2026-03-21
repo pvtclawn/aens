@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { Card, CardGrid, Shell } from './Shell'
-import { capabilityBullets, ensResearch, ensRoot, repoUrl, researchCapabilityPath } from './content'
+import { capabilityBullets, discoverResearchPath, ensResearch, ensRoot, repoUrl, researchCapabilityPath } from './content'
 
 function HomePage() {
   return (
@@ -18,6 +18,9 @@ function HomePage() {
         <>
           <a className="button" href={researchCapabilityPath}>
             Open research capability page
+          </a>
+          <a className="button" href={discoverResearchPath}>
+            Open discovery route
           </a>
           <a className="button" href={repoUrl}>
             View repo

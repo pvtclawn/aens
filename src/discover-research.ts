@@ -2,7 +2,7 @@
 import { classifyCapabilityAuthorization } from './capability-authorization'
 import { getExampleScenario } from './examples'
 import { type AensResolvedProfile } from './profile'
-import { resolveAensProfile } from './resolver'
+import { resolveAensProfile, resolveAensProfileWithRpcUrls } from './resolver'
 
 export interface DiscoverResearchCliOptions {
   parentName: string | null
@@ -235,6 +235,29 @@ export function renderDiscoverResearchResult(result: DiscoverResearchResult): st
   return lines.join('\n')
 }
 
+export async function resolveDiscoverResearchResultWithRpcUrls(input: {
+  parentName: string
+  rpcUrls: readonly string[]
+}): Promise<DiscoverResearchResult> {
+  const normalizedParent = normalizeEnsName(input.parentName)
+  const parent = await observeProfile(resolveAensProfileWithRpcUrls({
+    ensName: normalizedParent,
+    rpcUrls: input.rpcUrls,
+  }))
+  const researchCapabilityName = deriveResearchCapabilityName(normalizedParent, parent.profile)
+  const child = await observeProfile(resolveAensProfileWithRpcUrls({
+    ensName: researchCapabilityName,
+    rpcUrls: input.rpcUrls,
+  }))
+
+  return deriveDiscoverResearchResult({
+    parentName: normalizedParent,
+    parent,
+    child,
+    researchCapabilityName,
+  })
+}
+
 export async function resolveDiscoverResearchResult(parentName: string): Promise<DiscoverResearchResult> {
   const normalizedParent = normalizeEnsName(parentName)
   const parent = await observeProfile(resolveAensProfile({ ensName: normalizedParent }))
@@ -323,7 +346,7 @@ function isMainInvocation(): boolean {
   )
 }
 
-if (isMainInvocation()) {
+if (typeof process !== 'undefined' && isMainInvocation()) {
   const args = process.argv.slice(2).filter((arg) => arg !== '--')
   runDiscoverResearchCli(args)
     .then((exitCode) => {

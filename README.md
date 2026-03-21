@@ -39,6 +39,7 @@ Its current product truth is simpler: given an ENS name, it resolves the name, r
 ÆNS currently supports:
 - consumer-first research capability discovery via `bun run discover-research -- <parent-ens-name>`
 - deterministic positive-path consumer demo via `bun run discover-research -- --example parent-authorized-capability`
+- public web discovery route at `https://aens-nine.vercel.app/discover-research/`
 - live ENS lookup via `bun run inspect <ens-name>`
 - capability-authority classification for ENS child capability surfaces
 - optional linked proof/receipt fetching via `--with-links`
@@ -198,5 +199,8 @@ The research notes in `docs/research/` are there to freeze product decisions and
 - payment flows
 - broad public deployment
 - a finished protocol surface
+
+That boundary is intentional.
+ protocol surface
 
 That boundary is intentional.

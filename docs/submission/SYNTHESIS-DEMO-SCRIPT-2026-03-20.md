@@ -17,12 +17,15 @@ This is an **official capability discovery** demo, not a full runtime/payment de
 "ÆNS makes ENS hierarchy load-bearing for that question. The parent name is identity, the child subname is capability, and `parent-authorized` is the milestone that makes the relationship official."
 
 ### 0:30–1:05 — Show the exact consumer-first positive path
-Run:
+Open:
+- `https://aens-nine.vercel.app/discover-research/`
+
+Optional local backup command:
 ```bash
 bun run discover-research -- --example parent-authorized-capability
 ```
 Narrate:
-"This is the exact MVP loop we care about: start from the root identity, derive the research capability, verify whether it is official, and return the endpoint it declares."
+"This is the exact MVP loop we care about: start from the root identity, derive the research capability, verify whether it is official, and return the endpoint it declares. The deployed route shows both the deterministic positive path and the live namespace truth."
 
 ### 1:05–1:25 — Point to the key milestone
 Point directly to:

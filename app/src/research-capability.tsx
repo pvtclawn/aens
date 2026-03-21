@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { Card, CardGrid, Shell } from './Shell'
-import { agentId, ensResearch, ensRoot, notYetBullets, repoUrl } from './content'
+import { agentId, discoverResearchPath, ensResearch, ensRoot, notYetBullets, repoUrl } from './content'
 
 function ResearchCapabilityPage() {
   return (
@@ -18,6 +18,9 @@ function ResearchCapabilityPage() {
         <>
           <a className="button" href="../">
             Back to ÆNS landing
+          </a>
+          <a className="button" href={discoverResearchPath}>
+            Open discovery route
           </a>
           <a className="button" href={repoUrl}>
             View repo
