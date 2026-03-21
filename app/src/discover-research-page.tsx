@@ -7,6 +7,7 @@ import {
   resolveDiscoverResearchResultWithRpcUrls,
   type DiscoverResearchResult,
 } from '../../src/discover-research'
+import { sourceTagForLookupMode, toDiscoverSourceView } from '../../src/discover-source-label'
 import { discoverResearchPath, ensRoot, repoUrl, researchCapabilityPath } from './content'
 import { Card, CardGrid, Shell } from './Shell'
 
@@ -75,13 +76,17 @@ function DiscoverResearchPage() {
   const initial = useMemo(() => readQueryState(), [])
   const [mode, setMode] = useState<LookupMode>(initial.mode)
   const [ensName, setEnsName] = useState(initial.ensName)
+  const [sourceTag, setSourceTag] = useState(() => sourceTagForLookupMode(initial.mode))
   const [result, setResult] = useState<DiscoverResearchResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  const sourceView = useMemo(() => toDiscoverSourceView(sourceTag), [sourceTag])
+
   async function runLookup(nextMode: LookupMode, nextEnsName: string) {
     setMode(nextMode)
     setEnsName(nextEnsName)
+    setSourceTag(sourceTagForLookupMode(nextMode))
     writeQueryState({ mode: nextMode, ensName: nextEnsName })
     setIsLoading(true)
     setError(null)
@@ -184,6 +189,12 @@ function DiscoverResearchPage() {
             Mode: <span className="code">{mode}</span>
           </p>
           <p>
+            Data source: <span className="code">{sourceView.label}</span>
+          </p>
+          <p>
+            Source tag: <span className="code">{sourceView.raw}</span>
+          </p>
+          <p>
             RPC fallbacks: <span className="code">{DEFAULT_RPC_URLS.length}</span>
           </p>
           <p>
@@ -201,6 +212,14 @@ function DiscoverResearchPage() {
           </ul>
         </article>
       </section>
+
+      {sourceView.warning ? (
+        <section className="card">
+          <h2>Source integrity warning</h2>
+          <p>{sourceView.warning}</p>
+          <p>Result display is fail-closed until a known source tag is restored.</p>
+        </section>
+      ) : null}
 
       {isLoading ? (
         <section className="card">
