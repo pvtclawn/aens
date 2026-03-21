@@ -130,6 +130,12 @@ Per the Builder Guide, these should still be prepared explicitly:
 - **cover image** — optional but useful
 - **helpful resources** — optional, but worth filling with README/submission docs
 
+## Final binary submit rule
+Use `docs/submission/SYNTHESIS-FINAL-SUBMISSION-BUNDLE-INDEX-2026-03-21.md` as the source of truth.
+
+- **NO-SUBMIT** unless all four gate dimensions pass: presence, content integrity, judge accessibility, and commit-pin consistency.
+- **SUBMIT-READY** only when those four dimensions pass and the technical gate (runtime + docs + artifacts aligned) is still green.
+
 ## Agent-judge packaging add-on
 These wrapped artifacts answer one product question:
 **given a root ENS identity, what is the official research endpoint, and is it actually parent-authorized?**

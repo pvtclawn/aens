@@ -5,12 +5,16 @@ Use this as the commit-pinned checklist right before submit.
 ## Bundle provenance
 - Prepared at (UTC): 2026-03-21 09:44
 - Commit pin (bundle context): `55fbc0d` (plan baseline), updated by current closure slice commit
+- submissionCommit: `TBD` (set this to the exact commit used at submission click)
 - Repo: `https://github.com/pvtclawn/aens`
 - Deployed app: `https://aens-nine.vercel.app/`
 
 ## Required assets
 1. Demo video URL
 - Status: TODO (required)
+- Recorded URL: `TBD`
+- Recorded at (UTC): `TBD`
+- Commit context: `TBD` (must match `submissionCommit`)
 - Integrity check:
   - shows judge flow in current order:
     1) wrapped example artifact,
@@ -21,6 +25,9 @@ Use this as the commit-pinned checklist right before submit.
 
 2. Conversation log artifact/link
 - Status: TODO (required)
+- Recorded URL/path: `TBD`
+- Recorded at (UTC): `TBD`
+- Commit context: `TBD` (must match `submissionCommit`)
 - Integrity check:
   - includes deploy recovery checkpoints,
   - includes submission-alignment verification checkpoints,
@@ -40,14 +47,30 @@ Use this as the commit-pinned checklist right before submit.
   - `docs/submission/artifacts/discover-research-example.json`
   - `docs/submission/artifacts/discover-research-live.json`
 
-## <5 minute pre-submit content-integrity checklist
-- [ ] Open form-pack links and verify they resolve.
-- [ ] Confirm video demonstrates current judge flow order.
-- [ ] Confirm conversation log includes current recovery + verification milestones.
-- [ ] Confirm artifact files above exist at current commit.
-- [ ] Confirm no wording overclaims liveness vs authorization boundary.
+## <5 minute pre-submit asset-readiness checklist
+### Presence
+- [ ] Demo video URL is present (not TODO).
+- [ ] Conversation log link/file is present (not TODO).
+
+### Content integrity
+- [ ] Video demonstrates the current judge flow order end-to-end.
+- [ ] Conversation log includes recovery + verification milestones used in final claims.
+
+### Access integrity
+- [ ] Video URL opens from unauthenticated/incognito context.
+- [ ] Conversation log link/file opens from unauthenticated/incognito context.
+
+### Commit-pin integrity
+- [ ] `submissionCommit` is set.
+- [ ] Video/log commit context fields both match `submissionCommit`.
+- [ ] Canonical artifact files exist at `submissionCommit`.
+
+### Boundary integrity
+- [ ] No wording overclaims liveness vs authorization boundary.
 
 ## Closure gate
-Do not submit until both are true:
+Do not submit unless all are true:
 1. Technical gate: runtime + docs + artifacts aligned.
-2. Packaging gate: required non-code assets present and integrity-checked.
+2. Presence gate: required non-code assets exist (video + log).
+3. Integrity gate: required assets pass content + access checks.
+4. Commit-pin gate: submission assets map to the same `submissionCommit` context.
