@@ -141,3 +141,24 @@ test('resolveDiscoverResearchExampleResult exposes the exact consumer-first posi
   expect(result.officialEndpointDeclared).toBe(true)
   expect(result.serviceUrl).toBe(SERVICE_URL)
 })
+
+test('resolveDiscoverResearchExampleResult supports discover-specific partial authorization fixture', () => {
+  const result = resolveDiscoverResearchExampleResult('research-unlisted-child-capability')
+
+  expect(result.parentName).toBe(PARENT)
+  expect(result.researchCapabilityName).toBe('research-ops.pvtclawn.eth')
+  expect(result.authorizationStatus).toBe('unlisted-child')
+  expect(result.parentListsChild).toBe(false)
+  expect(result.childDeclaresParent).toBe(true)
+  expect(result.officialEndpointDeclared).toBe(false)
+})
+
+test('resolveDiscoverResearchExampleResult supports discover-specific missing child fixture', () => {
+  const result = resolveDiscoverResearchExampleResult('research-missing-child-capability')
+
+  expect(result.parentName).toBe(PARENT)
+  expect(result.researchCapabilityName).toBe(CHILD)
+  expect(result.authorizationStatus).toBe('missing-child')
+  expect(result.officialEndpointDeclared).toBe(false)
+  expect(result.notes.some((note) => note.includes('research capability read failed'))).toBe(true)
+})

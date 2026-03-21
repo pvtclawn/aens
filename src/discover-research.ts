@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { classifyCapabilityAuthorization } from './capability-authorization'
 import { getExampleScenario } from './examples'
-import { type AensResolvedProfile } from './profile'
+import { buildAensProfile, type AensResolvedProfile } from './profile'
 import { resolveAensProfile, resolveAensProfileWithRpcUrls } from './resolver'
 
 export interface DiscoverResearchCliOptions {
@@ -28,6 +28,38 @@ export interface DiscoverResearchResult {
   officialEndpointDeclared: boolean
   livenessChecked: boolean
   notes: string[]
+}
+
+const DEMO_ADDRESS = '0x000000000000000000000000000000000000dEaD'
+const DEMO_PARENT_NAME = 'pvtclawn.eth'
+const DEMO_AGENT_ID = '1391'
+
+function buildDiscoverDemoParentProfile(input: { capabilities: string[] }): AensResolvedProfile {
+  return buildAensProfile({
+    ensName: DEMO_PARENT_NAME,
+    address: DEMO_ADDRESS,
+    records: {
+      agentId: DEMO_AGENT_ID,
+      capabilities: input.capabilities,
+    },
+  })
+}
+
+function buildDiscoverDemoChildProfile(input: {
+  ensName: string
+  parentName?: string
+  serviceUrl?: string
+  agentId?: string
+}): AensResolvedProfile {
+  return buildAensProfile({
+    ensName: input.ensName,
+    address: DEMO_ADDRESS,
+    records: {
+      agentId: input.agentId ?? DEMO_AGENT_ID,
+      parentName: input.parentName ?? DEMO_PARENT_NAME,
+      serviceUrl: input.serviceUrl ?? null,
+    },
+  })
 }
 
 function normalizeEnsName(name: string): string {
@@ -273,6 +305,34 @@ export async function resolveDiscoverResearchResult(parentName: string): Promise
 }
 
 export function resolveDiscoverResearchExampleResult(exampleId: string): DiscoverResearchResult {
+  if (exampleId === 'research-unlisted-child-capability') {
+    const parentProfile = buildDiscoverDemoParentProfile({
+      capabilities: ['research.pvtclawn.eth'],
+    })
+    const childProfile = buildDiscoverDemoChildProfile({
+      ensName: 'research-ops.pvtclawn.eth',
+      serviceUrl: 'https://pvtclawn.example/research-ops',
+    })
+
+    return deriveDiscoverResearchResult({
+      parentName: parentProfile.ensName,
+      parent: { profile: parentProfile, error: null },
+      child: { profile: childProfile, error: null },
+      researchCapabilityName: childProfile.ensName,
+    })
+  }
+
+  if (exampleId === 'research-missing-child-capability') {
+    const parentProfile = buildDiscoverDemoParentProfile({ capabilities: [] })
+
+    return deriveDiscoverResearchResult({
+      parentName: parentProfile.ensName,
+      parent: { profile: parentProfile, error: null },
+      child: { profile: null, error: 'name not found' },
+      researchCapabilityName: `research.${parentProfile.ensName}`,
+    })
+  }
+
   const scenario = getExampleScenario(exampleId)
   if (!scenario) {
     throw new DiscoverResearchUsageError(`Unknown example id: ${exampleId}`)
@@ -303,6 +363,8 @@ function usageText(): string {
     'Examples:',
     '  bun run discover-research -- pvtclawn.eth',
     '  bun run discover-research -- --example parent-authorized-capability',
+    '  bun run discover-research -- --example research-unlisted-child-capability',
+    '  bun run discover-research -- --example research-missing-child-capability',
   ].join('\n')
 }
 
