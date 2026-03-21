@@ -67,24 +67,20 @@ The differentiator is:
 - `parent-authorized` = why the endpoint is official
 
 ## Demo flow for judges
-1. Open the public discovery route:
-- `https://aens-nine.vercel.app/discover-research/`
-2. Run the exact consumer-first positive-path demo locally if needed:
+1. Start with the wrapped example artifact for the clearest current proof of the target discovery flow:
+- `docs/submission/artifacts/discover-research-example.json`
+2. Open the live research capability page as the first public visual anchor:
+- `https://aens-nine.vercel.app/research-capability/`
+3. Compare it with the wrapped live artifact to show current namespace truth honestly:
+- `docs/submission/artifacts/discover-research-live.json`
+4. Use CLI as reproducibility backup and public-surface evidence:
 ```bash
-bun run discover-research -- --example parent-authorized-capability
-```
-3. Show the live preferred public surface:
-```bash
+bun run discover-research -- --example parent-authorized-capability --json
+bun run discover-research -- --json pvtclawn.eth
 bun run check-public-surface
 ```
-4. Open:
-- `https://aens-nine.vercel.app/`
-- `https://aens-nine.vercel.app/research-capability/`
-
-Optional honesty check of the current unpublished live namespace:
-```bash
-bun run discover-research -- pvtclawn.eth
-```
+5. Treat the public discovery route as the intended deployed surface while production catches up:
+- `https://aens-nine.vercel.app/discover-research/`
 
 ## Repo URL
 - `https://github.com/pvtclawn/aens`

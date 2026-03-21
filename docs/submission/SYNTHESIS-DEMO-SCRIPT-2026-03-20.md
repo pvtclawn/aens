@@ -16,38 +16,51 @@ This is an **official capability discovery** demo, not a full runtime/payment de
 ### 0:15–0:30 — State the thesis plainly
 "ÆNS makes ENS hierarchy load-bearing for that question. The parent name is identity, the child subname is capability, and `parent-authorized` is the milestone that makes the relationship official."
 
-### 0:30–1:05 — Show the exact consumer-first positive path
+### 0:30–0:55 — Start with the clearest current proof of the target flow
 Open:
-- `https://aens-nine.vercel.app/discover-research/`
+- `docs/submission/artifacts/discover-research-example.json`
 
-Optional local backup command:
-```bash
-bun run discover-research -- --example parent-authorized-capability
-```
 Narrate:
-"This is the exact MVP loop we care about: start from the root identity, derive the research capability, verify whether it is official, and return the endpoint it declares. The deployed route shows both the deterministic positive path and the live namespace truth."
+"Start with the wrapped example artifact for the clearest current proof of the target discovery flow: given a root ENS identity, derive the research capability, verify whether it is official, and return the endpoint it declares."
 
-### 1:05–1:25 — Point to the key milestone
+### 0:55–1:15 — Show a real public surface early
+Open:
+- `https://aens-nine.vercel.app/research-capability/`
+
+Narrate:
+"This is the current public visual anchor for the build. So the demo is not just a JSON bundle or local shell exercise — there is already a live public research surface."
+
+### 1:15–1:35 — Show current namespace truth honestly
+Open:
+- `docs/submission/artifacts/discover-research-live.json`
+
 Point directly to:
-- `Authorization status: parent-authorized`
-- `Official research endpoint: ...`
+- `sourceMode: live`
+- `authorizationStatus: not-a-capability-surface` (or current live result)
+- `preferredSurfaceReady: false`
 
 Say:
-"The key thing here is not just that a subname exists. The key thing is that the child capability is recognized as officially attached to the parent identity."
+"The important thing here is that ÆNS can say `not yet` honestly. The example artifact shows the target authority state; the live artifact shows the current namespace truth and current deployment boundary."
 
-### 1:25–1:45 — Show the public surface is actually live
+### 1:35–1:50 — Keep reproducibility visible
 Run:
 ```bash
+bun run discover-research -- --example parent-authorized-capability --json
+bun run discover-research -- --json pvtclawn.eth
 bun run check-public-surface
 ```
-Narrate:
-"This checks the currently reachable public capability surface. So the build is not just a local thought experiment — the preferred research page is live on the deployed surface."
 
-### 1:45–2:00 — Close on the wedge
+Narrate:
+"These commands reproduce the target-state artifact, the live-truth artifact, and the current public-surface status directly from the repo."
+
+### 1:50–2:00 — Close on the wedge and intended deployed surface
+Say:
 "That’s the core of ÆNS: official capability discovery from ENS.
 - `pvtclawn.eth` = who
 - `research.pvtclawn.eth` = what
-- `parent-authorized` = why the endpoint is official"
+- `parent-authorized` = why the endpoint is official
+
+The `/discover-research/` route is the intended deployed discovery surface; until production catches up, the wrapped artifacts are the current primary truth surface."
 
 ## Optional honesty note if asked about live ENS state
 If a judge asks whether the live `pvtclawn.eth` namespace is already fully published under ENS, answer directly:
