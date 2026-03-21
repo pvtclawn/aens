@@ -89,9 +89,9 @@ Use this as the commit-pinned checklist right before submit.
 
 ## Wait-loop trend + requirement-sync markers
 - blocked_since: `2026-03-21T09:54:00Z`
-- windows_elapsed: `TBD` (increment per freshness window while required assets are still missing)
-- last_reminder_at: `TBD`
-- requirements_sync: `TBD` (`unchanged` or `changed` after periodic form/guide check)
+- windows_elapsed: `0` (6h windows elapsed since blocked_since)
+- last_reminder_at: `2026-03-21T10:54:00Z`
+- requirements_sync: `unchanged @ 2026-03-21T11:24:00Z`
 
 ## Closure gate
 Do not submit unless all are true:
