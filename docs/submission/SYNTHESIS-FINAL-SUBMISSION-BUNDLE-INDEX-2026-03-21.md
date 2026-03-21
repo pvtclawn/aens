@@ -59,6 +59,7 @@ Use this as the commit-pinned checklist right before submit.
 ### Access integrity
 - [ ] Video URL opens from unauthenticated/incognito context.
 - [ ] Conversation log link/file opens from unauthenticated/incognito context.
+- [ ] At least one non-owner access check is recorded for both required assets.
 
 ### Commit-pin integrity
 - [ ] `submissionCommit` is set.
@@ -82,9 +83,15 @@ Use this as the commit-pinned checklist right before submit.
 - Confirm technical baseline is still green (`tsc`, tests, public-surface check).
 
 ### Dependency reminder cadence
-- If required assets remain missing, send one concise reminder to the operator at most once per freshness window.
+- If required assets remain missing, send at least one concise reminder per freshness window.
+- Do not send more than one reminder in the same window unless state changes.
 - Reminder format: "Still need demo video URL + conversation log link/file to flip SUBMIT-READY."
-- Do not repeat reminder if no new state since the last reminder in the same window.
+
+## Wait-loop trend + requirement-sync markers
+- blocked_since: `2026-03-21T09:54:00Z`
+- windows_elapsed: `TBD` (increment per freshness window while required assets are still missing)
+- last_reminder_at: `TBD`
+- requirements_sync: `TBD` (`unchanged` or `changed` after periodic form/guide check)
 
 ## Closure gate
 Do not submit unless all are true:
