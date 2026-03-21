@@ -4,7 +4,7 @@
 Narrow Lane D refresh with v3 marker fields.
 
 ## Per-refresh evidence line
-2026-03-21T12:34:00Z | checks: tsc + tests + public-surface + asset fields | result: unchanged | decision: NO-SUBMIT
+2026-03-21T12:34:00Z | checks=4/4[tsc,tests,public-surface,asset-fields] | video_status=missing | log_status=missing | marker_updated_at=2026-03-21T12:34:00Z | result=unchanged | decision=NO-SUBMIT
 
 ## Current blocker vector
 - `video_status=missing`

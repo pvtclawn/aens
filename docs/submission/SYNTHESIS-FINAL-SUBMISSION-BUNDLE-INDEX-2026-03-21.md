@@ -70,8 +70,13 @@ Use this as the commit-pinned checklist right before submit.
 - [ ] No wording overclaims liveness vs authorization boundary.
 
 ### Per-refresh evidence line (mandatory)
-- [ ] Record one compact evidence line for each wait-loop refresh in the paired research note:
-  - `<timestamp> | checks: tsc/test/public-surface + asset fields | result: changed|unchanged | decision: NO-SUBMIT|SUBMIT-READY`
+- [ ] Record one compact evidence line for each wait-loop refresh in the paired research note.
+- [ ] Evidence line must include completeness token: `checks=4/4` where the expected set is:
+  1) `tsc`, 2) `tests`, 3) `public-surface`, 4) `asset-fields`.
+- [ ] `result=unchanged` is invalid unless `checks=4/4` is present.
+- [ ] Evidence line must include blocker snapshot (`video_status`, `log_status`) and marker-linkage token (`marker_updated_at`).
+- [ ] Canonical line format:
+  - `<timestamp> | checks=4/4[tsc,tests,public-surface,asset-fields] | video_status=<missing|present> | log_status=<missing|present> | marker_updated_at=<ts> | result=<changed|unchanged> | decision=<NO-SUBMIT|SUBMIT-READY>`
 
 ## No-change wait-loop operations (while required assets are still missing)
 ### Freshness window
