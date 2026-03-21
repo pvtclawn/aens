@@ -23,6 +23,9 @@ Companion checklist: `docs/research/PRIVILEGED-PROBE-WINDOW-CHECKLIST.md`
 1. **Prepare short-lived token**
    - Generate one ephemeral token for this window only.
    - Set explicit expiry and planned revocation timestamp.
+   - Enforce TTL policy:
+     - recommended `<= 15 minutes`, hard cap `30 minutes`.
+   - Record all lifecycle times in ISO-8601 UTC (`YYYY-MM-DDTHH:MM:SSZ`).
 
 2. **Enable gate briefly (fail-closed checks first)**
    - Set:
@@ -57,6 +60,7 @@ Companion checklist: `docs/research/PRIVILEGED-PROBE-WINDOW-CHECKLIST.md`
    - record:
      - `token_revoked_at`
      - `window_closed_at`
+     - `revoke_evidence_ref` (log/artifact proving token invalidated)
    - confirm probe parameter is inert again on public traffic.
 
 ## Safety guardrails

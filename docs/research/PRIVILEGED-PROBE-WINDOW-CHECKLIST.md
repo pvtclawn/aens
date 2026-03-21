@@ -10,6 +10,12 @@ Use this checklist for any temporary production failure-probe window.
 - token_issued_at:
 - token_expires_at:
 
+### Field format + TTL policy
+- Time fields MUST be ISO-8601 UTC (`YYYY-MM-DDTHH:MM:SSZ`).
+- Token TTL MUST be short-lived (recommended: <=15 minutes; hard cap: 30 minutes).
+- `window_expires_at` MUST be <= `token_expires_at`.
+- `window_started_at` < `window_expires_at` < `token_expires_at`.
+
 ## Enable phase
 - [ ] `AENS_ENABLE_FAILURE_PROBE=1` set
 - [ ] `AENS_FAILURE_PROBE_TOKEN` set
@@ -39,7 +45,13 @@ Use this checklist for any temporary production failure-probe window.
 - token_revoked_at:
 - window_closed_at:
 - deployment id after disable:
+- revoke_evidence_ref (artifact/log proving token invalidated):
 - [ ] inertness check passed (`simulateFailure` param has no effect without gate)
+
+### Closeout consistency checks
+- [ ] `token_revoked_at` is ISO-8601 UTC.
+- [ ] `token_revoked_at` <= `window_closed_at`.
+- [ ] `window_closed_at` <= `token_expires_at` (or document expiry-first closeout exception).
 
 ## Result
 - Decision: PASS / FAIL
