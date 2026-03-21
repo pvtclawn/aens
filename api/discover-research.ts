@@ -57,12 +57,21 @@ interface EnsObservedProfile {
   capabilities: string[]
 }
 
+export const REASON_SCHEMA_VERSION = 'v1'
+
 export type DiscoverReasonCode =
   | 'child-not-found'
   | 'child-found-not-authorized'
   | 'parent-authorized-without-service-url'
   | 'parent-authorized-with-service-url'
   | 'lookup-failed'
+
+export const REASON_TAXONOMY_V1: readonly Exclude<DiscoverReasonCode, 'lookup-failed'>[] = [
+  'child-not-found',
+  'child-found-not-authorized',
+  'parent-authorized-without-service-url',
+  'parent-authorized-with-service-url',
+] as const
 
 export function classifyReasonCode(input: {
   parentListsChild: boolean
@@ -131,6 +140,52 @@ function deriveResearchCapabilityName(parentName: string, parentCapabilities: st
   return firstResearch ?? expected
 }
 
+export function buildDiscoverResponsePayload(input: {
+  parentName: string
+  capabilityName: string
+  parentCapabilities: string[]
+  childParentName: string | null
+  childAddress: string | null
+  childServiceUrl: string | null
+  childCapabilities: string[]
+  resolvedAt: string
+}) {
+  const parentListsChild = input.parentCapabilities.includes(input.capabilityName)
+  const childDeclaresParent = input.childParentName === input.parentName
+  const authorizationStatus = parentListsChild && childDeclaresParent ? 'parent-authorized' : 'not-parent-authorized'
+  const authorizationSummary = parentListsChild && childDeclaresParent
+    ? 'Research capability is declared by child and listed by parent.'
+    : 'Research capability authorization is incomplete (missing parent list and/or child parent reference).'
+  const reasonCode = classifyReasonCode({
+    parentListsChild,
+    childDeclaresParent,
+    childAddress: input.childAddress,
+    childServiceUrl: input.childServiceUrl,
+    childCapabilities: input.childCapabilities,
+  })
+
+  return {
+    queryName: input.parentName,
+    resolvedAt: input.resolvedAt,
+    source: 'aens-discover-research-v1',
+    reasonCode,
+    reasonSchemaVersion: REASON_SCHEMA_VERSION,
+    authorization: {
+      status: authorizationStatus,
+      summary: authorizationSummary,
+      parentListsChild,
+      childDeclaresParent,
+    },
+    endpoint: {
+      capabilityName: input.capabilityName,
+      serviceUrl: input.childServiceUrl,
+      officialEndpointDeclared: authorizationStatus === 'parent-authorized' && Boolean(input.childServiceUrl),
+      livenessChecked: false,
+    },
+    notes: ['Authorization and liveness are separate checks.'],
+  }
+}
+
 export default async function handler(req: VercelRequestLike, res: VercelResponseLike) {
   res.setHeader('content-type', 'application/json; charset=utf-8')
   res.setHeader('cache-control', 'public, max-age=30, s-maxage=30')
@@ -149,42 +204,16 @@ export default async function handler(req: VercelRequestLike, res: VercelRespons
     const capabilityName = deriveResearchCapabilityName(parentName, parent.capabilities)
     const child = await resolveProfile(capabilityName)
 
-    const parentListsChild = parent.capabilities.includes(capabilityName)
-    const childDeclaresParent = child.parentName === parentName
-    const authorizationStatus = parentListsChild && childDeclaresParent ? 'parent-authorized' : 'not-parent-authorized'
-    const authorizationSummary = parentListsChild && childDeclaresParent
-      ? 'Research capability is declared by child and listed by parent.'
-      : 'Research capability authorization is incomplete (missing parent list and/or child parent reference).'
-    const reasonCode = classifyReasonCode({
-      parentListsChild,
-      childDeclaresParent,
+    const payload = buildDiscoverResponsePayload({
+      parentName,
+      capabilityName,
+      parentCapabilities: parent.capabilities,
+      childParentName: child.parentName,
       childAddress: child.address,
       childServiceUrl: child.serviceUrl,
       childCapabilities: child.capabilities,
-    })
-
-    const payload = {
-      queryName: parentName,
       resolvedAt: new Date().toISOString(),
-      source: 'aens-discover-research-v1',
-      reasonCode,
-      reasonSchemaVersion: 'v1',
-      authorization: {
-        status: authorizationStatus,
-        summary: authorizationSummary,
-        parentListsChild,
-        childDeclaresParent,
-      },
-      endpoint: {
-        capabilityName,
-        serviceUrl: child.serviceUrl,
-        officialEndpointDeclared: authorizationStatus === 'parent-authorized' && Boolean(child.serviceUrl),
-        livenessChecked: false,
-      },
-      notes: [
-        'Authorization and liveness are separate checks.',
-      ],
-    }
+    })
 
     return res.status(200).json(payload)
   } catch (error) {
@@ -194,7 +223,7 @@ export default async function handler(req: VercelRequestLike, res: VercelRespons
       message,
       name: parentName,
       reasonCode: 'lookup-failed',
-      reasonSchemaVersion: 'v1',
+      reasonSchemaVersion: REASON_SCHEMA_VERSION,
     })
   }
 }
