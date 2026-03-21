@@ -49,5 +49,36 @@ This minimized risk while preserving evidentiary continuity.
 6. Regenerate canonical machine artifacts.
 7. Run one final alignment verification note.
 
+## Minimal closure checklist (hardened)
+Mark recovery complete only when all four gates pass:
+1. **Two consistent live samples** — two separated checks agree on discovery route + preferred/fallback readiness.
+2. **Docs/artifacts synchronized** — judge-facing docs and canonical artifacts express the same current truth.
+3. **Judged URL deployment identity recorded** — closure note records the deployed URL/identity used for verification.
+4. **Authorization-vs-liveness boundary explicit** — judge-facing wording keeps official declaration distinct from runtime reachability.
+
+## Two-sample command block (copy/paste)
+Run from `aens/`:
+
+```bash
+bun run check-public-surface
+sleep 30
+bun run check-public-surface
+```
+
+Expected in both samples:
+- `discover research page: ok`
+- `Preferred public surface ready: yes`
+- `Bootstrap proof ready: no`
+
+## Artifact freshness anti-drift rule
+When any submission-facing docs change deployment-state wording or live-surface claims, regenerate canonical artifacts in the same slice:
+
+```bash
+bun run package-submission-artifacts
+```
+
+Failure condition:
+- docs assert updated live/deploy truth but `docs/submission/artifacts/*.json` still encode older public-surface state.
+
 ## Main takeaway
 For agent-native products, recovery is complete only when **runtime state, human docs, and machine artifacts all agree on the same truth**.
