@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "aens.discover-research-artifact.v1",
+  "artifactKind": "discover-research-result",
+  "sourceMode": "live",
+  "exampleId": null,
+  "generatedAt": "2026-03-21T01:07:34.675Z",
+  "gitCommit": "93a30f5822da4f0322c06ca29c8d5424994b86c8",
+  "command": "bun run discover-research -- --json pvtclawn.eth",
+  "publicSurface": {
+    "checkedAt": "2026-03-21T01:07:34.675Z",
+    "preferredPublicBaseUrl": "https://aens-nine.vercel.app/",
+    "preferredResearchUrl": "https://aens-nine.vercel.app/research-capability/",
+    "preferredSurfaceReady": false,
+    "bootstrapProofReady": true,
+    "preferredResults": [
+      {
+        "label": "public root",
+        "url": "https://aens-nine.vercel.app/",
+        "status": 200,
+        "expectedMarker": "ÆNS — PrivateClawn landing",
+        "passed": true,
+        "summary": "public root: ok (https://aens-nine.vercel.app/)"
+      },
+      {
+        "label": "research capability page",
+        "url": "https://aens-nine.vercel.app/research-capability/",
+        "status": 200,
+        "expectedMarker": "PrivateClawn Research Capability",
+        "passed": true,
+        "summary": "research capability page: ok (https://aens-nine.vercel.app/research-capability/)"
+      },
+      {
+        "label": "discover research page",
+        "url": "https://aens-nine.vercel.app/discover-research/",
+        "status": 404,
+        "expectedMarker": "Discover the official research capability for an ENS identity",
+        "passed": false,
+        "summary": "discover research page: http 404 (https://aens-nine.vercel.app/discover-research/)"
+      }
+    ],
+    "fallbackResult": {
+      "label": "github blob fallback",
+      "url": "https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md",
+      "status": 200,
+      "expectedMarker": "PrivateClawn Research Capability Surface",
+      "passed": true,
+      "summary": "github blob fallback: ok (https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md)"
+    }
+  },
+  "result": {
+    "parentName": "pvtclawn.eth",
+    "researchCapabilityName": "research.pvtclawn.eth",
+    "authorizationStatus": "not-a-capability-surface",
+    "authorizationSummary": "profile does not declare a parent-authorized capability surface",
+    "parentListsChild": false,
+    "childDeclaresParent": false,
+    "serviceUrl": null,
+    "officialEndpointDeclared": false,
+    "livenessChecked": false,
+    "notes": [
+      "research capability does not currently declare a service URL",
+      "research capability does not currently point back to the parent identity",
+      "parent identity does not currently list the research capability"
+    ]
+  }
+}
