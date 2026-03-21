@@ -57,6 +57,33 @@ interface EnsObservedProfile {
   capabilities: string[]
 }
 
+export type DiscoverReasonCode =
+  | 'child-not-found'
+  | 'child-found-not-authorized'
+  | 'parent-authorized-without-service-url'
+  | 'parent-authorized-with-service-url'
+  | 'lookup-failed'
+
+export function classifyReasonCode(input: {
+  parentListsChild: boolean
+  childDeclaresParent: boolean
+  childAddress: string | null
+  childServiceUrl: string | null
+  childCapabilities: string[]
+}): DiscoverReasonCode {
+  const parentAuthorized = input.parentListsChild && input.childDeclaresParent
+  if (parentAuthorized) {
+    return input.childServiceUrl ? 'parent-authorized-with-service-url' : 'parent-authorized-without-service-url'
+  }
+
+  const childLooksMissing = !input.childAddress && !input.childServiceUrl && input.childCapabilities.length === 0
+  if (childLooksMissing) {
+    return 'child-not-found'
+  }
+
+  return 'child-found-not-authorized'
+}
+
 function createEnsClient(rpcUrl: string) {
   return createPublicClient({
     chain: mainnet,
@@ -128,11 +155,20 @@ export default async function handler(req: VercelRequestLike, res: VercelRespons
     const authorizationSummary = parentListsChild && childDeclaresParent
       ? 'Research capability is declared by child and listed by parent.'
       : 'Research capability authorization is incomplete (missing parent list and/or child parent reference).'
+    const reasonCode = classifyReasonCode({
+      parentListsChild,
+      childDeclaresParent,
+      childAddress: child.address,
+      childServiceUrl: child.serviceUrl,
+      childCapabilities: child.capabilities,
+    })
 
     const payload = {
       queryName: parentName,
       resolvedAt: new Date().toISOString(),
       source: 'aens-discover-research-v1',
+      reasonCode,
+      reasonSchemaVersion: 'v1',
       authorization: {
         status: authorizationStatus,
         summary: authorizationSummary,
@@ -157,6 +193,8 @@ export default async function handler(req: VercelRequestLike, res: VercelRespons
       error: 'Failed to resolve discover-research response',
       message,
       name: parentName,
+      reasonCode: 'lookup-failed',
+      reasonSchemaVersion: 'v1',
     })
   }
 }
