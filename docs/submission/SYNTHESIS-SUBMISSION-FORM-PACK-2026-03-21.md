@@ -93,7 +93,14 @@ bun run check-public-surface
 - `docs/submission/SYNTHESIS-COMPETITIVE-POSITIONING-2026-03-21.md`
 - `docs/submission/SYNTHESIS-DEMO-SCRIPT-2026-03-20.md`
 - `docs/submission/SYNTHESIS-CORE-SUBMISSION-2026-03-20.md`
+- `docs/submission/SYNTHESIS-FINAL-SUBMISSION-BUNDLE-INDEX-2026-03-21.md`
 - `docs/research/AGENT-JUDGE-PACKAGING-RULE-2026-03-21-0047.md`
+
+## Tiny judge entry map (30 seconds)
+- **User problem:** from a root ENS identity, find the official research capability endpoint and whether it is parent-authorized.
+- **Deterministic proof:** `docs/submission/artifacts/discover-research-example.json`
+- **Live surface:** `https://aens-nine.vercel.app/research-capability/`
+- **Boundary:** `officialEndpointDeclared` proves declaration/authorization, not guaranteed runtime liveness by itself.
 
 ## Submission metadata draft
 ### Agent framework / harness
