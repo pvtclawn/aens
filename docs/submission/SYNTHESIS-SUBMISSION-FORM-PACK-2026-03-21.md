@@ -132,6 +132,17 @@ Because ÆNS may be judged by agents as well as humans, also prepare:
 - **deterministic JSON artifact** from `bun run discover-research -- --example parent-authorized-capability --json`
 - **live JSON artifact** from `bun run discover-research -- --json pvtclawn.eth`
 
+Canonical packaging command:
+```bash
+bun run package-submission-artifacts
+```
+
+Canonical artifact paths:
+- `docs/submission/artifacts/discover-research-example.json`
+- `docs/submission/artifacts/discover-research-live.json`
+
+Until the public discovery route is actually live on the preferred surface again, treat these wrapped JSON artifacts as the current machine-facing judge surface.
+
 Reasoning is frozen in:
 - `docs/research/AGENT-JUDGE-PACKAGING-RULE-2026-03-21-0047.md`
 

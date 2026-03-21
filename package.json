@@ -8,6 +8,7 @@
     "publish-assist": "bun run src/publish-assist.ts",
     "capture-proof": "bash scripts/capture-live-proof.sh",
     "check-public-surface": "bun run src/check-public-surface.ts",
+    "package-submission-artifacts": "bun run src/package-submission-artifacts.ts",
     "test": "bun test src/*.test.ts",
     "typecheck": "tsc --noEmit",
     "test:all": "bun test",
