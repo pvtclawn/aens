@@ -93,7 +93,7 @@ Use this as the commit-pinned checklist right before submit.
 - windows_elapsed: `0` (6h windows elapsed since blocked_since; does not reduce blocker severity)
 - last_reminder_at: `2026-03-21T10:54:00Z`
 - reminder_ack: `pending` (`yes` | `no` | `pending`)
-- marker_updated_at: `2026-03-21T11:44:00Z`
+- marker_updated_at: `2026-03-21T11:59:00Z`
 - requirements_sync: `unchanged @ 2026-03-21T11:24:00Z`
 - requirements_source_ref: `https://synthesis.md/hack/ (Builder Guide / submission requirements)`
 
