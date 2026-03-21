@@ -4,6 +4,7 @@ import { mainnet } from 'viem/chains'
 interface VercelRequestLike {
   method?: string
   query?: Record<string, string | string[] | undefined>
+  headers?: Record<string, string | string[] | undefined>
 }
 
 interface VercelResponseLike {
@@ -25,6 +26,26 @@ function pickQueryName(req: VercelRequestLike): string | null {
     return raw[0]?.trim().toLowerCase() || null
   }
   return raw?.trim().toLowerCase() || null
+}
+
+function pickHeader(req: VercelRequestLike, name: string): string | null {
+  const raw = req.headers?.[name] ?? req.headers?.[name.toLowerCase()]
+  if (Array.isArray(raw)) return raw[0]?.trim() || null
+  return raw?.trim() || null
+}
+
+function pickSimulationMode(req: VercelRequestLike): string | null {
+  const raw = req.query?.simulateFailure
+  if (Array.isArray(raw)) return raw[0]?.trim().toLowerCase() || null
+  return raw?.trim().toLowerCase() || null
+}
+
+export function shouldAllowFailureProbe(req: VercelRequestLike): boolean {
+  if (process.env.AENS_ENABLE_FAILURE_PROBE !== '1') return false
+  const expected = process.env.AENS_FAILURE_PROBE_TOKEN
+  if (!expected) return false
+  const provided = pickHeader(req, 'x-aens-probe-token')
+  return provided === expected
 }
 
 function parseCapabilities(value: string | null): string[] {
@@ -220,7 +241,19 @@ export default async function handler(req: VercelRequestLike, res: VercelRespons
     return res.status(400).json({ error: 'Missing required query parameter: name' })
   }
 
+  const simulateFailure = pickSimulationMode(req)
+
   try {
+    if (simulateFailure && shouldAllowFailureProbe(req)) {
+      if (simulateFailure === 'timeout') {
+        throw new Error('simulated timeout for failure-contract verification')
+      }
+      if (simulateFailure === 'network') {
+        throw new Error('simulated network unavailable for failure-contract verification')
+      }
+      throw new Error(`simulated lookup error: ${simulateFailure}`)
+    }
+
     const parent = await resolveProfile(parentName)
     const capabilityName = deriveResearchCapabilityName(parentName, parent.capabilities)
     const child = await resolveProfile(capabilityName)
