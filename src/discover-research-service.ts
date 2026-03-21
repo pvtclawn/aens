@@ -1,4 +1,4 @@
-import { type DiscoverResearchResult, resolveDiscoverResearchResult } from './discover-research'
+import { type DiscoverResearchResult, resolveDiscoverResearchResult } from './discover-research.js'
 
 export interface DiscoverResearchServiceResponse {
   queryName: string

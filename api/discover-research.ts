@@ -1,4 +1,4 @@
-import { resolveDiscoverResearchServiceResponse } from '../src/discover-research-service'
+import { resolveDiscoverResearchServiceResponse } from '../src/discover-research-service.js'
 
 interface VercelRequestLike {
   method?: string
