@@ -135,6 +135,7 @@ Use `docs/submission/SYNTHESIS-FINAL-SUBMISSION-BUNDLE-INDEX-2026-03-21.md` as t
 
 - **NO-SUBMIT** unless all four gate dimensions pass: presence, content integrity, judge accessibility, and commit-pin consistency.
 - **SUBMIT-READY** only when those four dimensions pass and the technical gate (runtime + docs + artifacts aligned) is still green.
+- During no-change periods, follow the bundle index wait-loop operations (freshness window + drift check + non-spammy reminder cadence) to avoid stale assumptions.
 
 ## Agent-judge packaging add-on
 These wrapped artifacts answer one product question:

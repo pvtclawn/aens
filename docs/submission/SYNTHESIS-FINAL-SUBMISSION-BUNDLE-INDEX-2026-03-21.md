@@ -68,6 +68,24 @@ Use this as the commit-pinned checklist right before submit.
 ### Boundary integrity
 - [ ] No wording overclaims liveness vs authorization boundary.
 
+## No-change wait-loop operations (while required assets are still missing)
+### Freshness window
+- Refresh boundary evidence at least once per 6 hours while status remains `NO-SUBMIT`.
+- Also refresh immediately before any submission attempt.
+
+### Per-refresh drift check (quick pass)
+- Confirm required asset fields are still TODO or now populated.
+- Confirm core submitted links still resolve:
+  - `https://aens-nine.vercel.app/`
+  - `https://aens-nine.vercel.app/research-capability/`
+  - `https://aens-nine.vercel.app/discover-research/`
+- Confirm technical baseline is still green (`tsc`, tests, public-surface check).
+
+### Dependency reminder cadence
+- If required assets remain missing, send one concise reminder to the operator at most once per freshness window.
+- Reminder format: "Still need demo video URL + conversation log link/file to flip SUBMIT-READY."
+- Do not repeat reminder if no new state since the last reminder in the same window.
+
 ## Closure gate
 Do not submit unless all are true:
 1. Technical gate: runtime + docs + artifacts aligned.
