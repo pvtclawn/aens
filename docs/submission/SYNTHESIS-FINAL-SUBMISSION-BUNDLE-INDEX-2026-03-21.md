@@ -75,12 +75,14 @@ Use this as the commit-pinned checklist right before submit.
 - [ ] Evidence line must include run and pass completeness tokens:
   - `checks_run=4/4[tsc,tests,public-surface,asset-fields]`
   - `checks_pass=4/4`
+- [ ] Evidence line must include `pass_criteria_ref=<path|doc>` for the criteria behind `checks_pass`.
+- [ ] Evidence line should include `pass_quality=<clean|warn|degraded>` when pass-state nuance exists.
 - [ ] `result=unchanged` is invalid unless both run/pass completeness tokens are complete.
 - [ ] Evidence line must include blocker snapshot (`video_status`, `log_status`) and blocker timestamp token (`blocker_checked_at`).
 - [ ] Evidence line must include marker-linkage token (`marker_updated_at`), and unchanged decisions require `blocker_checked_at == marker_updated_at`.
-- [ ] Evidence line must include compact anti-spoof anchor token (`evidence_anchor=<tsc_ts|test_ts|surface_ts>`).
+- [ ] Evidence line must include compact anti-spoof anchor token (`evidence_anchor=<tsc_ts|test_ts|surface_ts>`) tied to the current refresh window.
 - [ ] Canonical line format:
-  - `<timestamp> | checkset_version=v1 | checks_run=4/4[tsc,tests,public-surface,asset-fields] | checks_pass=4/4 | video_status=<missing|present> | log_status=<missing|present> | blocker_checked_at=<ts> | marker_updated_at=<ts> | evidence_anchor=<tsc_ts|test_ts|surface_ts> | result=<changed|unchanged> | decision=<NO-SUBMIT|SUBMIT-READY>`
+  - `<timestamp> | checkset_version=v1 | checks_run=4/4[tsc,tests,public-surface,asset-fields] | checks_pass=4/4 | pass_criteria_ref=<path|doc> | pass_quality=<clean|warn|degraded> | video_status=<missing|present> | log_status=<missing|present> | blocker_checked_at=<ts> | marker_updated_at=<ts> | evidence_anchor=<tsc_ts|test_ts|surface_ts> | result=<changed|unchanged> | decision=<NO-SUBMIT|SUBMIT-READY>`
 
 ## No-change wait-loop operations (while required assets are still missing)
 ### Freshness window
@@ -120,3 +122,6 @@ Do not submit unless all are true:
 2. Presence gate: required non-code assets exist (video + log).
 3. Integrity gate: required assets pass content + access checks.
 4. Commit-pin gate: submission assets map to the same `submissionCommit` context.
+
+Precedence rule:
+- Missing required external assets force `NO-SUBMIT` regardless of evidence-line run/pass completeness tokens.
