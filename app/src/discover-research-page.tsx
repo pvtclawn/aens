@@ -8,8 +8,9 @@ import {
   type DiscoverResearchResult,
 } from '../../src/discover-research'
 import { sourceTagForLookupMode, toDiscoverSourceView } from '../../src/discover-source-label'
-import { discoverResearchPath, ensRoot, repoUrl, researchCapabilityPath, writeRecordsPath } from './content'
+import { discoverResearchPath, ensRoot, repoUrl } from './content'
 import { Card, CardGrid, Shell } from './Shell'
+import { buildRouteLinks, normalizeEnsName } from './route-links'
 
 type LookupMode = 'example' | 'live'
 
@@ -18,57 +19,38 @@ const EXAMPLE_ID = 'parent-authorized-capability'
 function readQueryState(): { mode: LookupMode; ensName: string } {
   const params = new URLSearchParams(window.location.search)
   const mode = params.get('mode') === 'live' ? 'live' : 'example'
-  const ensName = params.get('name')?.trim() || ensRoot
-
+  const ensName = normalizeEnsName(params.get('name') ?? ensRoot)
   return { mode, ensName }
 }
 
 function writeQueryState(input: { mode: LookupMode; ensName: string }) {
-  const params = new URLSearchParams()
-  params.set('mode', input.mode)
+  const params = new URLSearchParams({ mode: input.mode })
   if (input.mode === 'live') {
-    params.set('name', input.ensName)
+    params.set('name', normalizeEnsName(input.ensName))
   }
 
-  const query = params.toString()
-  const nextUrl = query ? `${discoverResearchPath}?${query}` : discoverResearchPath
-  window.history.replaceState(null, '', nextUrl)
+  window.history.replaceState(null, '', `${discoverResearchPath}?${params.toString()}`)
 }
 
 function ResultView({ result }: { result: DiscoverResearchResult }) {
   return (
-    <>
-      <CardGrid>
-        <Card>
-          <h2>Authority verdict</h2>
-          <p>
-            Status: <span className="code">{result.authorizationStatus}</span>
-          </p>
-          <p>{result.authorizationSummary}</p>
-        </Card>
-        <Card>
-          <h2>Official endpoint</h2>
-          <p>
-            Declared: <span className="code">{result.officialEndpointDeclared ? 'yes' : 'no'}</span>
-          </p>
-          <p>
-            Endpoint:{' '}
-            <span className="code">{result.serviceUrl ?? '(none declared)'}</span>
-          </p>
-        </Card>
-      </CardGrid>
-
-      <section className="grid two">
-        <article className="card">
-          <h2>Structured result</h2>
-          <pre className="result-block">{JSON.stringify(result, null, 2)}</pre>
-        </article>
-        <article className="card">
-          <h2>Human-readable report</h2>
-          <pre className="result-block">{renderDiscoverResearchResult(result)}</pre>
-        </article>
-      </section>
-    </>
+    <section className="grid two">
+      <article className="card">
+        <h2>Verdict</h2>
+        <p>Status: <span className="code">{result.authorizationStatus}</span></p>
+        <p>{result.authorizationSummary}</p>
+        <p>Endpoint declared: <span className="code">{result.officialEndpointDeclared ? 'yes' : 'no'}</span></p>
+        <p>Service: <span className="code">{result.serviceUrl ?? '(none declared)'}</span></p>
+      </article>
+      <article className="card">
+        <h2>Machine result</h2>
+        <pre className="result-block">{JSON.stringify(result, null, 2)}</pre>
+      </article>
+      <article className="card">
+        <h2>Human report</h2>
+        <pre className="result-block">{renderDiscoverResearchResult(result)}</pre>
+      </article>
+    </section>
   )
 }
 
@@ -82,12 +64,14 @@ function DiscoverResearchPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   const sourceView = useMemo(() => toDiscoverSourceView(sourceTag), [sourceTag])
+  const links = buildRouteLinks(ensName)
 
   async function runLookup(nextMode: LookupMode, nextEnsName: string) {
+    const normalizedEnsName = normalizeEnsName(nextEnsName)
     setMode(nextMode)
-    setEnsName(nextEnsName)
+    setEnsName(normalizedEnsName)
     setSourceTag(sourceTagForLookupMode(nextMode))
-    writeQueryState({ mode: nextMode, ensName: nextEnsName })
+    writeQueryState({ mode: nextMode, ensName: normalizedEnsName })
     setIsLoading(true)
     setError(null)
 
@@ -95,7 +79,7 @@ function DiscoverResearchPage() {
       const nextResult = nextMode === 'example'
         ? resolveDiscoverResearchExampleResult(EXAMPLE_ID)
         : await resolveDiscoverResearchResultWithRpcUrls({
-            parentName: nextEnsName,
+            parentName: normalizedEnsName,
             rpcUrls: DEFAULT_RPC_URLS,
           })
 
@@ -116,49 +100,29 @@ function DiscoverResearchPage() {
 
   return (
     <Shell
-      eyebrow="ÆNS consumer-first discovery"
-      title="Discover the official research capability for an ENS identity"
-      intro={
-        <>
-          This route turns the current ÆNS MVP into a public web surface: start from a root identity,
-          discover the research capability, and inspect whether the endpoint is officially declared under
-          parent authorization.
-        </>
-      }
+      eyebrow="ÆNS"
+      title="Discovery"
+      intro={<>Find the official research endpoint for a root ENS identity.</>}
       actions={
         <>
-          <a className="button" href="../">
-            Back to ÆNS landing
-          </a>
-          <a className="button" href={researchCapabilityPath}>
-            Open research capability page
-          </a>
-          <a className="button" href={`${writeRecordsPath}?name=${encodeURIComponent(ensName)}`}>
-            Open write-records UI
-          </a>
-          <a className="button" href={repoUrl}>
-            View repo
-          </a>
+          <a className="button" href={links.landing}>Root explorer</a>
+          <a className="button" href={links.research}>Research page</a>
+          <a className="button" href={links.writeRecords}>Write records</a>
+          <a className="button" href={repoUrl}>Repo</a>
         </>
       }
     >
       <CardGrid>
         <Card>
-          <h2>Run the strong positive-path demo</h2>
-          <p>
-            This is the exact target state for the hackathon demo: a parent-authorized research capability with
-            an official endpoint declared.
-          </p>
+          <h2>Example mode</h2>
+          <p>Deterministic parent-authorized sample for demos and snapshots.</p>
           <button className="button" onClick={() => void runLookup('example', ensRoot)} type="button">
-            Load deterministic positive path
+            Load example
           </button>
         </Card>
+
         <Card>
-          <h2>Check current live ENS truth</h2>
-          <p>
-            Use the live lookup to inspect the current namespace honestly. Today this is useful because the
-            deployed public page is live even though the live ENS publication is still incomplete.
-          </p>
+          <h2>Live mode</h2>
           <form
             className="lookup-form"
             onSubmit={(event) => {
@@ -166,9 +130,7 @@ function DiscoverResearchPage() {
               void runLookup('live', ensName)
             }}
           >
-            <label className="label" htmlFor="ens-name">
-              Root ENS name
-            </label>
+            <label className="label" htmlFor="ens-name">Root ENS</label>
             <div className="input-row">
               <input
                 id="ens-name"
@@ -177,59 +139,21 @@ function DiscoverResearchPage() {
                 onChange={(event) => setEnsName(event.target.value)}
                 placeholder="vitalik.eth"
               />
-              <button className="button" type="submit">
-                Run live lookup
+              <button className="button" type="submit" disabled={isLoading || ensName.trim().length === 0}>
+                {isLoading ? 'Running…' : 'Run live lookup'}
               </button>
             </div>
           </form>
         </Card>
       </CardGrid>
 
-      <section className="grid two">
-        <article className="card">
-          <h2>Current mode</h2>
-          <p>
-            Mode: <span className="code">{mode}</span>
-          </p>
-          <p>
-            Data source: <span className="code">{sourceView.label}</span>
-          </p>
-          <p>
-            Source tag: <span className="code">{sourceView.raw}</span>
-          </p>
-          <p>
-            RPC fallbacks: <span className="code">{DEFAULT_RPC_URLS.length}</span>
-          </p>
-          <p>
-            Liveness stays separate from authority here. The result can tell you that an endpoint is official
-            without pretending it has been fully probed end-to-end.
-          </p>
-        </article>
-        <article className="card">
-          <h2>Why this route matters</h2>
-          <ul className="list-tight">
-            <li>judges can click a real consumer-first discovery surface</li>
-            <li>the positive-path demo is stable and deterministic</li>
-            <li>the live namespace can still be queried honestly</li>
-            <li>the result is visible as both structured JSON and a human-readable report</li>
-          </ul>
-        </article>
+      <section className="card">
+        <h2>Mode</h2>
+        <p>
+          Lookup mode: <span className="code">{mode}</span> · Source tag: <span className="code">{sourceView.raw}</span>
+        </p>
+        {sourceView.warning ? <p>{sourceView.warning}</p> : null}
       </section>
-
-      {sourceView.warning ? (
-        <section className="card">
-          <h2>Source integrity warning</h2>
-          <p>{sourceView.warning}</p>
-          <p>Result display is fail-closed until a known source tag is restored.</p>
-        </section>
-      ) : null}
-
-      {isLoading ? (
-        <section className="card">
-          <h2>Running lookup…</h2>
-          <p>Querying the discovery path now.</p>
-        </section>
-      ) : null}
 
       {error ? (
         <section className="card">

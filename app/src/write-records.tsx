@@ -4,8 +4,9 @@ import { createPublicClient, createWalletClient, custom, http, namehash } from '
 import { mainnet } from 'viem/chains'
 import { DEFAULT_RPC_URLS } from '../../src/config'
 import { resolveAensProfileWithRpcUrls } from '../../src/resolver'
-import { discoverResearchPath, ensRoot, repoUrl, researchCapabilityPath } from './content'
+import { ensRoot, repoUrl } from './content'
 import { Card, CardGrid, Shell } from './Shell'
+import { buildRouteLinks, normalizeEnsName } from './route-links'
 
 type EnsRecordWrite = {
   targetName: string
@@ -31,31 +32,17 @@ const ENS_TEXT_RESOLVER_ABI = [
   },
 ] as const
 
-function normalizeEnsName(value: string): string {
-  return value.trim().toLowerCase()
-}
-
 function normalizeUrl(value: string): string {
   return value.trim().replace(/\/+$/, '')
 }
 
 function deriveResearchName(rootName: string): string {
-  const normalizedRoot = normalizeEnsName(rootName)
-  if (!normalizedRoot.includes('.')) {
-    return `research.${normalizedRoot}`
-  }
-
-  return `research.${normalizedRoot}`
-}
-
-function toDiscoverHref(ensName: string): string {
-  const params = new URLSearchParams({ mode: 'live', name: ensName })
-  return `${discoverResearchPath}?${params.toString()}`
+  return `research.${normalizeEnsName(rootName)}`
 }
 
 function readInitialRootName(): string {
   const params = new URLSearchParams(window.location.search)
-  return normalizeEnsName(params.get('name')?.trim() || ensRoot)
+  return normalizeEnsName(params.get('name') ?? ensRoot)
 }
 
 function uniqueCapabilities(values: string[]): string[] {
@@ -112,6 +99,7 @@ function WriteRecordsPage() {
   const normalizedRootName = normalizeEnsName(rootName)
   const normalizedCapabilityName = normalizeEnsName(capabilityName)
   const normalizedServiceUrl = normalizeUrl(serviceUrl)
+  const links = buildRouteLinks(normalizedRootName)
 
   const plannedRecords = useMemo(() => {
     return [
@@ -169,11 +157,11 @@ function WriteRecordsPage() {
       const nextSubmitted: SubmittedTx[] = []
 
       for (const [index, record] of records.entries()) {
-        setStatus(`Writing record ${index + 1}/${records.length}: ${record.targetName} ${record.key}`)
+        setStatus(`Writing ${index + 1}/${records.length}: ${record.targetName} ${record.key}`)
 
         const resolverAddress = await publicClient.getEnsResolver({ name: record.targetName })
         if (!resolverAddress) {
-          throw new Error(`No resolver found for ${record.targetName}. Configure ENS resolver first.`)
+          throw new Error(`No resolver found for ${record.targetName}. Set resolver first in ENS Manager.`)
         }
 
         const hash = await walletClient.writeContract({
@@ -191,11 +179,10 @@ function WriteRecordsPage() {
           ...record,
           hash,
         })
-
         setSubmitted([...nextSubmitted])
       }
 
-      setStatus('Done. All planned records were written and confirmed on mainnet.')
+      setStatus('Done. All records written and confirmed on mainnet.')
     } catch (writeError) {
       const message = writeError instanceof Error ? writeError.message : String(writeError)
       setError(message)
@@ -207,34 +194,21 @@ function WriteRecordsPage() {
 
   return (
     <Shell
-      eyebrow="ÆNS writer"
-      title="Write ENS capability records from the UI"
-      intro={
-        <>
-          This page writes <span className="code">aens.capabilities</span>, <span className="code">aens.parent</span>,
-          and <span className="code">aens.service</span> directly through your wallet.
-        </>
-      }
+      eyebrow="ÆNS"
+      title="Write ENS Records"
+      intro={<>Write <span className="code">aens.capabilities</span>, <span className="code">aens.parent</span>, and <span className="code">aens.service</span> via wallet.</>}
       actions={
         <>
-          <a className="button" href="../">
-            Back to ÆNS landing
-          </a>
-          <a className="button" href={toDiscoverHref(normalizedRootName)}>
-            Open discovery route
-          </a>
-          <a className="button" href={researchCapabilityPath}>
-            Open research capability page
-          </a>
-          <a className="button" href={repoUrl}>
-            View repo
-          </a>
+          <a className="button" href={links.landing}>Root explorer</a>
+          <a className="button" href={links.discover}>Discovery</a>
+          <a className="button" href={links.research}>Research page</a>
+          <a className="button" href={repoUrl}>Repo</a>
         </>
       }
     >
       <CardGrid>
         <Card>
-          <h2>Record targets</h2>
+          <h2>Write form</h2>
           <form
             className="lookup-form"
             onSubmit={(event) => {
@@ -242,9 +216,7 @@ function WriteRecordsPage() {
               void handleWriteRecords()
             }}
           >
-            <label className="label" htmlFor="root-name-input">
-              Root ENS name
-            </label>
+            <label className="label" htmlFor="root-name-input">Root ENS</label>
             <input
               id="root-name-input"
               className="input"
@@ -253,9 +225,7 @@ function WriteRecordsPage() {
               placeholder="vitalik.eth"
             />
 
-            <label className="label" htmlFor="capability-name-input">
-              Capability ENS name
-            </label>
+            <label className="label" htmlFor="capability-name-input">Capability ENS</label>
             <div className="input-row">
               <input
                 id="capability-name-input"
@@ -264,18 +234,12 @@ function WriteRecordsPage() {
                 onChange={(event) => setCapabilityName(event.target.value)}
                 placeholder="research.vitalik.eth"
               />
-              <button
-                className="button"
-                type="button"
-                onClick={() => setCapabilityName(deriveResearchName(rootName))}
-              >
-                Derive from root
+              <button className="button" type="button" onClick={() => setCapabilityName(deriveResearchName(rootName))}>
+                Derive
               </button>
             </div>
 
-            <label className="label" htmlFor="service-url-input">
-              Service URL
-            </label>
+            <label className="label" htmlFor="service-url-input">Service URL</label>
             <input
               id="service-url-input"
               className="input"
@@ -294,17 +258,14 @@ function WriteRecordsPage() {
                 || normalizedServiceUrl.length === 0
               }
             >
-              {isSubmitting ? 'Writing…' : 'Write records via wallet'}
+              {isSubmitting ? 'Writing…' : 'Write records'}
             </button>
           </form>
         </Card>
 
         <Card>
-          <h2>Planned write payload</h2>
+          <h2>Planned writes</h2>
           <pre className="result-block">{JSON.stringify(plannedRecords, null, 2)}</pre>
-          <p className="small">
-            On submit, parent capabilities are merged with currently on-chain values (if readable), then written.
-          </p>
         </Card>
       </CardGrid>
 
@@ -321,9 +282,7 @@ function WriteRecordsPage() {
             {submitted.map((tx) => (
               <li key={tx.hash}>
                 <span className="code">{tx.targetName}</span> · <span className="code">{tx.key}</span> ·{' '}
-                <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank" rel="noreferrer">
-                  {tx.hash}
-                </a>
+                <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank" rel="noreferrer">{tx.hash}</a>
               </li>
             ))}
           </ul>

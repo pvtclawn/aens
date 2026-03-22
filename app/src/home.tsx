@@ -3,25 +3,17 @@ import ReactDOM from 'react-dom/client'
 import { DEFAULT_RPC_URLS } from '../../src/config'
 import { resolveAensProfileWithRpcUrls, type AensResolvedProfile } from '../../src/resolver'
 import { Card, CardGrid, Shell } from './Shell'
-import { capabilityBullets, discoverResearchPath, ensRoot, repoUrl, researchCapabilityPath, writeRecordsPath } from './content'
+import { capabilityBullets, ensRoot, repoUrl } from './content'
+import { buildRouteLinks, normalizeEnsName } from './route-links'
 
 function readQueryEnsName(): string {
   const params = new URLSearchParams(window.location.search)
-  return params.get('name')?.trim() || ensRoot
+  return normalizeEnsName(params.get('name') ?? ensRoot)
 }
 
 function writeQueryEnsName(ensName: string) {
-  const params = new URLSearchParams(window.location.search)
-
-  if (ensName === ensRoot) {
-    params.delete('name')
-  } else {
-    params.set('name', ensName)
-  }
-
-  const query = params.toString()
-  const nextUrl = query ? `/?${query}` : '/'
-  window.history.replaceState(null, '', nextUrl)
+  const links = buildRouteLinks(ensName)
+  window.history.replaceState(null, '', links.landing)
 }
 
 function joinCapabilities(capabilities: string[] | null | undefined): string {
@@ -32,16 +24,6 @@ function joinCapabilities(capabilities: string[] | null | undefined): string {
   return capabilities.join(', ')
 }
 
-function toDiscoverHref(ensName: string): string {
-  const params = new URLSearchParams({ mode: 'live', name: ensName })
-  return `${discoverResearchPath}?${params.toString()}`
-}
-
-function toResearchHref(ensName: string): string {
-  const params = new URLSearchParams({ name: ensName })
-  return `${researchCapabilityPath}?${params.toString()}`
-}
-
 function HomePage() {
   const initialEnsName = useMemo(() => readQueryEnsName(), [])
   const [ensName, setEnsName] = useState(initialEnsName)
@@ -50,14 +32,15 @@ function HomePage() {
   const [isLoading, setIsLoading] = useState(false)
 
   async function runLookup(nextEnsName: string) {
-    setEnsName(nextEnsName)
-    writeQueryEnsName(nextEnsName)
+    const normalizedEnsName = normalizeEnsName(nextEnsName)
+    setEnsName(normalizedEnsName)
+    writeQueryEnsName(normalizedEnsName)
     setIsLoading(true)
     setError(null)
 
     try {
       const nextProfile = await resolveAensProfileWithRpcUrls({
-        ensName: nextEnsName,
+        ensName: normalizedEnsName,
         rpcUrls: DEFAULT_RPC_URLS,
       })
       setProfile(nextProfile)
@@ -76,68 +59,48 @@ function HomePage() {
   }, [])
 
   const resolvedEnsName = profile?.ensName ?? ensName
-  const resolvedAddress = profile?.address ?? '(no address resolved)'
+  const links = buildRouteLinks(resolvedEnsName)
+
+  const resolvedAddress = profile?.address ?? '(not found on-chain yet)'
   const declaredParent = profile?.records.parentName ?? '(not found on-chain yet)'
   const declaredService = profile?.records.serviceUrl ?? '(not found on-chain yet)'
-  const declaredProofs = profile?.records.proofsUrl ?? '(not found on-chain yet)'
-  const declaredReceipts = profile?.records.receiptsUrl ?? '(not found on-chain yet)'
   const declaredCapabilities = joinCapabilities(profile?.records.capabilities)
 
   const hasResolvedSignal = Boolean(
     profile
-    && (
-      profile.address
-      || profile.records.parentName
-      || profile.records.serviceUrl
-      || profile.records.proofsUrl
-      || profile.records.receiptsUrl
-      || (profile.records.capabilities && profile.records.capabilities.length > 0)
-    ),
+      && (
+        profile.address
+        || profile.records.parentName
+        || profile.records.serviceUrl
+        || (profile.records.capabilities && profile.records.capabilities.length > 0)
+      ),
   )
 
   return (
     <Shell
-      eyebrow="ÆNS public landing"
-      title="ÆNS live ENS root explorer"
-      intro={
-        <>
-          Browser-first chain read for any ENS root. Enter a name, resolve on-chain records directly,
-          then jump to discovery and capability routes with the same root identity.
-        </>
-      }
+      eyebrow="ÆNS"
+      title="ENS Root Explorer"
+      intro={<>Resolve ENS records in-browser, then jump into discovery and write flows with the same root name.</>}
       actions={
         <>
-          <a className="button" href={toResearchHref(resolvedEnsName)}>
-            Open research capability page
-          </a>
-          <a className="button" href={toDiscoverHref(resolvedEnsName)}>
-            Open discovery route
-          </a>
-          <a className="button" href={`${writeRecordsPath}?name=${encodeURIComponent(resolvedEnsName)}`}>
-            Open write-records UI
-          </a>
-          <a className="button" href={repoUrl}>
-            View repo
-          </a>
+          <a className="button" href={links.discover}>Discovery</a>
+          <a className="button" href={links.research}>Research page</a>
+          <a className="button" href={links.writeRecords}>Write records</a>
+          <a className="button" href={repoUrl}>Repo</a>
         </>
       }
     >
       <CardGrid>
         <Card>
-          <h2>Resolve live ENS root</h2>
-          <p>
-            Reads resolver/text records directly from chain in the browser using RPC fallback.
-          </p>
+          <h2>Lookup</h2>
           <form
             className="lookup-form"
             onSubmit={(event) => {
               event.preventDefault()
-              void runLookup(ensName.trim())
+              void runLookup(ensName)
             }}
           >
-            <label className="label" htmlFor="ens-root-input">
-              ENS root name
-            </label>
+            <label className="label" htmlFor="ens-root-input">ENS root</label>
             <div className="input-row">
               <input
                 id="ens-root-input"
@@ -152,18 +115,40 @@ function HomePage() {
             </div>
           </form>
         </Card>
+
         <Card>
-          <h2>What ÆNS is doing</h2>
-          <ul className="list-tight">
-            {capabilityBullets.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-          <p>
-            RPC fallbacks: <span className="code">{DEFAULT_RPC_URLS.length}</span>
-          </p>
+          <h2>Resolved state</h2>
+          <p>ENS root: <span className="code">{resolvedEnsName}</span></p>
+          <p>Address: <span className="code">{resolvedAddress}</span></p>
+          <p>aens.parent: <span className="code">{declaredParent}</span></p>
+          <p>aens.service: <span className="code">{declaredService}</span></p>
+          <p>aens.capabilities: <span className="code">{declaredCapabilities}</span></p>
         </Card>
       </CardGrid>
+
+      <section className="card">
+        <h2>What this app does</h2>
+        <ul className="list-tight">
+          {capabilityBullets.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+        <p className="small">RPC fallbacks configured: {DEFAULT_RPC_URLS.length}</p>
+      </section>
+
+      {!error && profile && !hasResolvedSignal ? (
+        <section className="card">
+          <h2>No records yet</h2>
+          <p>
+            <span className="code">{resolvedEnsName}</span> has no resolver/text records right now.
+            Use write-records to publish <span className="code">aens.capabilities</span>,{' '}
+            <span className="code">aens.parent</span>, and <span className="code">aens.service</span>.
+          </p>
+          <div className="actions">
+            <a className="button" href={links.writeRecords}>Open write-records UI</a>
+          </div>
+        </section>
+      ) : null}
 
       {error ? (
         <section className="card">
@@ -171,58 +156,6 @@ function HomePage() {
           <p>{error}</p>
         </section>
       ) : null}
-
-      {!error && profile && !hasResolvedSignal ? (
-        <section className="card">
-          <h2>No on-chain records resolved yet</h2>
-          <p>
-            <span className="code">{resolvedEnsName}</span> currently has no visible address/text records on mainnet,
-            so resolution output is empty by design.
-          </p>
-          <p>
-            Next step: set resolver + write <span className="code">aens.capabilities</span>,{' '}
-            <span className="code">aens.parent</span>, and <span className="code">aens.service</span>.
-          </p>
-          <div className="actions">
-            <a className="button" href={`${writeRecordsPath}?name=${encodeURIComponent(resolvedEnsName)}`}>
-              Open write-records UI
-            </a>
-          </div>
-        </section>
-      ) : null}
-
-      <section className="grid two">
-        <article className="card">
-          <h2>Resolved identity</h2>
-          <p>
-            ENS root: <span className="code">{resolvedEnsName}</span>
-          </p>
-          <p>
-            Address: <span className="code">{resolvedAddress}</span>
-          </p>
-          <p>
-            Declared parent: <span className="code">{declaredParent}</span>
-          </p>
-          <p>
-            Declared capabilities: <span className="code">{declaredCapabilities}</span>
-          </p>
-        </article>
-        <article className="card">
-          <h2>Resolved service records</h2>
-          <p>
-            aens.service: <span className="code">{declaredService}</span>
-          </p>
-          <p>
-            aens.proofs: <span className="code">{declaredProofs}</span>
-          </p>
-          <p>
-            aens.receipts: <span className="code">{declaredReceipts}</span>
-          </p>
-          <p>
-            This view is chain-read truth, not a hidden backend cache.
-          </p>
-        </article>
-      </section>
     </Shell>
   )
 }
