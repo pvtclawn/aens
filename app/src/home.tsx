@@ -80,11 +80,9 @@ function HomePage() {
     <Shell
       eyebrow="ÆNS"
       title="ENS Root Explorer"
-      intro={<>Resolve ENS records in-browser, then jump into discovery and write flows with the same root name.</>}
+      intro={<>Resolve ENS records in-browser, then jump straight into the write flow with the same root name.</>}
       actions={
         <>
-          <a className="button" href={links.discover}>Discovery</a>
-          <a className="button" href={links.research}>Research endpoint</a>
           <a className="button" href={links.writeRecords}>Write records</a>
           <a className="button" href={repoUrl}>Repo</a>
         </>

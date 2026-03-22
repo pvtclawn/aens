@@ -1,86 +1,53 @@
 # Synthesis demo script — ÆNS (2 minutes)
 
 ## Goal
-Show the core ÆNS idea clearly:
-- root ENS name = identity anchor
-- child subname = capability surface
-- `parent-authorized` = official relationship
-
-This is an **official capability discovery** demo, not a full runtime/payment demo.
+Show the real product clearly:
+- root explorer
+- write records
+- explicit wallet boundary
 
 ## 2-minute script
 
-### 0:00–0:15 — Open with the user question
-"If I start with an agent’s root ENS identity, how do I find its official research endpoint — not just some adjacent URL?"
+### 0:00–0:20 — Open with the user question
+"If I’m looking at an ENS identity, what records are there now, and how do I write the missing `aens.*` ones cleanly?"
 
-### 0:15–0:30 — State the thesis plainly
-"ÆNS makes ENS hierarchy load-bearing for that question. The parent name is identity, the child subname is capability, and `parent-authorized` is the milestone that makes the relationship official."
+### 0:20–0:40 — State the thesis plainly
+"ÆNS is intentionally narrow now: one page to inspect a root ENS identity, one page to write the records that make the naming scheme useful. No fake extra surfaces."
 
-### 0:30–0:55 — Start with the clearest current proof of the target flow
+### 0:40–1:05 — Show the root explorer
 Open:
-- `docs/submission/artifacts/discover-research-example.json`
+- `https://aens-nine.vercel.app/`
 
 Narrate:
-"Start with the wrapped example artifact for the clearest current proof of the target discovery flow: given a root ENS identity, derive the research capability, verify whether it is official, and return the endpoint it declares."
+"This page resolves the root ENS name and shows the current `aens.parent`, `aens.service`, and `aens.capabilities` state directly from chain-backed reads."
 
-### 0:55–1:15 — Show a real public surface early
+### 1:05–1:35 — Show the write flow
 Open:
-- `https://aens-nine.vercel.app/research-capability/`
+- `https://aens-nine.vercel.app/write-records/`
 
 Narrate:
-"This is the current public visual anchor for the build. So the demo is not just a JSON bundle or local shell exercise — there is already a live public research surface."
+"This is the action surface. It prepares the exact text-record writes for `aens.capabilities`, `aens.parent`, and `aens.service`, and it keeps the wallet approval as the explicit human boundary."
 
-### 1:15–1:35 — Show current namespace truth honestly
-Open:
-- `docs/submission/artifacts/discover-research-live.json`
-
+### 1:35–1:50 — Show the planned writes
 Point directly to:
-- `sourceMode: live`
-- `authorizationStatus` (current live result)
-- `preferredSurfaceReady` and `bootstrapProofReady` (current public status)
+- root ENS field
+- capability ENS field
+- service URL field
+- planned writes JSON block
 
 Say:
-"The important thing here is that ÆNS reports current truth honestly. The example artifact shows the target authority state; the live artifact shows the current namespace truth and the current public deployment status."
+"The point is clarity: you can see exactly what will be written before anything is signed."
 
-### 1:35–1:50 — Keep reproducibility visible
-Run:
-```bash
-bun run discover-research -- --example parent-authorized-capability --json
-bun run discover-research -- --json pvtclawn.eth
-bun run check-public-surface
-```
-
-Narrate:
-"These commands reproduce the target-state artifact, the live-truth artifact, and the current public-surface status directly from the repo."
-
-### 1:50–2:00 — Close on the wedge and current deployed surface
+### 1:50–2:00 — Close on the product truth
 Say:
-"That’s the core of ÆNS: official capability discovery from ENS.
-- `pvtclawn.eth` = who
-- `research.pvtclawn.eth` = what
-- `parent-authorized` = why the endpoint is official
-
-The `/discover-research/` route is now live on the preferred public surface, and the wrapped artifacts stay as the strongest machine-facing truth surface."
-
-## Optional honesty note if asked about live ENS state
-If a judge asks whether the live `pvtclawn.eth` namespace is already fully published under ENS, answer directly:
-
-"Not yet. The current build demonstrates the consumer-first discovery primitive, the exact target authority state via the deterministic positive path, and the live preferred public capability page. The remaining stateful publication step is finishing the live ENS write path under `pvtclawn.eth`."
-
-## Live-demo emphasis
-Keep repeating these three points:
-1. the demo answers a real consumer question
-2. the child capability is the center of the design
-3. `parent-authorized` is the real protocol milestone
+"That’s ÆNS now: inspect the root, prepare the write, and keep the wallet boundary honest. The old research/discovery routes are gone because they were product fiction."
 
 ## Do not overclaim
 Avoid saying this demo proves:
-- full invocation
-- payment flow
+- automatic wallet execution
 - runtime auth
-- broad production readiness
-- fully live end-to-end ENS publication for `pvtclawn.eth`
-- end-to-end machine closure
+- payments
+- full production hardening
 
 ## Good final one-liner
-"ÆNS lets software discover official child capabilities from a root ENS identity."
+"ÆNS is the minimal ENS utility for reading root identity state and writing the `aens.*` records that matter." 

@@ -25,7 +25,7 @@ import {
 import { resolveAensProfile } from './resolver'
 
 export const DEFAULT_PUBLISH_ROOT_NAME = 'pvtclawn.eth'
-export const DEFAULT_PUBLISH_CHILD_NAME = 'research.pvtclawn.eth'
+export const DEFAULT_PUBLISH_CHILD_NAME = 'write.pvtclawn.eth'
 
 export type PublishAssistState =
   | 'preflight-ready'

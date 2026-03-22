@@ -39,30 +39,24 @@ export const PREFERRED_RUNTIME_MARKERS = {
       },
     ],
   },
-  researchCapability: {
+  writeRecords: {
     domain: 'preferred-runtime',
     matchMode: 'exact',
-    canonical: 'Research endpoint — ÆNS',
+    canonical: 'Write ENS capability records — ÆNS',
     aliases: [
       {
-        marker: 'Research Capability Route',
+        marker: 'Write ENS Records',
         sunsetAt: MARKER_ALIAS_ALLOW_UNTIL,
         reason: 'runtime h1 alias while checker reads static HTML content',
       },
     ],
-  },
-  discoverResearch: {
-    domain: 'preferred-runtime',
-    matchMode: 'exact',
-    canonical: 'Discover the official research capability for an ENS identity',
-    aliases: [],
   },
 } satisfies Record<string, SurfaceMarkerContract>
 
 export const BOOTSTRAP_FALLBACK_MARKER: SurfaceMarkerContract = {
   domain: 'bootstrap-fallback',
   matchMode: 'exact',
-  canonical: 'PrivateClawn Research Capability Surface',
+  canonical: 'ÆNS Write Records Surface',
   aliases: [],
 }
 

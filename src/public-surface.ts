@@ -11,11 +11,9 @@ import {
 import { isClassFirstFailureSummary } from './surface-summary-format'
 
 export const DEFAULT_PUBLIC_BASE_URL = 'https://aens-nine.vercel.app/'
-export const RESEARCH_CAPABILITY_PATH = 'research/'
-export const DISCOVER_RESEARCH_PATH = 'discover-research/'
+export const RESEARCH_CAPABILITY_PATH = 'write-records/'
 export const DEFAULT_RESEARCH_CAPABILITY_URL = new URL(RESEARCH_CAPABILITY_PATH, DEFAULT_PUBLIC_BASE_URL).toString()
-export const DEFAULT_DISCOVER_RESEARCH_URL = new URL(DISCOVER_RESEARCH_PATH, DEFAULT_PUBLIC_BASE_URL).toString()
-export const GITHUB_BLOB_STUB_URL = 'https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md'
+export const GITHUB_BLOB_STUB_URL = 'https://github.com/pvtclawn/aens/blob/main/docs/public/write-records-stub.md'
 
 export type SurfaceMarkerMatchType = 'canonical' | 'alias' | 'none'
 export type SurfaceFailureClass =
@@ -150,14 +148,9 @@ export function buildPreferredSurfaceTargets(baseUrl: string): SurfaceCheckTarge
       markerContract: PREFERRED_RUNTIME_MARKERS.publicRoot,
     }),
     targetFromMarkerContract({
-      label: 'research endpoint page',
+      label: 'write records page',
       url: new URL(RESEARCH_CAPABILITY_PATH, normalizedBaseUrl).toString(),
-      markerContract: PREFERRED_RUNTIME_MARKERS.researchCapability,
-    }),
-    targetFromMarkerContract({
-      label: 'discover research page',
-      url: new URL(DISCOVER_RESEARCH_PATH, normalizedBaseUrl).toString(),
-      markerContract: PREFERRED_RUNTIME_MARKERS.discoverResearch,
+      markerContract: PREFERRED_RUNTIME_MARKERS.writeRecords,
     }),
   ]
 }

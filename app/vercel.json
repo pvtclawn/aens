@@ -6,32 +6,34 @@
   "trailingSlash": true,
   "redirects": [
     {
+      "source": "/research",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/research/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
       "source": "/research-capability",
-      "destination": "/research",
+      "destination": "/",
       "permanent": true
     },
     {
       "source": "/research-capability/",
-      "destination": "/research/",
+      "destination": "/",
       "permanent": true
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/research",
-      "destination": "/research/index.html"
-    },
-    {
-      "source": "/research/",
-      "destination": "/research/index.html"
     },
     {
       "source": "/discover-research",
-      "destination": "/discover-research/index.html"
+      "destination": "/",
+      "permanent": true
     },
     {
       "source": "/discover-research/",
-      "destination": "/discover-research/index.html"
+      "destination": "/",
+      "permanent": true
     }
   ]
 }

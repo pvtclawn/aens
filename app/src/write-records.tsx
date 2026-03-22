@@ -4,7 +4,7 @@ import { createPublicClient, createWalletClient, custom, http, namehash } from '
 import { mainnet } from 'viem/chains'
 import { DEFAULT_RPC_URLS } from '../../src/config'
 import { resolveAensProfileWithRpcUrls } from '../../src/resolver'
-import { ensRoot, repoUrl, researchPath } from './content'
+import { ensRoot, repoUrl, writeRecordsPath } from './content'
 import { Card, CardGrid, Shell } from './Shell'
 import { buildRouteLinks, normalizeEnsName } from './route-links'
 
@@ -36,13 +36,13 @@ function normalizeUrl(value: string): string {
   return value.trim().replace(/\/+$/, '')
 }
 
-function deriveResearchName(rootName: string): string {
-  return `research.${normalizeEnsName(rootName)}`
+function deriveWriteCapabilityName(rootName: string): string {
+  return `write.${normalizeEnsName(rootName)}`
 }
 
 function deriveSuggestedServiceUrl(rootName: string): string {
   const params = new URLSearchParams({ name: normalizeEnsName(rootName) }).toString()
-  return `${window.location.origin}${researchPath}?${params}`
+  return `${window.location.origin}${writeRecordsPath}?${params}`
 }
 
 function readInitialRootName(): string {
@@ -94,7 +94,7 @@ async function resolveMergedCapabilities(rootName: string, capabilityName: strin
 function WriteRecordsPage() {
   const initialRootName = useMemo(() => readInitialRootName(), [])
   const [rootName, setRootName] = useState(initialRootName)
-  const [capabilityName, setCapabilityName] = useState(deriveResearchName(initialRootName))
+  const [capabilityName, setCapabilityName] = useState(deriveWriteCapabilityName(initialRootName))
   const [serviceUrl, setServiceUrl] = useState(deriveSuggestedServiceUrl(initialRootName))
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [status, setStatus] = useState<string>('Ready')
@@ -206,8 +206,6 @@ function WriteRecordsPage() {
       actions={
         <>
           <a className="button" href={links.landing}>Root explorer</a>
-          <a className="button" href={links.discover}>Discovery</a>
-          <a className="button" href={links.research}>Research endpoint</a>
           <a className="button" href={repoUrl}>Repo</a>
         </>
       }
@@ -238,9 +236,9 @@ function WriteRecordsPage() {
                 className="input"
                 value={capabilityName}
                 onChange={(event) => setCapabilityName(event.target.value)}
-                placeholder="research.vitalik.eth"
+                placeholder="write.vitalik.eth"
               />
-              <button className="button" type="button" onClick={() => setCapabilityName(deriveResearchName(rootName))}>
+              <button className="button" type="button" onClick={() => setCapabilityName(deriveWriteCapabilityName(rootName))}>
                 Derive
               </button>
             </div>
@@ -252,7 +250,7 @@ function WriteRecordsPage() {
                 className="input"
                 value={serviceUrl}
                 onChange={(event) => setServiceUrl(event.target.value)}
-                placeholder="https://example.com/research/?name=theaens.eth"
+                placeholder="https://example.com/write-records/?name=theaens.eth"
               />
               <button className="button" type="button" onClick={() => setServiceUrl(suggestedServiceUrl)}>
                 Use suggested

@@ -14,7 +14,7 @@ test('default marker contracts pass normalized cross-domain overlap validation',
 })
 
 test('hasNormalizedMarkerOverlap catches normalized unicode/spacing overlap', () => {
-  expect(hasNormalizedMarkerOverlap('Research endpoint — ÆNS', 'research   endpoint — æns')).toBe(true)
+  expect(hasNormalizedMarkerOverlap('Write ENS capability records — ÆNS', 'write   ens capability records — æns')).toBe(true)
 })
 
 test('validateSurfaceMarkerContracts rejects unknown match modes', () => {
@@ -40,7 +40,7 @@ test('validateSurfaceMarkerContracts rejects normalized cross-domain overlap', (
     route: {
       domain: 'preferred-runtime',
       matchMode: 'exact',
-      canonical: 'Research Capability',
+      canonical: 'Write Records Surface',
       aliases: [],
     },
   } satisfies Record<string, SurfaceMarkerContract>
@@ -48,7 +48,7 @@ test('validateSurfaceMarkerContracts rejects normalized cross-domain overlap', (
   const fallbackMarker: SurfaceMarkerContract = {
     domain: 'bootstrap-fallback',
     matchMode: 'exact',
-    canonical: 'Research   Capability   Surface',
+    canonical: 'Write   Records   Surface',
     aliases: [],
   }
 
@@ -62,5 +62,5 @@ test('validateSurfaceMarkerContracts rejects normalized cross-domain overlap', (
 
 test('baseline contracts still include expected role markers', () => {
   expect(PREFERRED_RUNTIME_MARKERS.publicRoot.canonical).toBe('ÆNS — ENS root explorer')
-  expect(PREFERRED_RUNTIME_MARKERS.researchCapability.canonical).toBe('Research endpoint — ÆNS')
+  expect(PREFERRED_RUNTIME_MARKERS.writeRecords.canonical).toBe('Write ENS capability records — ÆNS')
 })

@@ -3,7 +3,7 @@ import { DEFAULT_RESEARCH_CAPABILITY_URL, GITHUB_BLOB_STUB_URL } from './public-
 
 export const DEFAULT_PROOF_DIR = 'docs/proof/live-session'
 export const DEFAULT_PROOF_PUBLICATION_MODE = 'bootstrap'
-export const GITHUB_BOOTSTRAP_DOC_PATH = 'docs/public/research-capability-stub.md'
+export const GITHUB_BOOTSTRAP_DOC_PATH = 'docs/public/write-records-stub.md'
 
 export const DEFAULT_SERVICE_URLS = {
   preferred: DEFAULT_RESEARCH_CAPABILITY_URL,
