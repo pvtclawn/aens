@@ -4,14 +4,26 @@
   "buildCommand": "bun run build",
   "outputDirectory": "dist",
   "trailingSlash": true,
-  "rewrites": [
+  "redirects": [
     {
       "source": "/research-capability",
-      "destination": "/research-capability/index.html"
+      "destination": "/research",
+      "permanent": true
     },
     {
       "source": "/research-capability/",
-      "destination": "/research-capability/index.html"
+      "destination": "/research/",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/research",
+      "destination": "/research/index.html"
+    },
+    {
+      "source": "/research/",
+      "destination": "/research/index.html"
     },
     {
       "source": "/discover-research",

@@ -135,7 +135,7 @@ test('buildPublicTruthSnapshotSection embeds the live verifier lines into the ar
   const section = buildPublicTruthSnapshotSection([
     'Preferred public base: https://aens-nine.vercel.app/',
     'public root: ok (https://aens-nine.vercel.app/)',
-    'Preferred public surface ready: no (https://aens-nine.vercel.app/research-capability/)',
+    'Preferred public surface ready: no (https://aens-nine.vercel.app/research/)',
     'Bootstrap proof ready: yes (https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md)',
   ])
 

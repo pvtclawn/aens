@@ -14,7 +14,7 @@ test('default marker contracts pass normalized cross-domain overlap validation',
 })
 
 test('hasNormalizedMarkerOverlap catches normalized unicode/spacing overlap', () => {
-  expect(hasNormalizedMarkerOverlap('Research Capability — ÆNS', 'research   capability — æns')).toBe(true)
+  expect(hasNormalizedMarkerOverlap('Research endpoint — ÆNS', 'research   endpoint — æns')).toBe(true)
 })
 
 test('validateSurfaceMarkerContracts rejects unknown match modes', () => {
@@ -62,5 +62,5 @@ test('validateSurfaceMarkerContracts rejects normalized cross-domain overlap', (
 
 test('baseline contracts still include expected role markers', () => {
   expect(PREFERRED_RUNTIME_MARKERS.publicRoot.canonical).toBe('ÆNS — ENS root explorer')
-  expect(PREFERRED_RUNTIME_MARKERS.researchCapability.canonical).toBe('Research Capability — ÆNS')
+  expect(PREFERRED_RUNTIME_MARKERS.researchCapability.canonical).toBe('Research endpoint — ÆNS')
 })

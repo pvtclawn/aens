@@ -7,21 +7,21 @@ import {
 
 test('parseSurfaceFailureSummary parses class-first failure lines', () => {
   const parsed = parseSurfaceFailureSummary(
-    'research capability page: alias-expired (alias expired (canonical marker required)) (https://aens-nine.vercel.app/research-capability/)',
+    'research endpoint page: alias-expired (alias expired (canonical marker required)) (https://aens-nine.vercel.app/research/)',
   )
 
   expect(parsed).toEqual({
-    surfaceLabel: 'research capability page',
+    surfaceLabel: 'research endpoint page',
     failureClass: 'alias-expired',
     cue: 'alias expired (canonical marker required)',
-    url: 'https://aens-nine.vercel.app/research-capability/',
+    url: 'https://aens-nine.vercel.app/research/',
   })
 })
 
 test('isClassFirstFailureSummary rejects prose-first failure lines', () => {
   expect(
     isClassFirstFailureSummary(
-      'research capability page: reachable but missing expected marker (https://aens-nine.vercel.app/research-capability/)',
+      'research endpoint page: reachable but missing expected marker (https://aens-nine.vercel.app/research/)',
     ),
   ).toBe(false)
 })

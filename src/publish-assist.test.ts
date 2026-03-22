@@ -31,7 +31,7 @@ function buildPublicProofState(input: {
         body: 'ÆNS — PrivateClawn landing',
       },
       {
-        label: 'research capability page',
+        label: 'research endpoint page',
         url: DEFAULT_RESEARCH_CAPABILITY_URL,
         status: input.preferredSurfaceReady ? 200 : 404,
         expectedMarker: 'PrivateClawn Research Capability',

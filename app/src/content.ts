@@ -1,4 +1,4 @@
-export const researchCapabilityPath = '/research-capability/'
+export const researchPath = '/research/'
 export const discoverResearchPath = '/discover-research/'
 export const writeRecordsPath = '/write-records/'
 export const repoUrl = 'https://github.com/pvtclawn/aens'

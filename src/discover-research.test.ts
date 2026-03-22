@@ -10,7 +10,7 @@ import {
 
 const PARENT = 'pvtclawn.eth'
 const CHILD = 'research.pvtclawn.eth'
-const SERVICE_URL = 'https://aens-nine.vercel.app/research-capability/'
+const SERVICE_URL = 'https://aens-nine.vercel.app/research/'
 
 test('parseDiscoverResearchArgs accepts a parent name, example mode, and optional json flag', () => {
   expect(parseDiscoverResearchArgs(['pvtclawn.eth'])).toEqual({

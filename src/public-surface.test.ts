@@ -16,10 +16,10 @@ import { parseSurfaceFailureSummary } from './surface-summary-format'
 
 function buildResult(overrides: Partial<SurfaceCheckResult> = {}): SurfaceCheckResult {
   return {
-    label: 'research capability page',
-    url: 'https://aens-nine.vercel.app/research-capability/',
+    label: 'research endpoint page',
+    url: 'https://aens-nine.vercel.app/research/',
     status: 200,
-    expectedMarker: 'Research Capability — ÆNS',
+    expectedMarker: 'Research endpoint — ÆNS',
     expectedMarkerAliases: [
       {
         marker: 'Research Capability Route',
@@ -29,9 +29,9 @@ function buildResult(overrides: Partial<SurfaceCheckResult> = {}): SurfaceCheckR
     ],
     markerDomain: 'preferred-runtime',
     markerMatchType: 'canonical',
-    matchedMarker: 'Research Capability — ÆNS',
+    matchedMarker: 'Research endpoint — ÆNS',
     matchMode: 'exact',
-    body: 'Research Capability — ÆNS',
+    body: 'Research endpoint — ÆNS',
     ...overrides,
   }
 }
@@ -68,9 +68,9 @@ test('buildPreferredSurfaceTargets derives role-based runtime marker contracts w
       matchMode: 'exact',
     },
     {
-      label: 'research capability page',
-      url: 'https://aens-nine.vercel.app/research-capability/',
-      expectedMarker: 'Research Capability — ÆNS',
+      label: 'research endpoint page',
+      url: 'https://aens-nine.vercel.app/research/',
+      expectedMarker: 'Research endpoint — ÆNS',
       expectedMarkerAliases: [
         {
           marker: 'Research Capability Route',
@@ -106,8 +106,8 @@ test('buildFallbackSurfaceTarget keeps bootstrap marker contract separate from r
 test('resolveSurfaceMarkerMatch supports canonical and bounded alias matching for explicit mode', () => {
   expect(
     resolveSurfaceMarkerMatch({
-      body: 'Research Capability — ÆNS',
-      expectedMarker: 'Research Capability — ÆNS',
+      body: 'Research endpoint — ÆNS',
+      expectedMarker: 'Research endpoint — ÆNS',
       expectedMarkerAliases: [
         {
           marker: 'Research Capability Route',
@@ -120,13 +120,13 @@ test('resolveSurfaceMarkerMatch supports canonical and bounded alias matching fo
     }),
   ).toMatchObject({
     markerMatchType: 'canonical',
-    matchedMarker: 'Research Capability — ÆNS',
+    matchedMarker: 'Research endpoint — ÆNS',
   })
 
   expect(
     resolveSurfaceMarkerMatch({
       body: 'Research Capability Route',
-      expectedMarker: 'Research Capability — ÆNS',
+      expectedMarker: 'Research endpoint — ÆNS',
       expectedMarkerAliases: [
         {
           marker: 'Research Capability Route',
@@ -145,7 +145,7 @@ test('resolveSurfaceMarkerMatch supports canonical and bounded alias matching fo
   expect(
     resolveSurfaceMarkerMatch({
       body: 'Research Capability Route',
-      expectedMarker: 'Research Capability — ÆNS',
+      expectedMarker: 'Research endpoint — ÆNS',
       expectedMarkerAliases: [
         {
           marker: 'Research Capability Route',
@@ -164,8 +164,8 @@ test('resolveSurfaceMarkerMatch supports canonical and bounded alias matching fo
 
 test('resolveSurfaceMarkerMatch fails closed on unknown matchMode', () => {
   const result = resolveSurfaceMarkerMatch({
-    body: 'Research Capability — ÆNS',
-    expectedMarker: 'Research Capability — ÆNS',
+    body: 'Research endpoint — ÆNS',
+    expectedMarker: 'Research endpoint — ÆNS',
     expectedMarkerAliases: [],
     matchMode: 'mystery-mode',
     nowIso: '2026-03-22T10:00:00.000Z',
@@ -177,10 +177,10 @@ test('resolveSurfaceMarkerMatch fails closed on unknown matchMode', () => {
 
 test('resolveSurfaceFailureClass keeps stricter class and never downgrades to marker-missing', () => {
   const result: SurfaceCheckResult = {
-    label: 'research capability page',
-    url: 'https://aens-nine.vercel.app/research-capability/',
+    label: 'research endpoint page',
+    url: 'https://aens-nine.vercel.app/research/',
     status: 200,
-    expectedMarker: 'Research Capability — ÆNS',
+    expectedMarker: 'Research endpoint — ÆNS',
     expectedMarkerAliases: [],
     markerDomain: 'preferred-runtime',
     markerMatchType: 'none',
@@ -202,7 +202,7 @@ test('surfaceCheckPassed requires http 200 plus canonical or alias marker match'
 
 test('summarizeSurfaceCheck explains success, alias success, and failures', () => {
   expect(summarizeSurfaceCheck(buildResult())).toBe(
-    'research capability page: ok (https://aens-nine.vercel.app/research-capability/)',
+    'research endpoint page: ok (https://aens-nine.vercel.app/research/)',
   )
 
   expect(
@@ -213,15 +213,15 @@ test('summarizeSurfaceCheck explains success, alias success, and failures', () =
       }),
     ),
   ).toBe(
-    'research capability page: ok (matched alias marker) (https://aens-nine.vercel.app/research-capability/)',
+    'research endpoint page: ok (matched alias marker) (https://aens-nine.vercel.app/research/)',
   )
 
   expect(summarizeSurfaceCheck(buildResult({ markerMatchType: 'none', matchedMarker: undefined }))).toBe(
-    'research capability page: marker-missing (reachable but missing expected marker) (https://aens-nine.vercel.app/research-capability/)',
+    'research endpoint page: marker-missing (reachable but missing expected marker) (https://aens-nine.vercel.app/research/)',
   )
 
   expect(summarizeSurfaceCheck(buildResult({ status: 404 }))).toBe(
-    'research capability page: http-failure (http failure) (https://aens-nine.vercel.app/research-capability/)',
+    'research endpoint page: http-failure (http failure) (https://aens-nine.vercel.app/research/)',
   )
 })
 
@@ -234,14 +234,14 @@ test('summary templates are centralized and used by surface failure summarizer',
   )
 
   expect(summary).toBe(
-    'research capability page: alias-expired (alias expired (canonical marker required)) (https://aens-nine.vercel.app/research-capability/)',
+    'research endpoint page: alias-expired (alias expired (canonical marker required)) (https://aens-nine.vercel.app/research/)',
   )
 
   expect(parseSurfaceFailureSummary(summary)).toEqual({
-    surfaceLabel: 'research capability page',
+    surfaceLabel: 'research endpoint page',
     failureClass: 'alias-expired',
     cue: 'alias expired (canonical marker required)',
-    url: 'https://aens-nine.vercel.app/research-capability/',
+    url: 'https://aens-nine.vercel.app/research/',
   })
 })
 

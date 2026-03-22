@@ -4,7 +4,7 @@ import { createPublicClient, createWalletClient, custom, http, namehash } from '
 import { mainnet } from 'viem/chains'
 import { DEFAULT_RPC_URLS } from '../../src/config'
 import { resolveAensProfileWithRpcUrls } from '../../src/resolver'
-import { ensRoot, repoUrl } from './content'
+import { ensRoot, repoUrl, researchPath } from './content'
 import { Card, CardGrid, Shell } from './Shell'
 import { buildRouteLinks, normalizeEnsName } from './route-links'
 
@@ -38,6 +38,11 @@ function normalizeUrl(value: string): string {
 
 function deriveResearchName(rootName: string): string {
   return `research.${normalizeEnsName(rootName)}`
+}
+
+function deriveSuggestedServiceUrl(rootName: string): string {
+  const params = new URLSearchParams({ name: normalizeEnsName(rootName) }).toString()
+  return `${window.location.origin}${researchPath}?${params}`
 }
 
 function readInitialRootName(): string {
@@ -90,7 +95,7 @@ function WriteRecordsPage() {
   const initialRootName = useMemo(() => readInitialRootName(), [])
   const [rootName, setRootName] = useState(initialRootName)
   const [capabilityName, setCapabilityName] = useState(deriveResearchName(initialRootName))
-  const [serviceUrl, setServiceUrl] = useState(`${window.location.origin}/research-capability`)
+  const [serviceUrl, setServiceUrl] = useState(deriveSuggestedServiceUrl(initialRootName))
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [status, setStatus] = useState<string>('Ready')
   const [submitted, setSubmitted] = useState<SubmittedTx[]>([])
@@ -99,6 +104,7 @@ function WriteRecordsPage() {
   const normalizedRootName = normalizeEnsName(rootName)
   const normalizedCapabilityName = normalizeEnsName(capabilityName)
   const normalizedServiceUrl = normalizeUrl(serviceUrl)
+  const suggestedServiceUrl = deriveSuggestedServiceUrl(normalizedRootName)
   const links = buildRouteLinks(normalizedRootName)
 
   const plannedRecords = useMemo(() => {
@@ -201,7 +207,7 @@ function WriteRecordsPage() {
         <>
           <a className="button" href={links.landing}>Root explorer</a>
           <a className="button" href={links.discover}>Discovery</a>
-          <a className="button" href={links.research}>Research page</a>
+          <a className="button" href={links.research}>Research endpoint</a>
           <a className="button" href={repoUrl}>Repo</a>
         </>
       }
@@ -240,13 +246,19 @@ function WriteRecordsPage() {
             </div>
 
             <label className="label" htmlFor="service-url-input">Service URL</label>
-            <input
-              id="service-url-input"
-              className="input"
-              value={serviceUrl}
-              onChange={(event) => setServiceUrl(event.target.value)}
-              placeholder="https://example.com/research-capability"
-            />
+            <div className="input-row">
+              <input
+                id="service-url-input"
+                className="input"
+                value={serviceUrl}
+                onChange={(event) => setServiceUrl(event.target.value)}
+                placeholder="https://example.com/research/?name=theaens.eth"
+              />
+              <button className="button" type="button" onClick={() => setServiceUrl(suggestedServiceUrl)}>
+                Use suggested
+              </button>
+            </div>
+            <p className="small">Suggested endpoint for this root: <span className="code">{suggestedServiceUrl}</span></p>
 
             <button
               className="button"

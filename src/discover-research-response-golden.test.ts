@@ -9,7 +9,7 @@ describe('discover response golden behavior', () => {
       parentCapabilities: ['research.pvtclawn.eth'],
       childParentName: 'pvtclawn.eth',
       childAddress: '0xabc',
-      childServiceUrl: 'https://aens-nine.vercel.app/research-capability/',
+      childServiceUrl: 'https://aens-nine.vercel.app/research/',
       childCapabilities: ['research.pvtclawn.eth'],
       resolvedAt: '2026-03-21T15:27:00Z',
     })
@@ -23,7 +23,7 @@ describe('discover response golden behavior', () => {
     })
     expect(payload.endpoint).toEqual({
       capabilityName: 'research.pvtclawn.eth',
-      serviceUrl: 'https://aens-nine.vercel.app/research-capability/',
+      serviceUrl: 'https://aens-nine.vercel.app/research/',
       officialEndpointDeclared: true,
       livenessChecked: false,
     })

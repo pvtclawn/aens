@@ -16,7 +16,7 @@ const RESULT: DiscoverResearchResult = {
   authorizationSummary: 'capability is explicitly listed by the parent profile and matches parent identity',
   parentListsChild: true,
   childDeclaresParent: true,
-  serviceUrl: 'https://aens-nine.vercel.app/research-capability/',
+  serviceUrl: 'https://aens-nine.vercel.app/research/',
   officialEndpointDeclared: true,
   livenessChecked: false,
   notes: ['official research endpoint is declared under parent authorization, but liveness still needs to be checked separately if required'],
@@ -24,7 +24,7 @@ const RESULT: DiscoverResearchResult = {
 
 const PUBLIC_PROOF_STATE: PublicProofState = {
   preferredBaseUrl: 'https://aens-nine.vercel.app/',
-  preferredResearchUrl: 'https://aens-nine.vercel.app/research-capability/',
+  preferredResearchUrl: 'https://aens-nine.vercel.app/research/',
   preferredSurfaceReady: false,
   bootstrapProofReady: true,
   preferredResults: [
@@ -37,12 +37,12 @@ const PUBLIC_PROOF_STATE: PublicProofState = {
       body: 'ÆNS — ENS root explorer',
     },
     {
-      label: 'research capability page',
-      url: 'https://aens-nine.vercel.app/research-capability/',
+      label: 'research endpoint page',
+      url: 'https://aens-nine.vercel.app/research/',
       status: 200,
-      expectedMarker: 'Research Capability — ÆNS',
+      expectedMarker: 'Research endpoint — ÆNS',
       matchMode: 'exact',
-      body: 'Research Capability — ÆNS',
+      body: 'Research endpoint — ÆNS',
     },
     {
       label: 'discover research page',

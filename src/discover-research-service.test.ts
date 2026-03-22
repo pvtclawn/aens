@@ -11,7 +11,7 @@ describe('toDiscoverResearchServiceResponse', () => {
       authorizationSummary: 'Parent-authorized capability discovered.',
       parentListsChild: true,
       childDeclaresParent: true,
-      serviceUrl: 'https://aens-nine.vercel.app/research-capability/',
+      serviceUrl: 'https://aens-nine.vercel.app/research/',
       officialEndpointDeclared: true,
       livenessChecked: false,
       notes: ['official research endpoint is declared under parent authorization'],
@@ -35,7 +35,7 @@ describe('toDiscoverResearchServiceResponse', () => {
       },
       endpoint: {
         capabilityName: 'research.pvtclawn.eth',
-        serviceUrl: 'https://aens-nine.vercel.app/research-capability/',
+        serviceUrl: 'https://aens-nine.vercel.app/research/',
         officialEndpointDeclared: true,
         livenessChecked: false,
       },

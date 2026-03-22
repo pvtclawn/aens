@@ -4,10 +4,10 @@ import type { SurfaceCheckResult } from './public-surface'
 
 function buildSurfaceResult(overrides: Partial<SurfaceCheckResult> = {}): SurfaceCheckResult {
   return {
-    label: 'research capability page',
-    url: 'https://aens-nine.vercel.app/research-capability/',
+    label: 'research endpoint page',
+    url: 'https://aens-nine.vercel.app/research/',
     status: 200,
-    expectedMarker: 'Research Capability — ÆNS',
+    expectedMarker: 'Research endpoint — ÆNS',
     expectedMarkerAliases: [
       {
         marker: 'Research Capability Route',
@@ -22,9 +22,9 @@ function buildSurfaceResult(overrides: Partial<SurfaceCheckResult> = {}): Surfac
     ],
     markerDomain: 'preferred-runtime',
     markerMatchType: 'canonical',
-    matchedMarker: 'Research Capability — ÆNS',
+    matchedMarker: 'Research endpoint — ÆNS',
     matchMode: 'exact',
-    body: 'Research Capability — ÆNS',
+    body: 'Research endpoint — ÆNS',
     ...overrides,
   }
 }
@@ -153,7 +153,7 @@ test('summarizePublicProofStateLines includes both preferred and bootstrap verdi
     }),
   )
 
-  expect(lines).toContain('Preferred public surface ready: no (https://aens-nine.vercel.app/research-capability/)')
+  expect(lines).toContain('Preferred public surface ready: no (https://aens-nine.vercel.app/research/)')
   expect(lines).toContain(
     'Bootstrap proof ready: yes (https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md)',
   )

@@ -4,14 +4,26 @@
   "buildCommand": "cd app && bun run build",
   "outputDirectory": "app/dist",
   "trailingSlash": false,
-  "rewrites": [
+  "redirects": [
     {
       "source": "/research-capability",
-      "destination": "/research-capability/index.html"
+      "destination": "/research",
+      "permanent": true
     },
     {
       "source": "/research-capability/",
-      "destination": "/research-capability/index.html"
+      "destination": "/research/",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/research",
+      "destination": "/research/index.html"
+    },
+    {
+      "source": "/research/",
+      "destination": "/research/index.html"
     },
     {
       "source": "/discover-research",

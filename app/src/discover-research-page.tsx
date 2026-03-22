@@ -106,7 +106,7 @@ function DiscoverResearchPage() {
       actions={
         <>
           <a className="button" href={links.landing}>Root explorer</a>
-          <a className="button" href={links.research}>Research page</a>
+          <a className="button" href={links.research}>Research endpoint</a>
           <a className="button" href={links.writeRecords}>Write records</a>
           <a className="button" href={repoUrl}>Repo</a>
         </>

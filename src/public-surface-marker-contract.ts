@@ -42,7 +42,7 @@ export const PREFERRED_RUNTIME_MARKERS = {
   researchCapability: {
     domain: 'preferred-runtime',
     matchMode: 'exact',
-    canonical: 'Research Capability — ÆNS',
+    canonical: 'Research endpoint — ÆNS',
     aliases: [
       {
         marker: 'Research Capability Route',

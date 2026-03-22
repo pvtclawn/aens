@@ -1,4 +1,4 @@
-import { discoverResearchPath, ensRoot, researchCapabilityPath, writeRecordsPath } from './content'
+import { discoverResearchPath, ensRoot, researchPath, writeRecordsPath } from './content'
 
 export function normalizeEnsName(value: string): string {
   const normalized = value.trim().toLowerCase()
@@ -12,7 +12,7 @@ export function buildRouteLinks(inputEnsName: string) {
   return {
     ensName,
     landing: `/?${rootQuery}`,
-    research: `${researchCapabilityPath}?${rootQuery}`,
+    research: `${researchPath}?${rootQuery}`,
     discover: `${discoverResearchPath}?${new URLSearchParams({ mode: 'live', name: ensName }).toString()}`,
     writeRecords: `${writeRecordsPath}?${rootQuery}`,
   }

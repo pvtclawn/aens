@@ -11,7 +11,7 @@ import {
 import { isClassFirstFailureSummary } from './surface-summary-format'
 
 export const DEFAULT_PUBLIC_BASE_URL = 'https://aens-nine.vercel.app/'
-export const RESEARCH_CAPABILITY_PATH = 'research-capability/'
+export const RESEARCH_CAPABILITY_PATH = 'research/'
 export const DISCOVER_RESEARCH_PATH = 'discover-research/'
 export const DEFAULT_RESEARCH_CAPABILITY_URL = new URL(RESEARCH_CAPABILITY_PATH, DEFAULT_PUBLIC_BASE_URL).toString()
 export const DEFAULT_DISCOVER_RESEARCH_URL = new URL(DISCOVER_RESEARCH_PATH, DEFAULT_PUBLIC_BASE_URL).toString()
@@ -150,7 +150,7 @@ export function buildPreferredSurfaceTargets(baseUrl: string): SurfaceCheckTarge
       markerContract: PREFERRED_RUNTIME_MARKERS.publicRoot,
     }),
     targetFromMarkerContract({
-      label: 'research capability page',
+      label: 'research endpoint page',
       url: new URL(RESEARCH_CAPABILITY_PATH, normalizedBaseUrl).toString(),
       markerContract: PREFERRED_RUNTIME_MARKERS.researchCapability,
     }),

@@ -84,7 +84,7 @@ function HomePage() {
       actions={
         <>
           <a className="button" href={links.discover}>Discovery</a>
-          <a className="button" href={links.research}>Research page</a>
+          <a className="button" href={links.research}>Research endpoint</a>
           <a className="button" href={links.writeRecords}>Write records</a>
           <a className="button" href={repoUrl}>Repo</a>
         </>
@@ -141,11 +141,11 @@ function HomePage() {
           <h2>No records yet</h2>
           <p>
             <span className="code">{resolvedEnsName}</span> has no resolver/text records right now.
-            Use write-records to publish <span className="code">aens.capabilities</span>,{' '}
+            Use the write UI to publish <span className="code">aens.capabilities</span>,{' '}
             <span className="code">aens.parent</span>, and <span className="code">aens.service</span>.
           </p>
           <div className="actions">
-            <a className="button" href={links.writeRecords}>Open write-records UI</a>
+            <a className="button" href={links.writeRecords}>Open write UI</a>
           </div>
         </section>
       ) : null}

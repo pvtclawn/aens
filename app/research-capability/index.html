@@ -3,14 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Research Capability — ÆNS</title>
-    <meta
-      name="description"
-      content="Research capability landing page derived from a chosen ENS root on ÆNS."
-    />
+    <title>Redirecting to research endpoint — ÆNS</title>
+    <meta http-equiv="refresh" content="0; url=/research/" />
+    <script>
+      const target = new URL('/research/', window.location.origin)
+      target.search = window.location.search
+      target.hash = window.location.hash
+      window.location.replace(target.toString())
+    </script>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="../src/research-capability.tsx"></script>
+    <p>Redirecting to <a href="/research/">/research/</a>…</p>
   </body>
 </html>

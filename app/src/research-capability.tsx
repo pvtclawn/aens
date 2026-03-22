@@ -25,8 +25,8 @@ function ResearchCapabilityPage() {
   return (
     <Shell
       eyebrow="ÆNS"
-      title="Research Capability"
-      intro={<>Capability page derived from root identity <span className="code">{rootEns}</span>.</>}
+      title="Research endpoint"
+      intro={<>Official research surface derived from root identity <span className="code">{rootEns}</span>.</>}
       actions={
         <>
           <a className="button" href={links.landing}>Root explorer</a>
