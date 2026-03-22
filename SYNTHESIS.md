@@ -122,7 +122,7 @@ Do **not** demo legacy research/discovery routes.
 - `docs/submission/SYNTHESIS-DEVFOLIO-FIELD-MAP-2026-03-22.md`
 - `docs/submission/SYNTHESIS-SUBMISSION-FORM-PACK-2026-03-21.md`
 - `docs/submission/SYNTHESIS-CORE-SUBMISSION-2026-03-20.md`
-- `docs/submission/SYNTHESIS-DEMO-SCRIPT-2026-03-20.md`
+- `docs/submission/SYNTHESIS-DEMO-SCRIPT-2026-03-22.md`
 - `docs/submission/SYNTHESIS-FINAL-SUBMISSION-BUNDLE-INDEX-2026-03-21.md`
 - `docs/submission/SYNTHESIS-SUBMISSION-BLURB-2026-03-20.md`
 - `docs/submission/SYNTHESIS-TRACK-FIT-2026-03-21.md`

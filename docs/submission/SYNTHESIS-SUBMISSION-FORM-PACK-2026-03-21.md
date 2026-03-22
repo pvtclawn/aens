@@ -68,7 +68,7 @@ Canonical field map:
 - repo README
 - `SYNTHESIS.md`
 - `docs/submission/SYNTHESIS-DEVFOLIO-FIELD-MAP-2026-03-22.md`
-- `docs/submission/SYNTHESIS-DEMO-SCRIPT-2026-03-20.md`
+- `docs/submission/SYNTHESIS-DEMO-SCRIPT-2026-03-22.md`
 - `docs/submission/SYNTHESIS-CORE-SUBMISSION-2026-03-20.md`
 - `docs/submission/SYNTHESIS-FINAL-SUBMISSION-BUNDLE-INDEX-2026-03-21.md`
 - `docs/submission/artifacts/CONVERSATION-LOG-CURATED-2026-03-22.md`
