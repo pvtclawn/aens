@@ -5,6 +5,7 @@ import {
   formatStageGateCompactSummary,
   hasRequiredBlockedByMetadata,
   isPrimaryBlockerAlignedToEarliestFail,
+  resolvePrimaryBlockerReasonStageOwnership,
   type StageGateAdapterParityPayload,
 } from './stage-gate-adapter-parity'
 
@@ -38,6 +39,10 @@ describe('stage-gate adapter parity contract', () => {
     )
     expect(hasRequiredBlockedByMetadata(fixture)).toBe(true)
     expect(isPrimaryBlockerAlignedToEarliestFail(fixture)).toBe(true)
+
+    const ownership = resolvePrimaryBlockerReasonStageOwnership(fixture)
+    expect(ownership?.status).toBe('resolved')
+    expect(ownership?.registryVersion).toBe('aens-reason-stage-ownership/v1')
   })
 
   test('fails parity when an adapter omits a required stage field', () => {
@@ -70,14 +75,18 @@ describe('stage-gate adapter parity contract', () => {
       ...expected,
       primaryBlocker: {
         stage: 'identity',
-        reasonCode: 'fixture-provenance-id-migration-conflict',
+        reasonCode: 'fixture-provenance-registry-stale',
       },
     }
 
     const result = compareCanonicalMachinePayloads({ expected, observed })
     expect(result.equal).toBe(false)
-    expect(result.mismatches.some((mismatch) => mismatch.fieldPath === '$.primaryBlocker.reasonCode')).toBe(true)
+    expect(result.mismatches.some((mismatch) => mismatch.fieldPath === '$.primaryBlocker.stage')).toBe(true)
     expect(isPrimaryBlockerAlignedToEarliestFail(observed)).toBe(false)
+
+    const ownership = resolvePrimaryBlockerReasonStageOwnership(observed)
+    expect(ownership?.status).toBe('mismatch')
+    expect(ownership?.reasonCode).toBe('fixture-provenance-registry-stale')
   })
 
   test('fails required blocked-by metadata when downstream stage is not-evaluated', () => {
@@ -98,5 +107,34 @@ describe('stage-gate adapter parity contract', () => {
     expect(result.equal).toBe(false)
     expect(result.mismatches.some((mismatch) => mismatch.fieldPath === '$.blockedBy')).toBe(true)
     expect(hasRequiredBlockedByMetadata(observed)).toBe(false)
+  })
+
+  test('fails closed when primary blocker reason is unmapped in canonical ownership registry', () => {
+    const observed: StageGateAdapterParityPayload = {
+      stageStatus: {
+        integrity: 'fail',
+        freshness: 'not-evaluated',
+        identity: 'not-evaluated',
+      },
+      primaryBlocker: {
+        stage: 'integrity',
+        reasonCode: 'fixture-provenance-unknown-reason',
+      },
+      blockedBy: {
+        freshness: {
+          blockedByStage: 'integrity',
+          blockedByReasonCode: 'fixture-provenance-unknown-reason',
+        },
+        identity: {
+          blockedByStage: 'integrity',
+          blockedByReasonCode: 'fixture-provenance-unknown-reason',
+        },
+      },
+    }
+
+    const ownership = resolvePrimaryBlockerReasonStageOwnership(observed)
+    expect(ownership?.status).toBe('unmapped')
+    expect(ownership?.reasonCode).toBe('fixture-provenance-unknown-reason')
+    expect(ownership?.registryVersion).toBe('aens-reason-stage-ownership/v1')
   })
 })

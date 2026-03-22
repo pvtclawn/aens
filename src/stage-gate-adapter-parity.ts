@@ -1,3 +1,8 @@
+import {
+  resolveReasonStageOwnership,
+  type ResolveReasonStageOwnershipResult,
+} from './reason-stage-ownership'
+
 export const STAGE_GATE_ORDER = ['integrity', 'freshness', 'identity'] as const
 
 export type StageGateName = (typeof STAGE_GATE_ORDER)[number]
@@ -82,6 +87,19 @@ export function hasRequiredBlockedByMetadata(
   }
 
   return true
+}
+
+export function resolvePrimaryBlockerReasonStageOwnership(
+  payload: StageGateAdapterParityPayload,
+): ResolveReasonStageOwnershipResult | null {
+  if (!payload.primaryBlocker) {
+    return null
+  }
+
+  return resolveReasonStageOwnership({
+    reasonCode: payload.primaryBlocker.reasonCode,
+    claimedStageOwner: payload.primaryBlocker.stage,
+  })
 }
 
 export function formatStageGateCompactSummary(
