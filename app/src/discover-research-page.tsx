@@ -8,7 +8,7 @@ import {
   type DiscoverResearchResult,
 } from '../../src/discover-research'
 import { sourceTagForLookupMode, toDiscoverSourceView } from '../../src/discover-source-label'
-import { discoverResearchPath, ensRoot, repoUrl, researchCapabilityPath } from './content'
+import { discoverResearchPath, ensRoot, repoUrl, researchCapabilityPath, writeRecordsPath } from './content'
 import { Card, CardGrid, Shell } from './Shell'
 
 type LookupMode = 'example' | 'live'
@@ -133,6 +133,9 @@ function DiscoverResearchPage() {
           <a className="button" href={researchCapabilityPath}>
             Open research capability page
           </a>
+          <a className="button" href={`${writeRecordsPath}?name=${encodeURIComponent(ensName)}`}>
+            Open write-records UI
+          </a>
           <a className="button" href={repoUrl}>
             View repo
           </a>
@@ -172,7 +175,7 @@ function DiscoverResearchPage() {
                 className="input"
                 value={ensName}
                 onChange={(event) => setEnsName(event.target.value)}
-                placeholder="pvtclawn.eth"
+                placeholder="vitalik.eth"
               />
               <button className="button" type="submit">
                 Run live lookup

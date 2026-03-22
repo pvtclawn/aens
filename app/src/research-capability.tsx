@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import ReactDOM from 'react-dom/client'
 import { Card, CardGrid, Shell } from './Shell'
-import { agentId, discoverResearchPath, ensResearch, ensRoot, notYetBullets, repoUrl } from './content'
+import { agentId, discoverResearchPath, ensResearch, ensRoot, notYetBullets, repoUrl, writeRecordsPath } from './content'
 
 function readRootFromQuery(): string {
   const params = new URLSearchParams(window.location.search)
@@ -43,6 +43,9 @@ function ResearchCapabilityPage() {
           </a>
           <a className="button" href={toDiscoverHref(rootEns)}>
             Open discovery route
+          </a>
+          <a className="button" href={`${writeRecordsPath}?name=${encodeURIComponent(rootEns)}`}>
+            Open write-records UI
           </a>
           <a className="button" href={repoUrl}>
             View repo

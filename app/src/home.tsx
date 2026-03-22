@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { DEFAULT_RPC_URLS } from '../../src/config'
 import { resolveAensProfileWithRpcUrls, type AensResolvedProfile } from '../../src/resolver'
 import { Card, CardGrid, Shell } from './Shell'
-import { capabilityBullets, discoverResearchPath, ensRoot, repoUrl, researchCapabilityPath } from './content'
+import { capabilityBullets, discoverResearchPath, ensRoot, repoUrl, researchCapabilityPath, writeRecordsPath } from './content'
 
 function readQueryEnsName(): string {
   const params = new URLSearchParams(window.location.search)
@@ -100,6 +100,9 @@ function HomePage() {
           </a>
           <a className="button" href={toDiscoverHref(resolvedEnsName)}>
             Open discovery route
+          </a>
+          <a className="button" href={`${writeRecordsPath}?name=${encodeURIComponent(resolvedEnsName)}`}>
+            Open write-records UI
           </a>
           <a className="button" href={repoUrl}>
             View repo
