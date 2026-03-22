@@ -59,14 +59,15 @@ See the fill-in map:
 Devfolio allows 1–10 tracks, but ÆNS should stay disciplined and submit under the strongest 1–2, not spray everywhere.
 
 ## Current live deploy boundary
-Latest public checks during this prep pass:
+Latest public checks after pushing `4fa7e88` to `origin/main` and sampling the canonical alias twice:
 - `/` → ok
 - `/write-records/` → ok
-- `/research` → still live publicly
-- `/research-capability` → still resolves to the research page publicly
-- `/discover-research` → still live publicly
+- `/research` → `404`
+- `/research/` → `404`
+- `/research-capability` → `404`
+- `/discover-research` → `404`
 
-That means the submission can be prepared honestly **now**, but it should **not** claim the old routes are publicly gone until deploy cleanup is verified.
+That means the live alias now matches the intended two-surface product shape. It is safe to say the old research/discovery routes are no longer publicly reachable on the canonical deployment.
 
 ## Required submission posture
 The submission should claim only that ÆNS:
@@ -81,7 +82,6 @@ It should **not** claim:
 - runtime auth
 - payments
 - full production hardening
-- public removal of legacy routes unless live verification proves it
 
 ## Submission asset checklist
 Before publish, make sure these exist:
@@ -105,8 +105,8 @@ cd .. && bun run typecheck
 ```
 
 Interpretation rule:
-- if legacy routes still respond publicly, do **not** say they are gone
-- either fix/deploy first, or keep the submission language focused on the two intended surfaces without disappearance claims
+- with the current verified state, route-removal claims are allowed on the canonical alias
+- if legacy routes ever reappear or another alias diverges, immediately fall back to split-truth wording until re-verified
 
 ## Judge demo order
 1. Open the root explorer

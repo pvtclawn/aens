@@ -13,7 +13,7 @@ Use this as the commit-pinned checklist right before submit/publish.
 - Every team member must complete **ERC-8004 self-custody** before publish
 
 ## Bundle provenance
-- Prepared at (UTC): 2026-03-22 20:12
+- Prepared at (UTC): 2026-03-22 20:14
 - submissionCommit: `SET_AT_FINAL_FREEZE`
 - Repo: `https://github.com/pvtclawn/aens`
 - Deployed app: `https://aens-nine.vercel.app/`
@@ -25,7 +25,7 @@ Use this as the commit-pinned checklist right before submit/publish.
 - [ ] Problem statement
 - [ ] GitHub repo URL
 - [ ] 1–10 tracks selected
-- [ ] Conversation log artifact ready
+- [x] Conversation log artifact ready
 - [ ] Submission metadata ready
 
 ## Required publish gates
@@ -46,10 +46,11 @@ Use this as the commit-pinned checklist right before submit/publish.
   3. wallet approval boundary
 
 ### 2) Conversation log artifact/link
-- Status: TODO (required)
-- Recorded URL/path: `SET_BEFORE_PUBLISH`
-- Recorded at (UTC): `SET_BEFORE_PUBLISH`
-- Commit context: `MATCH_SUBMISSION_COMMIT`
+- Status: prepared (required)
+- Recorded URL/path: `docs/submission/artifacts/CONVERSATION-LOG-CURATED-2026-03-22.md`
+- Public URL: `https://github.com/pvtclawn/aens/blob/main/docs/submission/artifacts/CONVERSATION-LOG-CURATED-2026-03-22.md`
+- Recorded at (UTC): `2026-03-22 20:14`
+- Commit context: `pin exact final submission commit at freeze; artifact is already present on main`
 - Integrity check:
   - shows the human + AI collaboration
   - shows the product narrowing to two honest surfaces
@@ -66,7 +67,7 @@ Use this as the commit-pinned checklist right before submit/publish.
 
 ## <5 minute pre-submit checklist
 ### Presence
-- [ ] Conversation log link/file is present.
+- [x] Conversation log link/file is present.
 - [ ] Submission metadata is present.
 - [ ] Demo video URL is present, or consciously omitted.
 
@@ -101,8 +102,11 @@ Confirm these before publishing:
 Current prep-pass note:
 - root explorer: live
 - write records: live
-- `/research`, `/research-capability`, and `/discover-research` still respond publicly
-- therefore route-removal claims remain blocked until deploy cleanup
+- `/research` -> `404`
+- `/research/` -> `404`
+- `/research-capability` -> `404`
+- `/discover-research` -> `404`
+- route-removal claims are now supported by direct live verification on the canonical alias
 
 ## Closure gate
 Do not publish unless all are true:

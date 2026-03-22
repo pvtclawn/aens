@@ -8,7 +8,7 @@ Show the real product clearly:
 
 ## Pre-demo gate
 Before recording or final judging, run the public-surface check.
-If legacy routes still respond publicly, do **not** say they are gone — just keep the demo on the two real surfaces.
+Current verified state on the canonical alias: the two kept surfaces are live and the legacy research/discovery routes return `404`. If that ever regresses, immediately fall back to split-truth wording.
 
 ## 2-minute script
 

@@ -35,7 +35,11 @@ Recommended submission tracks:
 2. **ENS Identity**
 
 ### 6) Conversation log artifact
-Status: **TODO before publish**
+Status: **prepared**
+
+Prepared artifact:
+- path: `docs/submission/artifacts/CONVERSATION-LOG-CURATED-2026-03-22.md`
+- public URL: `https://github.com/pvtclawn/aens/blob/main/docs/submission/artifacts/CONVERSATION-LOG-CURATED-2026-03-22.md`
 
 Accepted by guide:
 - plain text conversation log, or
@@ -101,10 +105,9 @@ Safe claims:
 - write flow prepares exact `aens.*` writes
 - wallet approval stays explicit
 - the product is intentionally narrow
+- current live verification shows `/research`, `/research/`, `/research-capability`, and `/discover-research` are not publicly reachable on the canonical alias
 
 Unsafe claims unless re-verified live:
-- legacy routes are fully gone publicly
-- the deployment exposes only two routes publicly
 - automatic execution beyond the wallet boundary
 - production-complete infrastructure
 

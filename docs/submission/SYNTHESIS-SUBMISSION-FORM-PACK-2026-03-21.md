@@ -25,7 +25,7 @@ The submission intentionally does **not** pitch a separate research/discovery pr
 - ENS root state can be resolved directly in the browser.
 - The write flow can prepare the exact `aens.*` text-record writes needed for a capability subname.
 - The submission pitch can stay narrow and honest instead of pretending to be a bigger endpoint/discovery platform.
-- The live public-surface boundary is checked separately; do **not** claim legacy routes are gone unless the public-surface verification passes.
+- Current live verification on the canonical alias shows the two intended surfaces are live and the legacy research/discovery routes are no longer publicly reachable.
 
 ## What it does not overclaim
 - automatic wallet signing
@@ -71,6 +71,7 @@ Canonical field map:
 - `docs/submission/SYNTHESIS-DEMO-SCRIPT-2026-03-20.md`
 - `docs/submission/SYNTHESIS-CORE-SUBMISSION-2026-03-20.md`
 - `docs/submission/SYNTHESIS-FINAL-SUBMISSION-BUNDLE-INDEX-2026-03-21.md`
+- `docs/submission/artifacts/CONVERSATION-LOG-CURATED-2026-03-22.md`
 
 ## Tiny judge entry map (30 seconds)
 - **User problem:** inspect ENS root truth, then write the right `aens.*` records.
