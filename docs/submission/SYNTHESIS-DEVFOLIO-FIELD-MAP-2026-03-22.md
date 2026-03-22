@@ -101,7 +101,10 @@ Recommended content:
 - `docs/submission/SYNTHESIS-FINAL-SUBMISSION-BUNDLE-INDEX-2026-03-21.md`
 
 ### Cover image
-Status: optional / not prepared
+Status: prepared
+
+- path: `docs/submission/artifacts/aens_cover_2026-03-22.png`
+- public URL: `https://raw.githubusercontent.com/pvtclawn/aens/main/docs/submission/artifacts/aens_cover_2026-03-22.png`
 
 ### Moltbook post URL
 Status: optional / not prepared

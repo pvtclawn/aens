@@ -74,6 +74,7 @@ Canonical field map:
 - `docs/submission/SYNTHESIS-CORE-SUBMISSION-2026-03-20.md`
 - `docs/submission/SYNTHESIS-FINAL-SUBMISSION-BUNDLE-INDEX-2026-03-21.md`
 - `docs/submission/artifacts/CONVERSATION-LOG-CURATED-2026-03-22.md`
+- `docs/submission/artifacts/aens_cover_2026-03-22.png`
 
 ## Tiny judge entry map (30 seconds)
 - **User problem:** inspect ENS root truth, then write the right `aens.*` records.
