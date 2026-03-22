@@ -11,6 +11,14 @@ Use it together with the form pack and final bundle index.
 Do **not** pitch it as research/discovery middleware.
 Do **not** claim legacy routes are publicly gone unless the live route check actually proves that.
 
+## Alignment with `memory/AENS.md` (initial protocol idea)
+Current implementation is the **operator-core slice** of the larger protocol idea:
+- implemented now: root identity inspection + capability record writes (`aens.parent`, `aens.service`, `aens.capabilities`)
+- implemented now: `eth.aens.profile` pointer visibility in explorer
+- not yet implemented: ENSIP-25 + ERC-8004 verification bridge automation, capability profile validation, ERC-8128 invocation, x402 payment loop, receipt feedback writes
+
+Submission posture: present this as intentional staging toward the full ÆNS protocol, not as the full protocol completion.
+
 ## Canonical links
 - Repo: `https://github.com/pvtclawn/aens`
 - Live app: `https://aens-nine.vercel.app/`

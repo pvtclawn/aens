@@ -12,6 +12,7 @@ export interface AensRecords {
   runtime?: string | null
   parentName?: string | null
   capabilities?: string[] | null
+  profileUri?: string | null
 }
 
 export interface AensResolvedProfile {
@@ -54,6 +55,7 @@ export function buildAensProfile(input: {
       runtime: input.records.runtime ?? null,
       parentName: input.records.parentName ?? null,
       capabilities: normalizeCapabilities(input.records.capabilities),
+      profileUri: input.records.profileUri ?? null,
     },
   }
 }

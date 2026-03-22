@@ -321,7 +321,7 @@ function WriteRecordsPage() {
       <section className="card">
         <h2>Status</h2>
         <p className="status-line">{status}</p>
-        <p className="helper">Wallet approval stays explicit. This flow writes exactly the records shown above—no hidden mutations. If a child subname has no resolver yet, set it first in ENS Manager before retrying.</p>
+        <p className="helper">Wallet approval stays explicit. This flow writes exactly the records shown above—no hidden mutations. If a child subname has no resolver yet, set it first in ENS Manager before retrying. Optional next step for protocol alignment: publish an `eth.aens.profile` URI for root/capability schema docs.</p>
         {error ? <p className="error-text">{error}</p> : null}
       </section>
 

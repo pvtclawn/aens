@@ -16,6 +16,7 @@ const TEXT_RECORD_KEYS = {
   runtime: 'aens.runtime',
   parentName: 'aens.parent',
   capabilities: 'aens.capabilities',
+  profileUri: 'eth.aens.profile',
 } as const
 
 function parseCapabilities(value: string | null | undefined): string[] | null {

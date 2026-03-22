@@ -68,6 +68,7 @@ function HomePage() {
     ['aens.parent', profile?.records.parentName ?? '(not found on-chain yet)'],
     ['aens.service', profile?.records.serviceUrl ?? '(not found on-chain yet)'],
     ['aens.capabilities', joinCapabilities(profile?.records.capabilities)],
+    ['eth.aens.profile', profile?.records.profileUri ?? '(not published yet)'],
   ] as const
 
   const hasResolvedSignal = Boolean(
@@ -76,6 +77,7 @@ function HomePage() {
         profile.address
         || profile.records.parentName
         || profile.records.serviceUrl
+        || profile.records.profileUri
         || (profile.records.capabilities && profile.records.capabilities.length > 0)
       ),
   )
@@ -150,6 +152,16 @@ function HomePage() {
           ))}
         </ul>
         <p className="small">RPC fallbacks configured: {DEFAULT_RPC_URLS.length}</p>
+      </section>
+
+      <section className="card">
+        <h2>Closer to ÆNS v0.1</h2>
+        <ul className="list-tight">
+          <li>Live now: root + capability records (`aens.parent`, `aens.service`, `aens.capabilities`)</li>
+          <li>Live now: optional `eth.aens.profile` pointer visibility in explorer</li>
+          <li>Next: ENSIP-25 / ERC-8004 verification bridge and capability profile validation</li>
+          <li>Later: invocation/auth/payment receipts (ERC-8128 + x402)</li>
+        </ul>
       </section>
 
       {!error && profile && !hasResolvedSignal ? (

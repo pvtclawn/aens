@@ -29,11 +29,12 @@ Open:
 - `https://aens-nine.vercel.app/`
 
 Narrate:
-> "The root explorer resolves an ENS name and shows the current `aens.*` state directly from the live namespace truth."
+> "The root explorer resolves an ENS name and shows current `aens.*` records plus `eth.aens.profile`, so the write flow starts from real onchain state."
 
 Point at:
 - ENS input
 - current state / records area
+- `eth.aens.profile` row
 
 ### 0:22–0:42 — Show Write Records
 Open:
