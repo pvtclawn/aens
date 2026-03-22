@@ -77,11 +77,23 @@ function HomePage() {
 
   const resolvedEnsName = profile?.ensName ?? ensName
   const resolvedAddress = profile?.address ?? '(no address resolved)'
-  const declaredParent = profile?.records.parentName ?? '(not declared)'
-  const declaredService = profile?.records.serviceUrl ?? '(not declared)'
-  const declaredProofs = profile?.records.proofsUrl ?? '(not declared)'
-  const declaredReceipts = profile?.records.receiptsUrl ?? '(not declared)'
+  const declaredParent = profile?.records.parentName ?? '(not found on-chain yet)'
+  const declaredService = profile?.records.serviceUrl ?? '(not found on-chain yet)'
+  const declaredProofs = profile?.records.proofsUrl ?? '(not found on-chain yet)'
+  const declaredReceipts = profile?.records.receiptsUrl ?? '(not found on-chain yet)'
   const declaredCapabilities = joinCapabilities(profile?.records.capabilities)
+
+  const hasResolvedSignal = Boolean(
+    profile
+    && (
+      profile.address
+      || profile.records.parentName
+      || profile.records.serviceUrl
+      || profile.records.proofsUrl
+      || profile.records.receiptsUrl
+      || (profile.records.capabilities && profile.records.capabilities.length > 0)
+    ),
+  )
 
   return (
     <Shell
@@ -157,6 +169,25 @@ function HomePage() {
         <section className="card">
           <h2>Lookup failed</h2>
           <p>{error}</p>
+        </section>
+      ) : null}
+
+      {!error && profile && !hasResolvedSignal ? (
+        <section className="card">
+          <h2>No on-chain records resolved yet</h2>
+          <p>
+            <span className="code">{resolvedEnsName}</span> currently has no visible address/text records on mainnet,
+            so resolution output is empty by design.
+          </p>
+          <p>
+            Next step: set resolver + write <span className="code">aens.capabilities</span>,{' '}
+            <span className="code">aens.parent</span>, and <span className="code">aens.service</span>.
+          </p>
+          <div className="actions">
+            <a className="button" href={`${writeRecordsPath}?name=${encodeURIComponent(resolvedEnsName)}`}>
+              Open write-records UI
+            </a>
+          </div>
         </section>
       ) : null}
 
