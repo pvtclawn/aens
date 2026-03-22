@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import { DEFAULT_RPC_URLS } from '../../src/config'
-import { resolveAensProfileWithRpcUrls, type AensResolvedProfile } from '../../src/resolver'
+import { type AensResolvedProfile } from '../../src/profile'
+import { resolveAensProfileWithRpcUrls } from '../../src/resolver'
 import { Card, CardGrid, Shell } from './Shell'
 import { capabilityBullets, ensRoot, repoUrl } from './content'
 import { buildRouteLinks, normalizeEnsName } from './route-links'
@@ -94,7 +95,7 @@ function HomePage() {
       <CardGrid>
         <Card>
           <h2>Lookup</h2>
-          <p className="helper">Resolve an ENS root and inspect the current on-chain text-record state before writing anything.</p>
+          <p className="helper">Resolve an ENS root and inspect the current on-chain text-record state before publishing the route capability bundle.</p>
           <form
             className="lookup-form"
             onSubmit={(event) => {
@@ -109,7 +110,7 @@ function HomePage() {
                 className="input"
                 value={ensName}
                 onChange={(event) => setEnsName(event.target.value)}
-                placeholder="vitalik.eth"
+                placeholder="theaens.eth"
               />
               <button className="button" type="submit" disabled={isLoading || ensName.trim().length === 0}>
                 {isLoading ? 'Resolving…' : 'Resolve'}
@@ -140,7 +141,7 @@ function HomePage() {
           </article>
           <article className="feature-card">
             <h3>Write Records</h3>
-            <p>Prepare the exact `aens.capabilities`, `aens.parent`, and `aens.service` writes before the wallet boundary.</p>
+            <p>Prepare the exact root + child writes that bind `/` and `/write-records/` to `explore.&lt;root&gt;` and `write.&lt;root&gt;` before the wallet boundary.</p>
           </article>
         </div>
         <ul className="scope-list">
@@ -156,8 +157,9 @@ function HomePage() {
           <h2>No records yet</h2>
           <p className="notice">
             <span className="code">{resolvedEnsName}</span> does not currently expose resolver/text records.
-            Open the write flow to publish <span className="code">aens.capabilities</span>,{' '}
-            <span className="code">aens.parent</span>, and <span className="code">aens.service</span>.
+            Open the write flow to publish <span className="code">aens.capabilities</span> plus the
+            route capability child records for <span className="code">explore.{resolvedEnsName}</span> and{' '}
+            <span className="code">write.{resolvedEnsName}</span>.
           </p>
           <div className="actions">
             <a className="button" href={links.writeRecords}>Open write records</a>
