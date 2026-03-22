@@ -84,7 +84,7 @@ function HomePage() {
     <Shell
       eyebrow="ÆNS"
       title="ENS Root Explorer"
-      intro={<>Inspect current root-state records, then jump straight into the write flow with the same ENS name.</>}
+      intro={<>Inspect current ENS root truth first, then move into deterministic record writes with the same ENS name.</>}
       actions={
         <>
           <a className="button" href={links.writeRecords}>Open write records</a>
@@ -95,7 +95,7 @@ function HomePage() {
       <CardGrid>
         <Card>
           <h2>Lookup</h2>
-          <p className="helper">Resolve an ENS root and inspect the current on-chain text-record state before configuring capability writes.</p>
+          <p className="helper">Resolve an ENS root and verify current `aens.*` state before preparing any write intent.</p>
           <form
             className="lookup-form"
             onSubmit={(event) => {
@@ -137,11 +137,11 @@ function HomePage() {
         <div className="feature-grid">
           <article className="feature-card">
             <h3>Root Explorer</h3>
-            <p>Resolve ENS roots in-browser and inspect current `aens.*` records without pretending there is more product than that.</p>
+            <p>Read current ENS root state (`aens.parent`, `aens.service`, `aens.capabilities`) so write decisions start from evidence, not assumptions.</p>
           </article>
           <article className="feature-card">
             <h3>Write Records</h3>
-            <p>Start from the demo preset if useful, then edit capability names and service URLs before crossing the wallet boundary.</p>
+            <p>Generate deterministic `aens.*` write intent, review planned values, then cross the wallet approval boundary only when ready.</p>
           </article>
         </div>
         <ul className="scope-list">

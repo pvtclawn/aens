@@ -212,7 +212,7 @@ function WriteRecordsPage() {
     <Shell
       eyebrow="ÆNS"
       title="Write Records"
-      intro={<>This page starts from a <span className="code">theaens.eth</span> demo preset for <span className="code">/</span> and <span className="code">/write-records/</span>, but the capability ENS names and service URLs are fully editable before wallet approval.</>}
+      intro={<>Prepare deterministic `aens.*` write intent from a root ENS name. Demo defaults are optional; capability names and service URLs remain fully editable before wallet approval.</>}
       actions={
         <>
           <a className="button" href={routeLinks.landing}>Back to root explorer</a>
@@ -223,7 +223,7 @@ function WriteRecordsPage() {
       <CardGrid>
         <Card>
           <h2>Write form</h2>
-          <p className="helper">Use the demo preset if useful, then edit the capability child names and service URLs to match the real namespace you want to publish.</p>
+          <p className="helper">Set a root ENS name, review derived records, and write only the exact `aens.*` values shown in Planned writes.</p>
           <form
             className="lookup-form"
             onSubmit={(event) => {
@@ -321,7 +321,7 @@ function WriteRecordsPage() {
       <section className="card">
         <h2>Status</h2>
         <p className="status-line">{status}</p>
-        <p className="helper">Wallet approval stays explicit. Demo defaults are only a starting point; the form will write exactly what is shown above. If a child subname has no resolver yet, set it first in ENS Manager before retrying.</p>
+        <p className="helper">Wallet approval stays explicit. This flow writes exactly the records shown above—no hidden mutations. If a child subname has no resolver yet, set it first in ENS Manager before retrying.</p>
         {error ? <p className="error-text">{error}</p> : null}
       </section>
 
