@@ -12,6 +12,7 @@ import {
   surfaceCheckPassed,
   type SurfaceCheckResult,
 } from './public-surface'
+import { parseSurfaceFailureSummary } from './surface-summary-format'
 
 function buildResult(overrides: Partial<SurfaceCheckResult> = {}): SurfaceCheckResult {
   return {
@@ -216,23 +217,32 @@ test('summarizeSurfaceCheck explains success, alias success, and failures', () =
   )
 
   expect(summarizeSurfaceCheck(buildResult({ markerMatchType: 'none', matchedMarker: undefined }))).toBe(
-    'research capability page: reachable but missing expected marker (https://aens-nine.vercel.app/research-capability/)',
+    'research capability page: marker-missing (reachable but missing expected marker) (https://aens-nine.vercel.app/research-capability/)',
   )
 
   expect(summarizeSurfaceCheck(buildResult({ status: 404 }))).toBe(
-    'research capability page: http 404 (https://aens-nine.vercel.app/research-capability/)',
+    'research capability page: http-failure (http failure) (https://aens-nine.vercel.app/research-capability/)',
   )
 })
 
 test('summary templates are centralized and used by surface failure summarizer', () => {
   expect(SURFACE_FAILURE_CLASS_SUMMARY_CUES['alias-expired']).toBe('alias expired (canonical marker required)')
 
-  expect(
-    summarizeSurfaceFailure(
-      buildResult({ markerMatchType: 'none', matchedMarker: undefined }),
-      'alias-expired',
-    ),
-  ).toBe('research capability page: alias expired (canonical marker required) (https://aens-nine.vercel.app/research-capability/)')
+  const summary = summarizeSurfaceFailure(
+    buildResult({ markerMatchType: 'none', matchedMarker: undefined }),
+    'alias-expired',
+  )
+
+  expect(summary).toBe(
+    'research capability page: alias-expired (alias expired (canonical marker required)) (https://aens-nine.vercel.app/research-capability/)',
+  )
+
+  expect(parseSurfaceFailureSummary(summary)).toEqual({
+    surfaceLabel: 'research capability page',
+    failureClass: 'alias-expired',
+    cue: 'alias expired (canonical marker required)',
+    url: 'https://aens-nine.vercel.app/research-capability/',
+  })
 })
 
 test('preferredSurfaceReady requires every checked preferred page to pass', () => {

@@ -103,7 +103,7 @@ test('buildDiscoverResearchArtifact wraps the current result without changing it
     expectedMarker: 'Discover the official research capability for an ENS identity',
     failureClass: 'http-failure',
     passed: false,
-    summary: 'discover research page: http 404 (https://aens-nine.vercel.app/discover-research/)',
+    summary: 'discover research page: http-failure (http failure) (https://aens-nine.vercel.app/discover-research/)',
   })
   expect(artifact.result).toEqual(RESULT)
 })

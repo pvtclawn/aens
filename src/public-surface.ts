@@ -8,6 +8,7 @@ import {
   type SurfaceMarkerDomain,
   type SurfaceMarkerMatchMode,
 } from './public-surface-marker-contract'
+import { isClassFirstFailureSummary } from './surface-summary-format'
 
 export const DEFAULT_PUBLIC_BASE_URL = 'https://aens-nine.vercel.app/'
 export const RESEARCH_CAPABILITY_PATH = 'research-capability/'
@@ -276,11 +277,14 @@ export function surfaceCheckPassed(result: SurfaceCheckResult): boolean {
 }
 
 export function summarizeSurfaceFailure(result: SurfaceCheckResult, failureClass: SurfaceFailureClass): string {
-  if (failureClass === 'http-failure') {
-    return `${result.label}: http ${result.status} (${result.url})`
+  const cue = SURFACE_FAILURE_CLASS_SUMMARY_CUES[failureClass]
+  const summary = `${result.label}: ${failureClass} (${cue}) (${result.url})`
+
+  if (!isClassFirstFailureSummary(summary)) {
+    throw new Error(`surface-failure-summary-format-invalid: ${summary}`)
   }
 
-  return `${result.label}: ${SURFACE_FAILURE_CLASS_SUMMARY_CUES[failureClass]} (${result.url})`
+  return summary
 }
 
 export function summarizeSurfaceCheck(result: SurfaceCheckResult): string {
@@ -298,10 +302,10 @@ export function summarizeSurfaceCheck(result: SurfaceCheckResult): string {
   }
 
   if (result.status === 200) {
-    return `${result.label}: ${SURFACE_FAILURE_CLASS_SUMMARY_CUES['marker-missing']} (${result.url})`
+    return summarizeSurfaceFailure(result, 'marker-missing')
   }
 
-  return `${result.label}: http ${result.status} (${result.url})`
+  return summarizeSurfaceFailure(result, 'http-failure')
 }
 
 export function preferredSurfaceReady(results: SurfaceCheckResult[]): boolean {
