@@ -2,6 +2,7 @@ import { describe, expect, test } from 'bun:test'
 
 import { compareCanonicalMachinePayloads } from './machine-payload-parity'
 import {
+  deriveStageGateOwnershipPreemptionSignals,
   formatStageGateCompactSummary,
   hasRequiredBlockedByMetadata,
   isPrimaryBlockerAlignedToEarliestFail,
@@ -35,7 +36,7 @@ describe('stage-gate adapter parity contract', () => {
     const summary = formatStageGateCompactSummary(fixture)
 
     expect(summary).toBe(
-      'primary=freshness:fixture-provenance-registry-stale|stages=integrity=pass,freshness=fail,identity=not-evaluated|blocked=identity<-freshness:fixture-provenance-registry-stale',
+      'primary=freshness:fixture-provenance-registry-stale|ownershipFailureClass=none|stagePrimarySuppressed=false|stageStatusContextOnly=false|stages=integrity=pass,freshness=fail,identity=not-evaluated|blocked=identity<-freshness:fixture-provenance-registry-stale',
     )
     expect(hasRequiredBlockedByMetadata(fixture)).toBe(true)
     expect(isPrimaryBlockerAlignedToEarliestFail(fixture)).toBe(true)
@@ -43,6 +44,13 @@ describe('stage-gate adapter parity contract', () => {
     const ownership = resolvePrimaryBlockerReasonStageOwnership(fixture)
     expect(ownership?.status).toBe('resolved')
     expect(ownership?.registryVersion).toBe('aens-reason-stage-ownership/v1')
+
+    const preemption = deriveStageGateOwnershipPreemptionSignals(fixture)
+    expect(preemption).toEqual({
+      ownershipFailureClass: 'none',
+      stagePrimarySuppressed: false,
+      stageStatusContextOnly: false,
+    })
   })
 
   test('fails parity when an adapter omits a required stage field', () => {
@@ -87,6 +95,20 @@ describe('stage-gate adapter parity contract', () => {
     const ownership = resolvePrimaryBlockerReasonStageOwnership(observed)
     expect(ownership?.status).toBe('mismatch')
     expect(ownership?.reasonCode).toBe('fixture-provenance-registry-stale')
+
+    const preemption = deriveStageGateOwnershipPreemptionSignals(observed)
+    expect(preemption).toEqual({
+      ownershipFailureClass: 'mismatch',
+      stagePrimarySuppressed: true,
+      stageStatusContextOnly: true,
+    })
+
+    const summary = formatStageGateCompactSummary(observed)
+    expect(summary).toContain('primary=ownership-contract:fixture-provenance-stage-owner-mismatch')
+    expect(summary).toContain('ownershipFailureClass=mismatch')
+    expect(summary).toContain('stagePrimarySuppressed=true')
+    expect(summary).toContain('stageStatusContextOnly=true')
+    expect(summary).not.toContain('primary=identity:fixture-provenance-registry-stale')
   })
 
   test('fails required blocked-by metadata when downstream stage is not-evaluated', () => {
@@ -136,5 +158,19 @@ describe('stage-gate adapter parity contract', () => {
     expect(ownership?.status).toBe('unmapped')
     expect(ownership?.reasonCode).toBe('fixture-provenance-unknown-reason')
     expect(ownership?.registryVersion).toBe('aens-reason-stage-ownership/v1')
+
+    const preemption = deriveStageGateOwnershipPreemptionSignals(observed)
+    expect(preemption).toEqual({
+      ownershipFailureClass: 'unmapped',
+      stagePrimarySuppressed: true,
+      stageStatusContextOnly: true,
+    })
+
+    const summary = formatStageGateCompactSummary(observed)
+    expect(summary).toContain('primary=ownership-contract:fixture-provenance-stage-reason-unmapped')
+    expect(summary).toContain('ownershipFailureClass=unmapped')
+    expect(summary).toContain('stagePrimarySuppressed=true')
+    expect(summary).toContain('stageStatusContextOnly=true')
+    expect(summary).not.toContain('primary=integrity:fixture-provenance-unknown-reason')
   })
 })

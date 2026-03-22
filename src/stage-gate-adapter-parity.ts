@@ -102,12 +102,45 @@ export function resolvePrimaryBlockerReasonStageOwnership(
   })
 }
 
+export type OwnershipFailureClass = 'none' | 'unmapped' | 'mismatch'
+
+export interface StageGateOwnershipPreemptionSignals {
+  ownershipFailureClass: OwnershipFailureClass
+  stagePrimarySuppressed: boolean
+  stageStatusContextOnly: boolean
+}
+
+export function deriveStageGateOwnershipPreemptionSignals(
+  payload: StageGateAdapterParityPayload,
+): StageGateOwnershipPreemptionSignals {
+  const ownership = resolvePrimaryBlockerReasonStageOwnership(payload)
+
+  if (!ownership || ownership.status === 'resolved') {
+    return {
+      ownershipFailureClass: 'none',
+      stagePrimarySuppressed: false,
+      stageStatusContextOnly: false,
+    }
+  }
+
+  return {
+    ownershipFailureClass: ownership.status,
+    stagePrimarySuppressed: true,
+    stageStatusContextOnly: true,
+  }
+}
+
 export function formatStageGateCompactSummary(
   payload: StageGateAdapterParityPayload,
 ): string {
-  const primary = payload.primaryBlocker === null
-    ? 'none'
-    : `${payload.primaryBlocker.stage}:${payload.primaryBlocker.reasonCode}`
+  const ownership = resolvePrimaryBlockerReasonStageOwnership(payload)
+  const preemptionSignals = deriveStageGateOwnershipPreemptionSignals(payload)
+
+  const primary = ownership && ownership.status !== 'resolved'
+    ? `ownership-contract:${ownership.contractReasonCode}`
+    : payload.primaryBlocker === null
+      ? 'none'
+      : `${payload.primaryBlocker.stage}:${payload.primaryBlocker.reasonCode}`
 
   const stageToken = STAGE_GATE_ORDER
     .map((stage) => `${stage}=${payload.stageStatus[stage]}`)
@@ -120,5 +153,12 @@ export function formatStageGateCompactSummary(
     ? 'none'
     : blockedStages.map((stage) => blockedByToken(stage, payload.blockedBy)).join(';')
 
-  return `primary=${primary}|stages=${stageToken}|blocked=${blockedToken}`
+  return [
+    `primary=${primary}`,
+    `ownershipFailureClass=${preemptionSignals.ownershipFailureClass}`,
+    `stagePrimarySuppressed=${String(preemptionSignals.stagePrimarySuppressed)}`,
+    `stageStatusContextOnly=${String(preemptionSignals.stageStatusContextOnly)}`,
+    `stages=${stageToken}`,
+    `blocked=${blockedToken}`,
+  ].join('|')
 }
