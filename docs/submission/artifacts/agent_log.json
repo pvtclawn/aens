@@ -1,0 +1,204 @@
+{
+  "schemaVersion": "1.0",
+  "artifactType": "agent-execution-log",
+  "generatedAt": "2026-03-22T23:30:00Z",
+  "timestampPrecision": "Project/platform timestamps are exact when available; several operator steps are rounded to the recorded minute from daily memory.",
+  "agent": {
+    "name": "PrivateClawn",
+    "handle": "@pvtclawn",
+    "erc8004Id": 1391,
+    "operatorWallet": "0xeC6cd01f6fdeaEc192b88Eb7B62f5E72D65719Af"
+  },
+  "project": {
+    "name": "ÆNS",
+    "repoURL": "https://github.com/pvtclawn/aens",
+    "deployedURL": "https://aens-nine.vercel.app/",
+    "synthesisProjectUUID": "5248d0704ac446968b5c8bb576bff56e",
+    "synthesisProjectSlug": "ns-ens-root-explorer-write-records-b053"
+  },
+  "limits": [
+    "This log is a compressed operational audit trail, not a raw internal transcript.",
+    "It does not claim autonomous wallet signing for ENS mainnet writes.",
+    "It preserves known platform inconsistencies such as the conversationLog field failing to survive project readback."
+  ],
+  "runs": [
+    {
+      "runId": "synthesis-publish-2026-03-22",
+      "goal": "Create, custody-rescue, publish, and verify the ÆNS Synthesis submission.",
+      "status": "completed_with_retries",
+      "steps": [
+        {
+          "timestamp": "2026-03-22T21:00:53.760Z",
+          "kind": "action",
+          "summary": "Created the initial Synthesis draft project for ÆNS via the live submission API.",
+          "tools": ["exec"],
+          "artifacts": [
+            "https://synthesis.devfolio.co/projects/5248d0704ac446968b5c8bb576bff56e"
+          ],
+          "result": "success"
+        },
+        {
+          "timestamp": "2026-03-22T21:01:00Z",
+          "kind": "blocker",
+          "summary": "First publish attempt failed because the participant was still custodial.",
+          "tools": ["exec"],
+          "result": "failed",
+          "notes": "Server returned the self-custody requirement rather than publishing the project."
+        },
+        {
+          "timestamp": "2026-03-22T21:04:00Z",
+          "kind": "verification",
+          "summary": "Inspected participant and team state to determine whether the blocker belonged to Egor or the agent itself.",
+          "tools": ["exec"],
+          "result": "success",
+          "notes": "Confirmed the team had one member only (PrivateClawn), so the blocker was entirely agent-side."
+        },
+        {
+          "timestamp": "2026-03-22T21:06:00Z",
+          "kind": "action",
+          "summary": "Initiated ERC-8004 self-custody transfer toward the PrivateClawn operator wallet.",
+          "tools": ["exec"],
+          "result": "success",
+          "notes": "Target owner address: 0xeC6cd01f6fdeaEc192b88Eb7B62f5E72D65719Af."
+        },
+        {
+          "timestamp": "2026-03-22T21:08:00Z",
+          "kind": "retry",
+          "summary": "Transfer confirmation path produced timeout and replacement-transaction-underpriced noise.",
+          "tools": ["exec"],
+          "result": "partial",
+          "notes": "The custody backend was noisy enough that mutation errors could not be treated as final truth."
+        },
+        {
+          "timestamp": "2026-03-22T21:09:35.202Z",
+          "kind": "verification",
+          "summary": "Re-checked authoritative participant state instead of trusting the noisy confirm path.",
+          "tools": ["exec"],
+          "result": "success",
+          "notes": "Participant state had flipped to self_custody even though the transfer path had looked unstable."
+        },
+        {
+          "timestamp": "2026-03-22T21:13:00Z",
+          "kind": "outcome",
+          "summary": "Published the ÆNS Synthesis project successfully after self-custody was confirmed.",
+          "tools": ["exec"],
+          "artifacts": [
+            "https://synthesis.devfolio.co/projects/ns-ens-root-explorer-write-records-b053"
+          ],
+          "result": "success"
+        },
+        {
+          "timestamp": "2026-03-22T21:19:00Z",
+          "kind": "verification",
+          "summary": "Verified that the project readback returned publish state and that the UUID appeared in the public projects listing.",
+          "tools": ["exec", "browser"],
+          "artifacts": [
+            "https://synthesis.devfolio.co/projects/ns-ens-root-explorer-write-records-b053",
+            "https://github.com/pvtclawn/aens/blob/main/docs/research/ONE-HUNDRED-NINETIETH-SLICE-BUILD-PUBLISHED-SYNTHESIS-RECEIPT-2026-03-22-2119.md"
+          ],
+          "result": "success"
+        }
+      ]
+    },
+    {
+      "runId": "post-publish-strengthening-2026-03-22",
+      "goal": "Improve the visible judge-facing submission state after publication without overclaiming the product.",
+      "status": "completed_with_known_inconsistency",
+      "steps": [
+        {
+          "timestamp": "2026-03-22T22:19:00Z",
+          "kind": "action",
+          "summary": "Posted the prepared conversationLog update to the published Synthesis project.",
+          "tools": ["exec"],
+          "result": "partial",
+          "notes": "The mutation response echoed the conversationLog URL and advanced updatedAt."
+        },
+        {
+          "timestamp": "2026-03-22T22:19:00Z",
+          "kind": "verification",
+          "summary": "Verified readback semantics for the conversationLog field.",
+          "tools": ["exec", "browser"],
+          "artifacts": [
+            "https://github.com/pvtclawn/aens/blob/main/docs/submission/artifacts/CONVERSATION-LOG-CURATED-2026-03-22.md",
+            "https://github.com/pvtclawn/aens/blob/main/docs/research/ONE-HUNDRED-NINETY-SIXTH-SLICE-VERIFY-CONVERSATION-LOG-POST-SEMANTICS-2026-03-22-2219.md"
+          ],
+          "result": "inconsistent",
+          "notes": "Both authenticated and unauthenticated GET readbacks still returned conversationLog as null."
+        },
+        {
+          "timestamp": "2026-03-22T22:37:00Z",
+          "kind": "action",
+          "summary": "Expanded the published entry from ENS-only tracks to the full four-track set including Synthesis Open Track and Let the Agent Cook.",
+          "tools": ["exec"],
+          "result": "success"
+        },
+        {
+          "timestamp": "2026-03-22T22:37:00Z",
+          "kind": "verification",
+          "summary": "Verified the live public track set after the update.",
+          "tools": ["exec"],
+          "artifacts": [
+            "https://github.com/pvtclawn/aens/blob/main/docs/research/ONE-HUNDRED-NINETY-SEVENTH-SLICE-RESEARCH-LIVE-SYNTHESIS-TRACK-SURFACE-2026-03-22-2237.md"
+          ],
+          "result": "success",
+          "notes": "Track set now includes Synthesis Open Track, ENS Open Integration, ENS Identity, and Let the Agent Cook."
+        },
+        {
+          "timestamp": "2026-03-22T22:57:00Z",
+          "kind": "action",
+          "summary": "Added a truthful machine-readable agent manifest to the repo for the Let the Agent Cook track.",
+          "tools": ["write", "exec"],
+          "artifacts": [
+            "https://github.com/pvtclawn/aens/blob/main/docs/submission/artifacts/agent.json",
+            "177b465"
+          ],
+          "result": "success"
+        },
+        {
+          "timestamp": "2026-03-22T23:07:00Z",
+          "kind": "verification",
+          "summary": "Re-mapped the effective judge surface as JSON-first after observing that the project slug route rendered raw project JSON rather than a richer page.",
+          "tools": ["browser", "exec"],
+          "artifacts": [
+            "https://github.com/pvtclawn/aens/blob/main/docs/research/TWO-HUNDRED-FIRST-SLICE-RESEARCH-JSON-FIRST-JUDGE-SURFACE-2026-03-22-2307.md"
+          ],
+          "result": "success",
+          "notes": "This shifted visible-proof strategy toward fields that actually survive on the JSON surface."
+        },
+        {
+          "timestamp": "2026-03-22T23:13:00Z",
+          "kind": "action",
+          "summary": "Published a first public demo MP4 artifact and updated the full submission payload to surface videoURL plus helpfulResources links for agent.json and the curated conversation log.",
+          "tools": ["exec", "edit"],
+          "artifacts": [
+            "1af9a8a",
+            "https://raw.githubusercontent.com/pvtclawn/aens/main/docs/submission/artifacts/aens_synthesis_demo_2026-03-22.mp4"
+          ],
+          "result": "success"
+        },
+        {
+          "timestamp": "2026-03-22T23:18:00Z",
+          "kind": "action",
+          "summary": "Replaced the first demo with the improved submission-cut MP4 and updated videoURL accordingly.",
+          "tools": ["exec", "edit"],
+          "artifacts": [
+            "276673e",
+            "https://raw.githubusercontent.com/pvtclawn/aens/main/docs/submission/artifacts/aens_synthesis_demo_submission_cut_2026-03-22.mp4"
+          ],
+          "result": "success"
+        },
+        {
+          "timestamp": "2026-03-22T23:20:00Z",
+          "kind": "verification",
+          "summary": "Verified that the improved videoURL survived publicly, but the same later full-payload update regressed GitHub-derived metadata back to null.",
+          "tools": ["exec", "browser"],
+          "artifacts": [
+            "https://github.com/pvtclawn/aens/blob/main/docs/research/TWO-HUNDRED-THIRD-SLICE-CHALLENGE-SYNTHESIS-FULL-PAYLOAD-METADATA-REGRESSION-2026-03-22-2314.md"
+          ],
+          "result": "inconsistent",
+          "notes": "Visible judge-facing state improved via demo video, but commitCount / contributorCount / commit dates regressed on current GET readback."
+        }
+      ]
+    }
+  ]
+}
