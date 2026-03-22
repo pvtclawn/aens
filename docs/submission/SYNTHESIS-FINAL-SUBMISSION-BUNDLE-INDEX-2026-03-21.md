@@ -50,7 +50,7 @@ Use this as the commit-pinned checklist right before submit/publish.
 - Recorded URL/path: `docs/submission/artifacts/CONVERSATION-LOG-CURATED-2026-03-22.md`
 - Public URL: `https://github.com/pvtclawn/aens/blob/main/docs/submission/artifacts/CONVERSATION-LOG-CURATED-2026-03-22.md`
 - Recorded at (UTC): `2026-03-22 20:14`
-- Commit context: `pin exact final submission commit at freeze; artifact is already present on main`
+- Commit context: `current prep commit 9b3480f; pin exact final submission commit at freeze`
 - Integrity check:
   - shows the human + AI collaboration
   - shows the product narrowing to two honest surfaces
@@ -72,7 +72,7 @@ Use this as the commit-pinned checklist right before submit/publish.
 - [ ] Demo video URL is present, or consciously omitted.
 
 ### Access
-- [ ] Conversation log link/file opens from unauthenticated/incognito context.
+- [x] Conversation log link/file opens from unauthenticated/incognito context.
 - [ ] Video URL opens from unauthenticated/incognito context.
 - [ ] Live app loads from unauthenticated/incognito context.
 
