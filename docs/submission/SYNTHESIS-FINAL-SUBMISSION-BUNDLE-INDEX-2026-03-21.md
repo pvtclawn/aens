@@ -14,19 +14,19 @@ Use this as the commit-pinned checklist right before submit/publish.
 
 ## Bundle provenance
 - Prepared at (UTC): 2026-03-22 20:14
-- submissionCommit: `SET_AT_FINAL_FREEZE`
+- submissionCommit: `09c677a2d7b457aeaddf3d10499b88c5d8f80d46` (update if you commit again before pressing Publish)
 - Repo: `https://github.com/pvtclawn/aens`
 - Deployed app: `https://aens-nine.vercel.app/`
 - Official submission skill: `https://synthesis.devfolio.co/submission/skill.md`
 
 ## Required draft fields from the guide
-- [ ] Project name
-- [ ] Description
-- [ ] Problem statement
-- [ ] GitHub repo URL
-- [ ] 1–10 tracks selected
+- [x] Project name
+- [x] Description
+- [x] Problem statement
+- [x] GitHub repo URL
+- [x] 1–10 tracks selected (4 chosen)
 - [x] Conversation log artifact ready
-- [ ] Submission metadata ready
+- [x] Submission metadata ready (payload prepared)
 
 ## Required publish gates
 - [ ] Team is Human + AI
@@ -63,7 +63,14 @@ Use this as the commit-pinned checklist right before submit/publish.
 - Live write flow: `https://aens-nine.vercel.app/write-records/`
 - Submission prep doc: `SYNTHESIS.md`
 - Devfolio field map: `docs/submission/SYNTHESIS-DEVFOLIO-FIELD-MAP-2026-03-22.md`
+- Project update payload (ready to POST): `docs/submission/artifacts/SYNTHESIS-PROJECT-UPDATE-PAYLOAD-2026-03-22.json`
 - Canonical verification command: `bun run check-public-surface`
+
+Selected tracks:
+- ENS Open Integration (`8840da28fb3b46bcb08465e1d0e8756d`)
+- ENS Identity (`627a3f5a288344489fe777212b03f953`)
+- 🤖 Let the Agent Cook — No Humans Required (`10bd47fac07e4f85bda33ba482695b24`)
+- Synthesis Open Track (`fdb76d08812b43f6a5f454744b66f590`)
 
 ## <5 minute pre-submit checklist
 ### Presence

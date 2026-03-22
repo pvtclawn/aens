@@ -45,9 +45,11 @@ Have these ready in the form:
 Canonical field map:
 - `docs/submission/SYNTHESIS-DEVFOLIO-FIELD-MAP-2026-03-22.md`
 
-## Recommended tracks
-1. **ENS Open Integration**
-2. **ENS Identity**
+## Selected tracks
+1. **ENS Open Integration** (`8840da28fb3b46bcb08465e1d0e8756d`)
+2. **ENS Identity** (`627a3f5a288344489fe777212b03f953`)
+3. **🤖 Let the Agent Cook — No Humans Required** (`10bd47fac07e4f85bda33ba482695b24`)
+4. **Synthesis Open Track** (`fdb76d08812b43f6a5f454744b66f590`)
 
 ## Demo flow for judges
 1. Open the root explorer:

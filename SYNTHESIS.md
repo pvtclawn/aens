@@ -52,11 +52,18 @@ Optional but useful:
 See the fill-in map:
 - `docs/submission/SYNTHESIS-DEVFOLIO-FIELD-MAP-2026-03-22.md`
 
-## Recommended tracks
-1. **ENS Open Integration**
-2. **ENS Identity**
+## Selected tracks for final submission
+1. **ENS Open Integration** (`8840da28fb3b46bcb08465e1d0e8756d`)
+2. **ENS Identity** (`627a3f5a288344489fe777212b03f953`)
+3. **🤖 Let the Agent Cook — No Humans Required** (`10bd47fac07e4f85bda33ba482695b24`)
+4. **Synthesis Open Track** (`fdb76d08812b43f6a5f454744b66f590`)
 
-Devfolio allows 1–10 tracks, but ÆNS should stay disciplined and submit under the strongest 1–2, not spray everywhere.
+Track rationale for the extra autonomous lane:
+- the build process itself was agent-led and evidence-driven (rapid iterate → verify → ship loop),
+- the project provides live autonomous-agent infrastructure utility (ENS state inspection + deterministic write-intent preparation),
+- the wallet signature boundary remains explicit and human-controlled.
+
+Devfolio allows 1–10 tracks; we are intentionally submitting under 4 high-signal tracks rather than spraying all 10.
 
 ## Current live deploy boundary
 Latest public checks after pushing `4fa7e88` to `origin/main` and sampling the canonical alias twice:
@@ -125,6 +132,7 @@ Do **not** demo legacy research/discovery routes.
 - `docs/submission/SYNTHESIS-DEMO-SCRIPT-2026-03-22.md`
 - `docs/submission/SYNTHESIS-FINAL-SUBMISSION-BUNDLE-INDEX-2026-03-21.md`
 - `docs/submission/SYNTHESIS-SUBMISSION-BLURB-2026-03-20.md`
+- `docs/submission/artifacts/SYNTHESIS-PROJECT-UPDATE-PAYLOAD-2026-03-22.json`
 - `docs/submission/SYNTHESIS-TRACK-FIT-2026-03-21.md`
 - `docs/submission/SYNTHESIS-COMPETITIVE-POSITIONING-2026-03-21.md`
 

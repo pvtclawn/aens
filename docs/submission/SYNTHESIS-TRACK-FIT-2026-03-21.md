@@ -3,11 +3,13 @@
 ## Purpose
 Decide the best Synthesis track framing for the current product truth, not for the older research/discovery version of the project.
 
-## Recommended order
+## Selected track order
 1. **ENS Open Integration**
 2. **ENS Identity**
+3. **🤖 Let the Agent Cook — No Humans Required**
+4. **Synthesis Open Track**
 
-Devfolio allows **1–10 tracks**, but ÆNS should stay disciplined and submit under the strongest 1–2.
+Devfolio allows **1–10 tracks**. For this final submission we intentionally use 4 strong tracks instead of spraying the full 10.
 
 ## Why ENS Open Integration is the strongest fit
 ÆNS uses ENS as a live application primitive, not as decorative profile metadata.
@@ -39,7 +41,20 @@ Use this sentence:
 
 > ÆNS is a narrow ENS utility that helps operators inspect root identity state and prepare the exact `aens.*` writes needed to publish capability metadata.
 
+## Why Let the Agent Cook is a defensible third track
+The project itself is an infrastructure utility, but the delivery path was agent-led and autonomous in execution cadence:
+- agent planned and shipped iterative slices,
+- agent ran verification loops continuously,
+- human stayed at explicit high-risk boundaries (wallet/signature and final publish decisions).
+
+This matches the track's spirit without claiming fully unsupervised onchain execution.
+
+## Why Synthesis Open Track remains a good fourth track
+The open track rewards strong end-to-end builds even when they do not map to one narrow partner surface. ÆNS fits as a disciplined, honest ENS utility with live deployment and reproducible verification.
+
 ## Bottom line
 Best current track framing:
 - **primary:** ENS Open Integration
 - **secondary:** ENS Identity
+- **third:** 🤖 Let the Agent Cook — No Humans Required
+- **fourth:** Synthesis Open Track

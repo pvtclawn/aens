@@ -30,9 +30,16 @@ Most ENS demos for agents either overreach into vague platform claims or bury th
 - `https://github.com/pvtclawn/aens`
 
 ### 5) Tracks (Devfolio allows 1–10)
-Recommended submission tracks:
-1. **ENS Open Integration**
-2. **ENS Identity**
+Selected submission tracks:
+1. **ENS Open Integration** (`8840da28fb3b46bcb08465e1d0e8756d`)
+2. **ENS Identity** (`627a3f5a288344489fe777212b03f953`)
+3. **🤖 Let the Agent Cook — No Humans Required** (`10bd47fac07e4f85bda33ba482695b24`)
+4. **Synthesis Open Track** (`fdb76d08812b43f6a5f454744b66f590`)
+
+Reason for adding Let the Agent Cook:
+- the project workstream and release loop were executed agent-first under human oversight,
+- the shipped product is directly useful to autonomous-agent operations,
+- wallet-execution boundary remains explicit, so autonomy claims stay honest.
 
 ### 6) Conversation log artifact
 Status: **prepared**
