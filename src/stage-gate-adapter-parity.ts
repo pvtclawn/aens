@@ -2,6 +2,10 @@ import {
   resolveReasonStageOwnership,
   type ResolveReasonStageOwnershipResult,
 } from './reason-stage-ownership'
+import {
+  validatePrimaryLockState,
+  type PrimaryLockState,
+} from './primary-lock-integrity'
 
 export const STAGE_GATE_ORDER = ['integrity', 'freshness', 'identity'] as const
 
@@ -130,11 +134,45 @@ export function deriveStageGateOwnershipPreemptionSignals(
   }
 }
 
+export function deriveStageGatePrimaryLockState(
+  payload: StageGateAdapterParityPayload,
+): PrimaryLockState {
+  const ownership = resolvePrimaryBlockerReasonStageOwnership(payload)
+
+  const candidate = ownership && ownership.status !== 'resolved'
+    ? {
+        primarySource: 'ownership-contract',
+        primaryLocked: true,
+        primarySelectionReason: ownership.status === 'unmapped'
+          ? 'ownership-unmapped'
+          : 'ownership-mismatch',
+      }
+    : payload.primaryBlocker === null
+      ? {
+          primarySource: 'none',
+          primaryLocked: false,
+          primarySelectionReason: 'no-failure',
+        }
+      : {
+          primarySource: 'stage-gate',
+          primaryLocked: true,
+          primarySelectionReason: 'earliest-failing-stage',
+        }
+
+  const validation = validatePrimaryLockState(candidate)
+  if (!validation.ok) {
+    throw new Error(`primary-lock-integrity-violation: ${validation.issues.map((issue) => issue.message).join(' | ')}`)
+  }
+
+  return validation.state
+}
+
 export function formatStageGateCompactSummary(
   payload: StageGateAdapterParityPayload,
 ): string {
   const ownership = resolvePrimaryBlockerReasonStageOwnership(payload)
   const preemptionSignals = deriveStageGateOwnershipPreemptionSignals(payload)
+  const lockState = deriveStageGatePrimaryLockState(payload)
 
   const primary = ownership && ownership.status !== 'resolved'
     ? `ownership-contract:${ownership.contractReasonCode}`
@@ -158,6 +196,9 @@ export function formatStageGateCompactSummary(
     `ownershipFailureClass=${preemptionSignals.ownershipFailureClass}`,
     `stagePrimarySuppressed=${String(preemptionSignals.stagePrimarySuppressed)}`,
     `stageStatusContextOnly=${String(preemptionSignals.stageStatusContextOnly)}`,
+    `primarySource=${lockState.primarySource}`,
+    `primaryLocked=${String(lockState.primaryLocked)}`,
+    `primarySelectionReason=${lockState.primarySelectionReason}`,
     `stages=${stageToken}`,
     `blocked=${blockedToken}`,
   ].join('|')

@@ -3,6 +3,7 @@ import { describe, expect, test } from 'bun:test'
 import { compareCanonicalMachinePayloads } from './machine-payload-parity'
 import {
   deriveStageGateOwnershipPreemptionSignals,
+  deriveStageGatePrimaryLockState,
   formatStageGateCompactSummary,
   hasRequiredBlockedByMetadata,
   isPrimaryBlockerAlignedToEarliestFail,
@@ -36,7 +37,7 @@ describe('stage-gate adapter parity contract', () => {
     const summary = formatStageGateCompactSummary(fixture)
 
     expect(summary).toBe(
-      'primary=freshness:fixture-provenance-registry-stale|ownershipFailureClass=none|stagePrimarySuppressed=false|stageStatusContextOnly=false|stages=integrity=pass,freshness=fail,identity=not-evaluated|blocked=identity<-freshness:fixture-provenance-registry-stale',
+      'primary=freshness:fixture-provenance-registry-stale|ownershipFailureClass=none|stagePrimarySuppressed=false|stageStatusContextOnly=false|primarySource=stage-gate|primaryLocked=true|primarySelectionReason=earliest-failing-stage|stages=integrity=pass,freshness=fail,identity=not-evaluated|blocked=identity<-freshness:fixture-provenance-registry-stale',
     )
     expect(hasRequiredBlockedByMetadata(fixture)).toBe(true)
     expect(isPrimaryBlockerAlignedToEarliestFail(fixture)).toBe(true)
@@ -50,6 +51,13 @@ describe('stage-gate adapter parity contract', () => {
       ownershipFailureClass: 'none',
       stagePrimarySuppressed: false,
       stageStatusContextOnly: false,
+    })
+
+    const lockState = deriveStageGatePrimaryLockState(fixture)
+    expect(lockState).toEqual({
+      primarySource: 'stage-gate',
+      primaryLocked: true,
+      primarySelectionReason: 'earliest-failing-stage',
     })
   })
 
@@ -103,11 +111,21 @@ describe('stage-gate adapter parity contract', () => {
       stageStatusContextOnly: true,
     })
 
+    const lockState = deriveStageGatePrimaryLockState(observed)
+    expect(lockState).toEqual({
+      primarySource: 'ownership-contract',
+      primaryLocked: true,
+      primarySelectionReason: 'ownership-mismatch',
+    })
+
     const summary = formatStageGateCompactSummary(observed)
     expect(summary).toContain('primary=ownership-contract:fixture-provenance-stage-owner-mismatch')
     expect(summary).toContain('ownershipFailureClass=mismatch')
     expect(summary).toContain('stagePrimarySuppressed=true')
     expect(summary).toContain('stageStatusContextOnly=true')
+    expect(summary).toContain('primarySource=ownership-contract')
+    expect(summary).toContain('primaryLocked=true')
+    expect(summary).toContain('primarySelectionReason=ownership-mismatch')
     expect(summary).not.toContain('primary=identity:fixture-provenance-registry-stale')
   })
 
@@ -166,11 +184,21 @@ describe('stage-gate adapter parity contract', () => {
       stageStatusContextOnly: true,
     })
 
+    const lockState = deriveStageGatePrimaryLockState(observed)
+    expect(lockState).toEqual({
+      primarySource: 'ownership-contract',
+      primaryLocked: true,
+      primarySelectionReason: 'ownership-unmapped',
+    })
+
     const summary = formatStageGateCompactSummary(observed)
     expect(summary).toContain('primary=ownership-contract:fixture-provenance-stage-reason-unmapped')
     expect(summary).toContain('ownershipFailureClass=unmapped')
     expect(summary).toContain('stagePrimarySuppressed=true')
     expect(summary).toContain('stageStatusContextOnly=true')
+    expect(summary).toContain('primarySource=ownership-contract')
+    expect(summary).toContain('primaryLocked=true')
+    expect(summary).toContain('primarySelectionReason=ownership-unmapped')
     expect(summary).not.toContain('primary=integrity:fixture-provenance-unknown-reason')
   })
 })
