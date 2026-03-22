@@ -1,17 +1,39 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import ReactDOM from 'react-dom/client'
 import { Card, CardGrid, Shell } from './Shell'
 import { agentId, discoverResearchPath, ensResearch, ensRoot, notYetBullets, repoUrl } from './content'
 
+function readRootFromQuery(): string {
+  const params = new URLSearchParams(window.location.search)
+  return params.get('name')?.trim() || ensRoot
+}
+
+function deriveResearchName(rootEns: string): string {
+  const [label, ...rest] = rootEns.split('.')
+  if (!label || rest.length === 0) {
+    return ensResearch
+  }
+
+  return `research.${rootEns}`
+}
+
+function toDiscoverHref(rootEns: string): string {
+  const params = new URLSearchParams({ mode: 'live', name: rootEns })
+  return `${discoverResearchPath}?${params.toString()}`
+}
+
 function ResearchCapabilityPage() {
+  const rootEns = useMemo(() => readRootFromQuery(), [])
+  const researchEns = useMemo(() => deriveResearchName(rootEns), [rootEns])
+
   return (
     <Shell
       eyebrow="ÆNS capability landing"
-      title="PrivateClawn Research Capability"
+      title="Research Capability Route"
       intro={
         <>
-          This is the planned public landing surface for <span className="code">{ensResearch}</span>.
-          It is intended to be the service target behind the first live ÆNS parent-authorized capability proof.
+          Planned capability surface for <span className="code">{researchEns}</span>, derived from root
+          identity <span className="code">{rootEns}</span>.
         </>
       }
       actions={
@@ -19,7 +41,7 @@ function ResearchCapabilityPage() {
           <a className="button" href="../">
             Back to ÆNS landing
           </a>
-          <a className="button" href={discoverResearchPath}>
+          <a className="button" href={toDiscoverHref(rootEns)}>
             Open discovery route
           </a>
           <a className="button" href={repoUrl}>
@@ -33,10 +55,10 @@ function ResearchCapabilityPage() {
           <h2>Planned live authority path</h2>
           <ul className="list-tight">
             <li>
-              root identity: <span className="code">{ensRoot}</span>
+              root identity: <span className="code">{rootEns}</span>
             </li>
             <li>
-              child capability: <span className="code">{ensResearch}</span>
+              child capability: <span className="code">{researchEns}</span>
             </li>
             <li>
               expected authority result: <span className="code">parent-authorized</span>
