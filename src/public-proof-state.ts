@@ -3,6 +3,7 @@ import {
   buildPreferredSurfaceTargets,
   normalizePublicBaseUrl,
   preferredSurfaceReady as hasPreferredSurfaceReady,
+  resolveSurfaceFailureClass,
   resolveSurfaceMarkerMatch,
   summarizeSurfaceCheck,
   surfaceCheckPassed,
@@ -30,7 +31,7 @@ export async function checkSurface(input: SurfaceCheckTarget): Promise<SurfaceCh
       matchMode: input.matchMode,
     })
 
-    return {
+    const result = {
       label: input.label,
       url: input.url,
       status: response.status,
@@ -42,19 +43,29 @@ export async function checkSurface(input: SurfaceCheckTarget): Promise<SurfaceCh
       matchMode: input.matchMode,
       body,
     }
+
+    return {
+      ...result,
+      failureClass: resolveSurfaceFailureClass(result),
+    }
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error)
-    return {
+    const result = {
       label: input.label,
       url: input.url,
       status: 0,
       expectedMarker: input.expectedMarker,
       expectedMarkerAliases: input.expectedMarkerAliases,
       markerDomain: input.markerDomain,
-      markerMatchType: 'none',
+      markerMatchType: 'none' as const,
       matchedMarker: undefined,
       matchMode: input.matchMode,
       body: detail,
+    }
+
+    return {
+      ...result,
+      failureClass: resolveSurfaceFailureClass(result),
     }
   }
 }

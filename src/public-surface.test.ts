@@ -4,6 +4,7 @@ import {
   buildPreferredSurfaceTargets,
   preferredSurfaceReady,
   resolvePreferredPublicBaseUrl,
+  resolveSurfaceFailureClass,
   resolveSurfaceMarkerMatch,
   summarizeSurfaceCheck,
   surfaceCheckPassed,
@@ -169,6 +170,24 @@ test('resolveSurfaceMarkerMatch fails closed on unknown matchMode', () => {
 
   expect(result.markerMatchType).toBe('none')
   expect(result.matchedMarker).toBeUndefined()
+})
+
+test('resolveSurfaceFailureClass keeps stricter class and never downgrades to marker-missing', () => {
+  const result: SurfaceCheckResult = {
+    label: 'research capability page',
+    url: 'https://aens-nine.vercel.app/research-capability/',
+    status: 200,
+    expectedMarker: 'Research Capability — ÆNS',
+    expectedMarkerAliases: [],
+    markerDomain: 'preferred-runtime',
+    markerMatchType: 'none',
+    matchedMarker: undefined,
+    matchMode: 'exact',
+    failureClass: 'collision-blocked',
+    body: 'some body',
+  }
+
+  expect(resolveSurfaceFailureClass(result)).toBe('collision-blocked')
 })
 
 test('surfaceCheckPassed requires http 200 plus canonical or alias marker match', () => {

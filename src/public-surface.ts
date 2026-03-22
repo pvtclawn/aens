@@ -17,6 +17,12 @@ export const DEFAULT_DISCOVER_RESEARCH_URL = new URL(DISCOVER_RESEARCH_PATH, DEF
 export const GITHUB_BLOB_STUB_URL = 'https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md'
 
 export type SurfaceMarkerMatchType = 'canonical' | 'alias' | 'none'
+export type SurfaceFailureClass =
+  | 'mode-invalid'
+  | 'collision-blocked'
+  | 'alias-expired'
+  | 'marker-missing'
+  | 'http-failure'
 
 export interface SurfaceCheckResult {
   label: string
@@ -28,6 +34,8 @@ export interface SurfaceCheckResult {
   markerMatchType?: SurfaceMarkerMatchType
   matchedMarker?: string
   matchMode?: SurfaceMarkerMatchMode | string
+  contractIssueCode?: 'match-mode-invalid' | 'cross-domain-normalized-overlap'
+  failureClass?: SurfaceFailureClass
   body: string
 }
 
@@ -42,6 +50,24 @@ export interface SurfaceCheckTarget {
 
 function isSurfaceMarkerMatchMode(value: string | undefined): value is SurfaceMarkerMatchMode {
   return value === 'exact' || value === 'token-boundary' || value === 'contains'
+}
+
+const SURFACE_FAILURE_CLASS_PRECEDENCE: readonly SurfaceFailureClass[] = [
+  'mode-invalid',
+  'collision-blocked',
+  'alias-expired',
+  'marker-missing',
+  'http-failure',
+] as const
+
+function selectHighestFailureClass(candidates: SurfaceFailureClass[]): SurfaceFailureClass | undefined {
+  for (const failureClass of SURFACE_FAILURE_CLASS_PRECEDENCE) {
+    if (candidates.includes(failureClass)) {
+      return failureClass
+    }
+  }
+
+  return undefined
 }
 
 function escapeRegex(value: string): string {
@@ -186,7 +212,42 @@ export function resolveSurfaceMarkerMatch(input: {
   }
 }
 
+export function resolveSurfaceFailureClass(result: SurfaceCheckResult): SurfaceFailureClass | undefined {
+  const candidates: SurfaceFailureClass[] = []
+
+  if (result.failureClass) {
+    candidates.push(result.failureClass)
+  }
+
+  if (result.status !== 200) {
+    candidates.push('http-failure')
+  }
+
+  if (result.contractIssueCode === 'match-mode-invalid') {
+    candidates.push('mode-invalid')
+  }
+
+  if (result.contractIssueCode === 'cross-domain-normalized-overlap') {
+    candidates.push('collision-blocked')
+  }
+
+  if (result.status === 200 && !isSurfaceMarkerMatchMode(result.matchMode)) {
+    candidates.push('mode-invalid')
+  }
+
+  if (result.status === 200 && result.markerMatchType === 'none') {
+    candidates.push('marker-missing')
+  }
+
+  return selectHighestFailureClass(candidates)
+}
+
 export function surfaceCheckPassed(result: SurfaceCheckResult): boolean {
+  const failureClass = resolveSurfaceFailureClass(result)
+  if (failureClass) {
+    return false
+  }
+
   if (result.status !== 200) {
     return false
   }
@@ -215,11 +276,25 @@ export function summarizeSurfaceCheck(result: SurfaceCheckResult): string {
     return `${result.label}: ok (${result.url})`
   }
 
-  if (result.status === 200) {
-    return `${result.label}: reachable but missing expected marker (${result.url})`
-  }
+  const failureClass = resolveSurfaceFailureClass(result)
+  switch (failureClass) {
+    case 'mode-invalid':
+      return `${result.label}: invalid marker match mode (${result.url})`
+    case 'collision-blocked':
+      return `${result.label}: marker collision blocked (${result.url})`
+    case 'alias-expired':
+      return `${result.label}: alias expired (canonical marker required) (${result.url})`
+    case 'marker-missing':
+      return `${result.label}: reachable but missing expected marker (${result.url})`
+    case 'http-failure':
+      return `${result.label}: http ${result.status} (${result.url})`
+    default:
+      if (result.status === 200) {
+        return `${result.label}: reachable but missing expected marker (${result.url})`
+      }
 
-  return `${result.label}: http ${result.status} (${result.url})`
+      return `${result.label}: http ${result.status} (${result.url})`
+  }
 }
 
 export function preferredSurfaceReady(results: SurfaceCheckResult[]): boolean {

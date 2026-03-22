@@ -1,9 +1,11 @@
 import { type DiscoverResearchResult } from './discover-research'
 import { type PublicProofState } from './public-proof-state'
 import {
+  resolveSurfaceFailureClass,
   summarizeSurfaceCheck,
   surfaceCheckPassed,
   type SurfaceCheckResult,
+  type SurfaceFailureClass,
 } from './public-surface'
 
 export const DISCOVER_RESEARCH_ARTIFACT_SCHEMA_VERSION = 'aens.discover-research-artifact.v1'
@@ -16,6 +18,7 @@ export interface DiscoverResearchArtifactSurfaceCheck {
   url: string
   status: number
   expectedMarker: string
+  failureClass: SurfaceFailureClass | null
   passed: boolean
   summary: string
 }
@@ -45,11 +48,14 @@ export interface DiscoverResearchArtifact {
 export function buildDiscoverResearchArtifactSurfaceCheck(
   result: SurfaceCheckResult,
 ): DiscoverResearchArtifactSurfaceCheck {
+  const failureClass = resolveSurfaceFailureClass(result)
+
   return {
     label: result.label,
     url: result.url,
     status: result.status,
     expectedMarker: result.expectedMarker,
+    failureClass: failureClass ?? null,
     passed: surfaceCheckPassed(result),
     summary: summarizeSurfaceCheck(result),
   }

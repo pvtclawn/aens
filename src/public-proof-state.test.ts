@@ -23,6 +23,7 @@ function buildSurfaceResult(overrides: Partial<SurfaceCheckResult> = {}): Surfac
     markerDomain: 'preferred-runtime',
     markerMatchType: 'canonical',
     matchedMarker: 'Research Capability — ÆNS',
+    matchMode: 'exact',
     body: 'Research Capability — ÆNS',
     ...overrides,
   }

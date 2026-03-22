@@ -68,6 +68,7 @@ test('buildDiscoverResearchArtifactSurfaceCheck keeps status and adds machine-re
     url: 'https://aens-nine.vercel.app/',
     status: 200,
     expectedMarker: 'ÆNS — ENS root explorer',
+    failureClass: null,
     passed: true,
     summary: 'public root: ok (https://aens-nine.vercel.app/)',
   })
@@ -99,6 +100,7 @@ test('buildDiscoverResearchArtifact wraps the current result without changing it
     url: 'https://aens-nine.vercel.app/discover-research/',
     status: 404,
     expectedMarker: 'Discover the official research capability for an ENS identity',
+    failureClass: 'http-failure',
     passed: false,
     summary: 'discover research page: http 404 (https://aens-nine.vercel.app/discover-research/)',
   })
