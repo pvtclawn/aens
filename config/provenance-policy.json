@@ -1,0 +1,15 @@
+{
+  "policyVersion": "aens-provenance-policy.v1",
+  "allowedValidatorVersions": {
+    "active": [
+      "aens-provenance-gate/v1"
+    ],
+    "grace": []
+  },
+  "allowedSchemaVersions": {
+    "active": [
+      "aens-write-intent/v1"
+    ],
+    "grace": []
+  }
+}
