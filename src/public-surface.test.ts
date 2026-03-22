@@ -7,6 +7,8 @@ import {
   resolveSurfaceFailureClass,
   resolveSurfaceMarkerMatch,
   summarizeSurfaceCheck,
+  summarizeSurfaceFailure,
+  SURFACE_FAILURE_CLASS_SUMMARY_CUES,
   surfaceCheckPassed,
   type SurfaceCheckResult,
 } from './public-surface'
@@ -220,6 +222,17 @@ test('summarizeSurfaceCheck explains success, alias success, and failures', () =
   expect(summarizeSurfaceCheck(buildResult({ status: 404 }))).toBe(
     'research capability page: http 404 (https://aens-nine.vercel.app/research-capability/)',
   )
+})
+
+test('summary templates are centralized and used by surface failure summarizer', () => {
+  expect(SURFACE_FAILURE_CLASS_SUMMARY_CUES['alias-expired']).toBe('alias expired (canonical marker required)')
+
+  expect(
+    summarizeSurfaceFailure(
+      buildResult({ markerMatchType: 'none', matchedMarker: undefined }),
+      'alias-expired',
+    ),
+  ).toBe('research capability page: alias expired (canonical marker required) (https://aens-nine.vercel.app/research-capability/)')
 })
 
 test('preferredSurfaceReady requires every checked preferred page to pass', () => {

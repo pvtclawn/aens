@@ -7,6 +7,7 @@ import {
   DISCOVER_RESEARCH_ARTIFACT_KIND,
   DISCOVER_RESEARCH_ARTIFACT_SCHEMA_VERSION,
 } from './submission-artifacts'
+import { SURFACE_FAILURE_CLASS_SUMMARY_CUES } from './public-surface'
 
 const RESULT: DiscoverResearchResult = {
   parentName: 'pvtclawn.eth',
@@ -105,4 +106,14 @@ test('buildDiscoverResearchArtifact wraps the current result without changing it
     summary: 'discover research page: http 404 (https://aens-nine.vercel.app/discover-research/)',
   })
   expect(artifact.result).toEqual(RESULT)
+})
+
+test('artifact failure class token and summary text stay in shared-template parity', () => {
+  const failedCheck = buildDiscoverResearchArtifactSurfaceCheck(PUBLIC_PROOF_STATE.preferredResults[2]!)
+
+  expect(failedCheck.failureClass).toBe('http-failure')
+  expect(failedCheck.summary.includes('http')).toBe(true)
+
+  const cue = SURFACE_FAILURE_CLASS_SUMMARY_CUES[failedCheck.failureClass!]
+  expect(cue).toBe('http failure')
 })

@@ -60,6 +60,14 @@ const SURFACE_FAILURE_CLASS_PRECEDENCE: readonly SurfaceFailureClass[] = [
   'http-failure',
 ] as const
 
+export const SURFACE_FAILURE_CLASS_SUMMARY_CUES = Object.freeze({
+  'mode-invalid': 'invalid marker match mode',
+  'collision-blocked': 'marker collision blocked',
+  'alias-expired': 'alias expired (canonical marker required)',
+  'marker-missing': 'reachable but missing expected marker',
+  'http-failure': 'http failure',
+} as const satisfies Record<SurfaceFailureClass, string>)
+
 function selectHighestFailureClass(candidates: SurfaceFailureClass[]): SurfaceFailureClass | undefined {
   for (const failureClass of SURFACE_FAILURE_CLASS_PRECEDENCE) {
     if (candidates.includes(failureClass)) {
@@ -267,6 +275,14 @@ export function surfaceCheckPassed(result: SurfaceCheckResult): boolean {
   })
 }
 
+export function summarizeSurfaceFailure(result: SurfaceCheckResult, failureClass: SurfaceFailureClass): string {
+  if (failureClass === 'http-failure') {
+    return `${result.label}: http ${result.status} (${result.url})`
+  }
+
+  return `${result.label}: ${SURFACE_FAILURE_CLASS_SUMMARY_CUES[failureClass]} (${result.url})`
+}
+
 export function summarizeSurfaceCheck(result: SurfaceCheckResult): string {
   if (surfaceCheckPassed(result)) {
     if (result.markerMatchType === 'alias') {
@@ -277,24 +293,15 @@ export function summarizeSurfaceCheck(result: SurfaceCheckResult): string {
   }
 
   const failureClass = resolveSurfaceFailureClass(result)
-  switch (failureClass) {
-    case 'mode-invalid':
-      return `${result.label}: invalid marker match mode (${result.url})`
-    case 'collision-blocked':
-      return `${result.label}: marker collision blocked (${result.url})`
-    case 'alias-expired':
-      return `${result.label}: alias expired (canonical marker required) (${result.url})`
-    case 'marker-missing':
-      return `${result.label}: reachable but missing expected marker (${result.url})`
-    case 'http-failure':
-      return `${result.label}: http ${result.status} (${result.url})`
-    default:
-      if (result.status === 200) {
-        return `${result.label}: reachable but missing expected marker (${result.url})`
-      }
-
-      return `${result.label}: http ${result.status} (${result.url})`
+  if (failureClass) {
+    return summarizeSurfaceFailure(result, failureClass)
   }
+
+  if (result.status === 200) {
+    return `${result.label}: ${SURFACE_FAILURE_CLASS_SUMMARY_CUES['marker-missing']} (${result.url})`
+  }
+
+  return `${result.label}: http ${result.status} (${result.url})`
 }
 
 export function preferredSurfaceReady(results: SurfaceCheckResult[]): boolean {
