@@ -14,7 +14,7 @@ Use this as the commit-pinned checklist right before submit/publish.
 
 ## Bundle provenance
 - Prepared at (UTC): 2026-03-22 20:14
-- submissionCommit: `a98c2d5ab74f90829795b9063fdf8f60a92d5724` (update only if you commit again before pressing Publish)
+- submissionCommit: set at publish time with `git rev-parse HEAD` (do not hardcode early)
 - Repo: `https://github.com/pvtclawn/aens`
 - Deployed app: `https://aens-nine.vercel.app/`
 - Official submission skill: `https://synthesis.devfolio.co/submission/skill.md`
