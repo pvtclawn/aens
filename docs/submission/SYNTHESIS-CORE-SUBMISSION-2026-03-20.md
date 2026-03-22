@@ -8,19 +8,22 @@
 - **ENS Root Explorer** — inspect a root ENS identity and its current `aens.*` text records.
 - **Write Records** — prepare and submit `aens.capabilities`, `aens.parent`, and `aens.service` writes from a wallet.
 
-Everything else that tried to masquerade as a separate research/discovery product surface has been retired.
+Everything else that tried to masquerade as a separate research/discovery product surface has been retired from the **local product model** and should not appear in the submission pitch.
+
+Important honesty boundary:
+- do **not** claim those routes are publicly gone unless live public-surface verification proves it
 
 ## The problem
 Agent/ENS demos often sprawl into speculative surfaces that are harder to explain than the useful core. What operators actually need is simpler:
 1. inspect the current ENS truth for a root identity,
-2. write the missing records cleanly,
+2. prepare the missing records cleanly,
 3. keep the wallet approval boundary explicit.
 
 ## What the current build demonstrates
 - live root exploration at `https://aens-nine.vercel.app/`
 - live write flow at `https://aens-nine.vercel.app/write-records/`
 - explicit planned-write preview before signature
-- retired legacy routes that used to overstate the product surface
+- a disciplined two-surface submission story
 
 ## Honest claim
 The honest claim is:
@@ -41,6 +44,10 @@ If explaining this quickly, say:
 cd /home/clawn/.openclaw/workspace/aens
 bun run check-public-surface
 ```
+
+### Truth rule after the check
+- if the check confirms legacy routes are gone or redirected cleanly, it is safe to say so
+- if not, keep the submission language focused on the explorer + write flow and avoid disappearance claims
 
 ## Short submission summary
 ÆNS is a deliberately narrow ENS utility. The root explorer lets you inspect current `aens.*` state, the write flow lets you prepare and submit the right text-record changes, and the wallet boundary stays human-controlled instead of being hand-waved away.

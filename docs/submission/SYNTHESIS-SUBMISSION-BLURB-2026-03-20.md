@@ -14,5 +14,8 @@ The current build exposes a live root explorer and a live write-records flow. It
 ## Form-field version
 ÆNS is a narrow ENS-native utility for reading root identity state and preparing the exact `aens.*` text-record writes needed for capability publication. The app has two public surfaces: a root explorer for inspecting current ENS truth and a write-records flow for preparing wallet-backed updates while keeping the approval boundary explicit.
 
+## Submission note
+Pair this blurb with the Devfolio field map and form pack. Do not add claims that legacy routes are publicly gone unless the live route check proves it.
+
 ## One-sentence pitch
 ÆNS is the minimal ENS utility for inspecting root identity state and writing the `aens.*` records that matter.

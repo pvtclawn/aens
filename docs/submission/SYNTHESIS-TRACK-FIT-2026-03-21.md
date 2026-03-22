@@ -1,4 +1,4 @@
-# Synthesis track fit — ÆNS (2026-03-21)
+# Synthesis track fit — ÆNS (2026-03-21, refreshed 2026-03-22)
 
 ## Purpose
 Decide the best Synthesis track framing for the current product truth, not for the older research/discovery version of the project.
@@ -6,6 +6,8 @@ Decide the best Synthesis track framing for the current product truth, not for t
 ## Recommended order
 1. **ENS Open Integration**
 2. **ENS Identity**
+
+Devfolio allows **1–10 tracks**, but ÆNS should stay disciplined and submit under the strongest 1–2.
 
 ## Why ENS Open Integration is the strongest fit
 ÆNS uses ENS as a live application primitive, not as decorative profile metadata.

@@ -1,4 +1,4 @@
-# Synthesis competitive positioning — ÆNS (2026-03-21)
+# Synthesis competitive positioning — ÆNS (2026-03-21, refreshed 2026-03-22)
 
 ## Fast read
 ÆNS should win by being **smaller and truer** than bloated ENS-agent demos.
@@ -35,6 +35,7 @@ Do not spend the pitch on:
 - vague future protocol scope
 - runtime auth or payment ideas
 - historic route churn
+- route-removal bragging unless it has been verified live
 
 Those are distractions from the useful core.
 
