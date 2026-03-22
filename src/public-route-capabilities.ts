@@ -1,19 +1,17 @@
 export const DEFAULT_PUBLIC_ROOT_NAME = 'theaens.eth'
 export const WRITE_RECORDS_PATH = '/write-records/'
 
-export type PublicRouteCapabilityKind = 'explore' | 'write'
-
 export interface PublicRouteLinks {
   ensName: string
   landing: string
   writeRecords: string
 }
 
-export interface PublicRouteCapabilitySurface {
-  kind: PublicRouteCapabilityKind
+export interface CapabilityWriteSurface {
+  label: string
   capabilityName: string
-  servicePath: string
   serviceUrl: string
+  demoServicePath?: string
 }
 
 export interface EnsRecordWrite {
@@ -24,8 +22,7 @@ export interface EnsRecordWrite {
 
 export interface PublicRouteCapabilityPlan {
   rootName: string
-  routeLinks: PublicRouteLinks
-  capabilitySurfaces: PublicRouteCapabilitySurface[]
+  capabilitySurfaces: CapabilityWriteSurface[]
   mergedCapabilities: string[]
   plannedRecords: EnsRecordWrite[]
 }
@@ -33,6 +30,14 @@ export interface PublicRouteCapabilityPlan {
 export function normalizeEnsName(value: string, fallback: string = DEFAULT_PUBLIC_ROOT_NAME): string {
   const normalized = value.trim().toLowerCase()
   return normalized.length > 0 ? normalized : fallback
+}
+
+export function normalizeCapabilityName(value: string): string {
+  return value.trim().toLowerCase()
+}
+
+export function normalizeCapabilityServiceUrl(value: string): string {
+  return value.trim()
 }
 
 function buildRouteQuery(ensName: string): string {
@@ -52,13 +57,6 @@ export function buildRouteLinks(inputEnsName: string): PublicRouteLinks {
   }
 }
 
-function deriveCapabilityName(input: {
-  kind: PublicRouteCapabilityKind
-  rootName: string
-}): string {
-  return `${input.kind}.${normalizeEnsName(input.rootName)}`
-}
-
 function buildAbsoluteUrl(input: {
   origin: string
   path: string
@@ -66,38 +64,35 @@ function buildAbsoluteUrl(input: {
   return new URL(input.path, input.origin).toString()
 }
 
-export function buildPublicRouteCapabilitySurfaces(input: {
+export function buildDemoRouteCapabilityDraft(input: {
   rootName: string
   origin: string
-}): PublicRouteCapabilitySurface[] {
+}): PublicRouteCapabilityPlan {
   const routeLinks = buildRouteLinks(input.rootName)
 
-  return [
-    {
-      kind: 'explore',
-      capabilityName: deriveCapabilityName({
-        kind: 'explore',
-        rootName: routeLinks.ensName,
-      }),
-      servicePath: routeLinks.landing,
-      serviceUrl: buildAbsoluteUrl({
-        origin: input.origin,
-        path: routeLinks.landing,
-      }),
-    },
-    {
-      kind: 'write',
-      capabilityName: deriveCapabilityName({
-        kind: 'write',
-        rootName: routeLinks.ensName,
-      }),
-      servicePath: routeLinks.writeRecords,
-      serviceUrl: buildAbsoluteUrl({
-        origin: input.origin,
-        path: routeLinks.writeRecords,
-      }),
-    },
-  ]
+  return buildPublicRouteCapabilityPlan({
+    rootName: routeLinks.ensName,
+    capabilitySurfaces: [
+      {
+        label: 'Demo landing capability',
+        capabilityName: `explore.${routeLinks.ensName}`,
+        serviceUrl: buildAbsoluteUrl({
+          origin: input.origin,
+          path: routeLinks.landing,
+        }),
+        demoServicePath: routeLinks.landing,
+      },
+      {
+        label: 'Demo write capability',
+        capabilityName: `write.${routeLinks.ensName}`,
+        serviceUrl: buildAbsoluteUrl({
+          origin: input.origin,
+          path: routeLinks.writeRecords,
+        }),
+        demoServicePath: routeLinks.writeRecords,
+      },
+    ],
+  })
 }
 
 export function mergeCapabilities(
@@ -105,38 +100,44 @@ export function mergeCapabilities(
   requiredCapabilities: string[],
 ): string[] {
   const normalizedExisting = (existingCapabilities ?? [])
-    .map((value) => normalizeEnsName(value, ''))
+    .map((value) => normalizeCapabilityName(value))
     .filter(Boolean)
   const normalizedRequired = requiredCapabilities
-    .map((value) => normalizeEnsName(value, ''))
+    .map((value) => normalizeCapabilityName(value))
     .filter(Boolean)
 
   return [...new Set([...normalizedRequired, ...normalizedExisting])]
 }
 
+function normalizeCapabilitySurface(surface: CapabilityWriteSurface): CapabilityWriteSurface {
+  return {
+    ...surface,
+    capabilityName: normalizeCapabilityName(surface.capabilityName),
+    serviceUrl: normalizeCapabilityServiceUrl(surface.serviceUrl),
+  }
+}
+
 export function buildPublicRouteCapabilityPlan(input: {
   rootName: string
-  origin: string
+  capabilitySurfaces: CapabilityWriteSurface[]
   existingCapabilities?: string[] | null
 }): PublicRouteCapabilityPlan {
-  const routeLinks = buildRouteLinks(input.rootName)
-  const capabilitySurfaces = buildPublicRouteCapabilitySurfaces({
-    rootName: routeLinks.ensName,
-    origin: input.origin,
-  })
+  const rootName = normalizeEnsName(input.rootName)
+  const capabilitySurfaces = input.capabilitySurfaces
+    .map(normalizeCapabilitySurface)
+    .filter((surface) => surface.capabilityName.length > 0 && surface.serviceUrl.length > 0)
   const mergedCapabilities = mergeCapabilities(
     input.existingCapabilities,
     capabilitySurfaces.map((surface) => surface.capabilityName),
   )
 
   return {
-    rootName: routeLinks.ensName,
-    routeLinks,
+    rootName,
     capabilitySurfaces,
     mergedCapabilities,
     plannedRecords: [
       {
-        targetName: routeLinks.ensName,
+        targetName: rootName,
         key: 'aens.capabilities',
         value: JSON.stringify(mergedCapabilities),
       },
@@ -144,7 +145,7 @@ export function buildPublicRouteCapabilityPlan(input: {
         {
           targetName: surface.capabilityName,
           key: 'aens.parent',
-          value: routeLinks.ensName,
+          value: rootName,
         },
         {
           targetName: surface.capabilityName,

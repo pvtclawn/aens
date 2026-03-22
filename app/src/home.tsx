@@ -95,7 +95,7 @@ function HomePage() {
       <CardGrid>
         <Card>
           <h2>Lookup</h2>
-          <p className="helper">Resolve an ENS root and inspect the current on-chain text-record state before publishing the route capability bundle.</p>
+          <p className="helper">Resolve an ENS root and inspect the current on-chain text-record state before configuring capability writes.</p>
           <form
             className="lookup-form"
             onSubmit={(event) => {
@@ -141,7 +141,7 @@ function HomePage() {
           </article>
           <article className="feature-card">
             <h3>Write Records</h3>
-            <p>Prepare the exact root + child writes that bind `/` and `/write-records/` to `explore.&lt;root&gt;` and `write.&lt;root&gt;` before the wallet boundary.</p>
+            <p>Start from the demo preset if useful, then edit capability names and service URLs before crossing the wallet boundary.</p>
           </article>
         </div>
         <ul className="scope-list">
@@ -157,9 +157,8 @@ function HomePage() {
           <h2>No records yet</h2>
           <p className="notice">
             <span className="code">{resolvedEnsName}</span> does not currently expose resolver/text records.
-            Open the write flow to publish <span className="code">aens.capabilities</span> plus the
-            route capability child records for <span className="code">explore.{resolvedEnsName}</span> and{' '}
-            <span className="code">write.{resolvedEnsName}</span>.
+            Open the write flow to configure <span className="code">aens.capabilities</span>, child capability names,
+            and service URLs before signing anything.
           </p>
           <div className="actions">
             <a className="button" href={links.writeRecords}>Open write records</a>

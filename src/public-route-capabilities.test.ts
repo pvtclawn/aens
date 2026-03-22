@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test'
 import {
+  buildDemoRouteCapabilityDraft,
   buildPublicRouteCapabilityPlan,
-  buildPublicRouteCapabilitySurfaces,
   buildRouteLinks,
   DEFAULT_PUBLIC_ROOT_NAME,
   mergeCapabilities,
@@ -23,29 +23,29 @@ test('buildRouteLinks keeps query-scoped routes for non-default roots', () => {
   })
 })
 
-test('buildPublicRouteCapabilitySurfaces maps landing and write endpoints to explore/write capabilities', () => {
-  expect(
-    buildPublicRouteCapabilitySurfaces({
-      rootName: DEFAULT_PUBLIC_ROOT_NAME,
-      origin: 'https://aens-nine.vercel.app',
-    }),
-  ).toEqual([
+test('buildDemoRouteCapabilityDraft creates theaens demo defaults without making them universal', () => {
+  const draft = buildDemoRouteCapabilityDraft({
+    rootName: DEFAULT_PUBLIC_ROOT_NAME,
+    origin: 'https://aens-nine.vercel.app',
+  })
+
+  expect(draft.capabilitySurfaces).toEqual([
     {
-      kind: 'explore',
+      label: 'Demo landing capability',
       capabilityName: 'explore.theaens.eth',
-      servicePath: '/',
       serviceUrl: 'https://aens-nine.vercel.app/',
+      demoServicePath: '/',
     },
     {
-      kind: 'write',
+      label: 'Demo write capability',
       capabilityName: 'write.theaens.eth',
-      servicePath: '/write-records/',
       serviceUrl: 'https://aens-nine.vercel.app/write-records/',
+      demoServicePath: '/write-records/',
     },
   ])
 })
 
-test('mergeCapabilities keeps required route capabilities first and preserves existing extras once', () => {
+test('mergeCapabilities keeps required capability names first and preserves existing extras once', () => {
   expect(
     mergeCapabilities(
       ['write.theaens.eth', 'notes.theaens.eth', 'explore.theaens.eth'],
@@ -58,44 +58,55 @@ test('mergeCapabilities keeps required route capabilities first and preserves ex
   ])
 })
 
-test('buildPublicRouteCapabilityPlan produces the full route-capability write bundle', () => {
+test('buildPublicRouteCapabilityPlan supports arbitrary capability names and service urls', () => {
   const plan = buildPublicRouteCapabilityPlan({
-    rootName: DEFAULT_PUBLIC_ROOT_NAME,
-    origin: 'https://aens-nine.vercel.app',
+    rootName: 'theaens.eth',
+    capabilitySurfaces: [
+      {
+        label: 'Search endpoint',
+        capabilityName: 'search.theaens.eth',
+        serviceUrl: 'https://demo.example/search',
+      },
+      {
+        label: 'Writer endpoint',
+        capabilityName: 'writer.theaens.eth',
+        serviceUrl: 'https://demo.example/write',
+      },
+    ],
     existingCapabilities: ['notes.theaens.eth'],
   })
 
   expect(plan.rootName).toBe('theaens.eth')
   expect(plan.mergedCapabilities).toEqual([
-    'explore.theaens.eth',
-    'write.theaens.eth',
+    'search.theaens.eth',
+    'writer.theaens.eth',
     'notes.theaens.eth',
   ])
   expect(plan.plannedRecords).toEqual([
     {
       targetName: 'theaens.eth',
       key: 'aens.capabilities',
-      value: '["explore.theaens.eth","write.theaens.eth","notes.theaens.eth"]',
+      value: '["search.theaens.eth","writer.theaens.eth","notes.theaens.eth"]',
     },
     {
-      targetName: 'explore.theaens.eth',
+      targetName: 'search.theaens.eth',
       key: 'aens.parent',
       value: 'theaens.eth',
     },
     {
-      targetName: 'explore.theaens.eth',
+      targetName: 'search.theaens.eth',
       key: 'aens.service',
-      value: 'https://aens-nine.vercel.app/',
+      value: 'https://demo.example/search',
     },
     {
-      targetName: 'write.theaens.eth',
+      targetName: 'writer.theaens.eth',
       key: 'aens.parent',
       value: 'theaens.eth',
     },
     {
-      targetName: 'write.theaens.eth',
+      targetName: 'writer.theaens.eth',
       key: 'aens.service',
-      value: 'https://aens-nine.vercel.app/write-records/',
+      value: 'https://demo.example/write',
     },
   ])
 })

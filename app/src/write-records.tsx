@@ -4,14 +4,16 @@ import { createPublicClient, createWalletClient, custom, http, namehash } from '
 import { mainnet } from 'viem/chains'
 import { DEFAULT_RPC_URLS } from '../../src/config'
 import {
+  buildDemoRouteCapabilityDraft,
   buildPublicRouteCapabilityPlan,
+  normalizeEnsName,
+  type CapabilityWriteSurface,
   type EnsRecordWrite,
-  type PublicRouteCapabilitySurface,
 } from '../../src/public-route-capabilities'
 import { resolveAensProfileWithRpcUrls } from '../../src/resolver'
 import { ensRoot, repoUrl } from './content'
 import { Card, CardGrid, Shell } from './Shell'
-import { buildRouteLinks, normalizeEnsName } from './route-links'
+import { buildRouteLinks } from './route-links'
 
 type SubmittedTx = EnsRecordWrite & {
   hash: `0x${string}`
@@ -75,19 +77,19 @@ async function resolveExistingCapabilities(rootName: string): Promise<string[]> 
   }
 }
 
-function RouteCapabilityList(props: {
-  surfaces: PublicRouteCapabilitySurface[]
+function CapabilitySurfaceList(props: {
+  surfaces: CapabilityWriteSurface[]
 }) {
   return (
     <dl className="data-list">
       {props.surfaces.map((surface) => (
-        <React.Fragment key={surface.capabilityName}>
+        <React.Fragment key={`${surface.label}-${surface.capabilityName}-${surface.serviceUrl}`}>
           <div className="data-row">
-            <dt>{surface.kind === 'explore' ? 'Explore capability' : 'Write capability'}</dt>
+            <dt>{surface.label}</dt>
             <dd><span className="code block">{surface.capabilityName}</span></dd>
           </div>
           <div className="data-row">
-            <dt>{surface.kind === 'explore' ? 'Explore service URL' : 'Write service URL'}</dt>
+            <dt>{surface.label} URL</dt>
             <dd><span className="code block">{surface.serviceUrl}</span></dd>
           </div>
         </React.Fragment>
@@ -97,34 +99,67 @@ function RouteCapabilityList(props: {
 }
 
 function WriteRecordsPage() {
-  const initialRootName = useMemo(() => readInitialRootName(), [])
-  const [rootName, setRootName] = useState(initialRootName)
+  const origin = window.location.origin
+  const initialDraft = useMemo(() => {
+    return buildDemoRouteCapabilityDraft({
+      rootName: readInitialRootName(),
+      origin,
+    })
+  }, [origin])
+
+  const [rootName, setRootName] = useState(initialDraft.rootName)
+  const [capabilitySurfaces, setCapabilitySurfaces] = useState<CapabilityWriteSurface[]>(initialDraft.capabilitySurfaces)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [status, setStatus] = useState<string>('Ready')
   const [submitted, setSubmitted] = useState<SubmittedTx[]>([])
   const [error, setError] = useState<string | null>(null)
 
   const normalizedRootName = normalizeEnsName(rootName)
-  const origin = window.location.origin
   const routeLinks = buildRouteLinks(normalizedRootName)
   const plannedPlan = useMemo(() => {
     return buildPublicRouteCapabilityPlan({
       rootName: normalizedRootName,
+      capabilitySurfaces,
+    })
+  }, [normalizedRootName, capabilitySurfaces])
+  const hasIncompleteSurface = capabilitySurfaces.some((surface) => {
+    return surface.capabilityName.trim().length === 0 || surface.serviceUrl.trim().length === 0
+  })
+
+  function updateCapabilitySurface(index: number, patch: Partial<CapabilityWriteSurface>) {
+    setCapabilitySurfaces((current) => current.map((surface, surfaceIndex) => {
+      if (surfaceIndex !== index) {
+        return surface
+      }
+
+      return {
+        ...surface,
+        ...patch,
+      }
+    }))
+  }
+
+  function applyDemoPreset() {
+    const draft = buildDemoRouteCapabilityDraft({
+      rootName: normalizedRootName,
       origin,
     })
-  }, [normalizedRootName, origin])
+
+    setRootName(draft.rootName)
+    setCapabilitySurfaces(draft.capabilitySurfaces)
+  }
 
   async function handleWriteRecords() {
     setError(null)
     setSubmitted([])
-    setStatus('Preparing route-capability write payload…')
+    setStatus('Preparing capability write payload…')
     setIsSubmitting(true)
 
     try {
       const existingCapabilities = await resolveExistingCapabilities(normalizedRootName)
       const plan = buildPublicRouteCapabilityPlan({
         rootName: normalizedRootName,
-        origin,
+        capabilitySurfaces,
         existingCapabilities,
       })
       const records = plan.plannedRecords
@@ -163,7 +198,7 @@ function WriteRecordsPage() {
         setSubmitted([...nextSubmitted])
       }
 
-      setStatus('Done. Route capability records written and confirmed on mainnet.')
+      setStatus('Done. Capability records written and confirmed on mainnet.')
     } catch (writeError) {
       const message = writeError instanceof Error ? writeError.message : String(writeError)
       setError(message)
@@ -177,7 +212,7 @@ function WriteRecordsPage() {
     <Shell
       eyebrow="ÆNS"
       title="Write Records"
-      intro={<>Prepare the exact route-capability writes for <span className="code">/</span> and <span className="code">/write-records/</span>, inspect the payload, then cross the wallet boundary only when you are happy with it.</>}
+      intro={<>This page starts from a <span className="code">theaens.eth</span> demo preset for <span className="code">/</span> and <span className="code">/write-records/</span>, but the capability ENS names and service URLs are fully editable before wallet approval.</>}
       actions={
         <>
           <a className="button" href={routeLinks.landing}>Back to root explorer</a>
@@ -188,7 +223,7 @@ function WriteRecordsPage() {
       <CardGrid>
         <Card>
           <h2>Write form</h2>
-          <p className="helper">This page builds the root capability list plus the child records for <span className="code">explore.&lt;root&gt;</span> and <span className="code">write.&lt;root&gt;</span>.</p>
+          <p className="helper">Use the demo preset if useful, then edit the capability child names and service URLs to match the real namespace you want to publish.</p>
           <form
             className="lookup-form"
             onSubmit={(event) => {
@@ -205,13 +240,43 @@ function WriteRecordsPage() {
               placeholder="theaens.eth"
             />
 
+            {capabilitySurfaces.map((surface, index) => (
+              <div key={`${surface.label}-${index}`}>
+                <p className="helper">{surface.label}</p>
+                <label className="label" htmlFor={`capability-name-${index}`}>Capability ENS name</label>
+                <input
+                  id={`capability-name-${index}`}
+                  className="input"
+                  value={surface.capabilityName}
+                  onChange={(event) => updateCapabilitySurface(index, { capabilityName: event.target.value })}
+                  placeholder="capability.example.eth"
+                />
+
+                <label className="label" htmlFor={`service-url-${index}`}>Service URL</label>
+                <input
+                  id={`service-url-${index}`}
+                  className="input"
+                  value={surface.serviceUrl}
+                  onChange={(event) => updateCapabilitySurface(index, { serviceUrl: event.target.value })}
+                  placeholder="https://service.example/path"
+                />
+
+                {surface.demoServicePath ? (
+                  <p className="small">Demo preset source: <span className="code">{surface.demoServicePath}</span></p>
+                ) : null}
+              </div>
+            ))}
+
             <div className="button-row">
               <button
                 className="button"
                 type="submit"
-                disabled={isSubmitting || normalizedRootName.length === 0}
+                disabled={isSubmitting || normalizedRootName.length === 0 || hasIncompleteSurface}
               >
-                {isSubmitting ? 'Writing…' : 'Write route capabilities'}
+                {isSubmitting ? 'Writing…' : 'Write configured capabilities'}
+              </button>
+              <button className="button" type="button" onClick={applyDemoPreset} disabled={isSubmitting}>
+                Reset demo preset
               </button>
             </div>
           </form>
@@ -233,16 +298,16 @@ function WriteRecordsPage() {
               <dd><span className="code block">Ethereum Mainnet</span></dd>
             </div>
           </dl>
-          <RouteCapabilityList surfaces={plannedPlan.capabilitySurfaces} />
+          <CapabilitySurfaceList surfaces={plannedPlan.capabilitySurfaces} />
         </Card>
       </CardGrid>
 
       <section className="card card-muted">
-        <h2>Route mapping</h2>
+        <h2>Current capability bundle</h2>
         <ul className="list-tight">
           {plannedPlan.capabilitySurfaces.map((surface) => (
-            <li key={surface.capabilityName}>
-              <span className="code">{surface.servicePath}</span> → <span className="code">{surface.capabilityName}</span>
+            <li key={`${surface.capabilityName}-${surface.serviceUrl}`}>
+              <span className="code">{surface.capabilityName}</span> → <span className="code">{surface.serviceUrl}</span>
             </li>
           ))}
         </ul>
@@ -256,7 +321,7 @@ function WriteRecordsPage() {
       <section className="card">
         <h2>Status</h2>
         <p className="status-line">{status}</p>
-        <p className="helper">Wallet approval stays explicit. If either child subname has no resolver yet, set it first in ENS Manager before retrying.</p>
+        <p className="helper">Wallet approval stays explicit. Demo defaults are only a starting point; the form will write exactly what is shown above. If a child subname has no resolver yet, set it first in ENS Manager before retrying.</p>
         {error ? <p className="error-text">{error}</p> : null}
       </section>
 
