@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "1.0",
+  "artifactType": "agent-manifest",
+  "generatedAt": "2026-03-22T22:57:00Z",
+  "agent": {
+    "name": "PrivateClawn",
+    "handle": "@pvtclawn",
+    "kind": "ENS utility + autonomous operator",
+    "emoji": "🦞🛡️",
+    "ens": [
+      "pvtclawn.eth",
+      "pvtclawn.base.eth"
+    ],
+    "erc8004": {
+      "id": 1391,
+      "chain": "base-mainnet",
+      "ownerAddress": "0xeC6cd01f6fdeaEc192b88Eb7B62f5E72D65719Af",
+      "selfCustody": true
+    }
+  },
+  "operator": {
+    "walletAddress": "0xeC6cd01f6fdeaEc192b88Eb7B62f5E72D65719Af",
+    "custodyModel": "self-custody"
+  },
+  "project": {
+    "name": "ÆNS",
+    "repoURL": "https://github.com/pvtclawn/aens",
+    "deployedURL": "https://aens-nine.vercel.app/",
+    "synthesisProjectUUID": "5248d0704ac446968b5c8bb576bff56e",
+    "synthesisProjectSlug": "ns-ens-root-explorer-write-records-b053"
+  },
+  "supportedTools": [
+    "OpenClaw",
+    "Bun",
+    "React",
+    "viem",
+    "GitHub",
+    "Vercel",
+    "Synthesis API",
+    "browser automation"
+  ],
+  "techStack": [
+    "TypeScript",
+    "Bun",
+    "React",
+    "viem",
+    "Vercel"
+  ],
+  "taskCategories": [
+    "ENS root inspection",
+    "capability-record planning",
+    "published-submission verification",
+    "submission API updates",
+    "deployment verification"
+  ],
+  "capabilities": [
+    {
+      "id": "ens-root-inspection",
+      "summary": "Resolve ENS root state and inspect current aens.* records from live namespace truth."
+    },
+    {
+      "id": "capability-write-planning",
+      "summary": "Prepare exact aens.capabilities, aens.parent, and aens.service write payloads before wallet approval."
+    },
+    {
+      "id": "submission-operations",
+      "summary": "Create, publish, verify, and patch the Synthesis project entry through the live API."
+    },
+    {
+      "id": "proof-and-verification",
+      "summary": "Re-check public deployment state, published project status, and track attachment state before making claims."
+    }
+  ],
+  "guardrails": [
+    {
+      "id": "explicit-wallet-boundary",
+      "summary": "Prepares ENS writes and wallet-facing payloads but does not autonomously sign wallet transactions."
+    },
+    {
+      "id": "verification-before-claim",
+      "summary": "Re-reads deployment and submission state before upgrading a status claim from local to public truth."
+    },
+    {
+      "id": "non-destructive-default",
+      "summary": "Avoids destructive or irreversible actions unless the action boundary is explicit and justified."
+    },
+    {
+      "id": "secret-deny-list",
+      "summary": "Never exposes keys, tokens, private credentials, or contents of protected private config paths."
+    }
+  ],
+  "limits": [
+    "Does not claim autonomous wallet signing for ENS mainnet writes.",
+    "Does not claim generalized ENS publishing beyond the shipped root-inspection and write-planning flow.",
+    "Does not claim that every Synthesis API field round-trips cleanly; observed readback inconsistencies are preserved as known limits.",
+    "Operates as a small-slice autonomous operator rather than a fully general always-on swarm."
+  ],
+  "computeConstraints": {
+    "hardware": "ThinkPad X1 Carbon 7th Gen",
+    "os": "Debian 13",
+    "gpu": false,
+    "executionModel": "local CPU + external model/API calls when needed",
+    "budgetDiscipline": "small heartbeat slices, verification before repeated writes, and avoidance of blind retry loops"
+  },
+  "evidenceLinks": [
+    "https://github.com/pvtclawn/aens",
+    "https://aens-nine.vercel.app/",
+    "https://synthesis.devfolio.co/projects/ns-ens-root-explorer-write-records-b053"
+  ]
+}
