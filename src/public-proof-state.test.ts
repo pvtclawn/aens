@@ -7,8 +7,23 @@ function buildSurfaceResult(overrides: Partial<SurfaceCheckResult> = {}): Surfac
     label: 'research capability page',
     url: 'https://aens-nine.vercel.app/research-capability/',
     status: 200,
-    expectedMarker: 'PrivateClawn Research Capability',
-    body: 'PrivateClawn Research Capability',
+    expectedMarker: 'Research Capability — ÆNS',
+    expectedMarkerAliases: [
+      {
+        marker: 'Research Capability Route',
+        sunsetAt: '2026-05-01T00:00:00.000Z',
+        reason: 'runtime h1 alias while checker reads static HTML content',
+      },
+      {
+        marker: 'PrivateClawn Research Capability',
+        sunsetAt: '2026-05-01T00:00:00.000Z',
+        reason: 'temporary transition alias after research page copy de-hardcode',
+      },
+    ],
+    markerDomain: 'preferred-runtime',
+    markerMatchType: 'canonical',
+    matchedMarker: 'Research Capability — ÆNS',
+    body: 'Research Capability — ÆNS',
     ...overrides,
   }
 }
@@ -17,13 +32,36 @@ test('buildPublicProofState marks preferred ready only when all preferred target
   const state = buildPublicProofState({
     preferredBaseUrl: 'https://aens-nine.vercel.app',
     preferredResults: [
-      buildSurfaceResult({ label: 'public root', url: 'https://aens-nine.vercel.app/', expectedMarker: 'ÆNS', body: 'ÆNS — PrivateClawn landing' }),
+      buildSurfaceResult({
+        label: 'public root',
+        url: 'https://aens-nine.vercel.app/',
+        expectedMarker: 'ÆNS — ENS root explorer',
+        expectedMarkerAliases: [
+          {
+            marker: 'ÆNS live ENS root explorer',
+            sunsetAt: '2026-05-01T00:00:00.000Z',
+            reason: 'runtime h1 alias while checker reads static HTML content',
+          },
+          {
+            marker: 'ÆNS — PrivateClawn landing',
+            sunsetAt: '2026-05-01T00:00:00.000Z',
+            reason: 'temporary transition alias after landing copy de-hardcode',
+          },
+        ],
+        markerMatchType: 'canonical',
+        matchedMarker: 'ÆNS — ENS root explorer',
+        body: 'ÆNS — ENS root explorer',
+      }),
       buildSurfaceResult(),
     ],
     fallbackResult: buildSurfaceResult({
       label: 'github blob fallback',
       url: 'https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md',
       expectedMarker: 'PrivateClawn Research Capability Surface',
+      expectedMarkerAliases: [],
+      markerDomain: 'bootstrap-fallback',
+      markerMatchType: 'canonical',
+      matchedMarker: 'PrivateClawn Research Capability Surface',
       body: 'PrivateClawn Research Capability Surface',
     }),
   })
@@ -36,13 +74,36 @@ test('buildPublicProofState marks bootstrap ready when preferred surface is not 
   const state = buildPublicProofState({
     preferredBaseUrl: 'https://aens-nine.vercel.app',
     preferredResults: [
-      buildSurfaceResult({ label: 'public root', url: 'https://aens-nine.vercel.app/', expectedMarker: 'ÆNS', body: 'ÆNS — PrivateClawn landing' }),
-      buildSurfaceResult({ status: 404, body: 'not found' }),
+      buildSurfaceResult({
+        label: 'public root',
+        url: 'https://aens-nine.vercel.app/',
+        expectedMarker: 'ÆNS — ENS root explorer',
+        expectedMarkerAliases: [
+          {
+            marker: 'ÆNS live ENS root explorer',
+            sunsetAt: '2026-05-01T00:00:00.000Z',
+            reason: 'runtime h1 alias while checker reads static HTML content',
+          },
+          {
+            marker: 'ÆNS — PrivateClawn landing',
+            sunsetAt: '2026-05-01T00:00:00.000Z',
+            reason: 'temporary transition alias after landing copy de-hardcode',
+          },
+        ],
+        markerMatchType: 'canonical',
+        matchedMarker: 'ÆNS — ENS root explorer',
+        body: 'ÆNS — ENS root explorer',
+      }),
+      buildSurfaceResult({ status: 404, body: 'not found', markerMatchType: 'none', matchedMarker: undefined }),
     ],
     fallbackResult: buildSurfaceResult({
       label: 'github blob fallback',
       url: 'https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md',
       expectedMarker: 'PrivateClawn Research Capability Surface',
+      expectedMarkerAliases: [],
+      markerDomain: 'bootstrap-fallback',
+      markerMatchType: 'canonical',
+      matchedMarker: 'PrivateClawn Research Capability Surface',
       body: 'PrivateClawn Research Capability Surface',
     }),
   })
@@ -56,13 +117,36 @@ test('summarizePublicProofStateLines includes both preferred and bootstrap verdi
     buildPublicProofState({
       preferredBaseUrl: 'https://aens-nine.vercel.app',
       preferredResults: [
-        buildSurfaceResult({ label: 'public root', url: 'https://aens-nine.vercel.app/', expectedMarker: 'ÆNS', body: 'ÆNS — PrivateClawn landing' }),
-        buildSurfaceResult({ status: 404, body: 'not found' }),
+        buildSurfaceResult({
+          label: 'public root',
+          url: 'https://aens-nine.vercel.app/',
+          expectedMarker: 'ÆNS — ENS root explorer',
+          expectedMarkerAliases: [
+            {
+              marker: 'ÆNS live ENS root explorer',
+              sunsetAt: '2026-05-01T00:00:00.000Z',
+              reason: 'runtime h1 alias while checker reads static HTML content',
+            },
+            {
+              marker: 'ÆNS — PrivateClawn landing',
+              sunsetAt: '2026-05-01T00:00:00.000Z',
+              reason: 'temporary transition alias after landing copy de-hardcode',
+            },
+          ],
+          markerMatchType: 'canonical',
+          matchedMarker: 'ÆNS — ENS root explorer',
+          body: 'ÆNS — ENS root explorer',
+        }),
+        buildSurfaceResult({ status: 404, body: 'not found', markerMatchType: 'none', matchedMarker: undefined }),
       ],
       fallbackResult: buildSurfaceResult({
         label: 'github blob fallback',
         url: 'https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md',
         expectedMarker: 'PrivateClawn Research Capability Surface',
+        expectedMarkerAliases: [],
+        markerDomain: 'bootstrap-fallback',
+        markerMatchType: 'canonical',
+        matchedMarker: 'PrivateClawn Research Capability Surface',
         body: 'PrivateClawn Research Capability Surface',
       }),
     }),

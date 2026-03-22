@@ -31,15 +31,15 @@ const PUBLIC_PROOF_STATE: PublicProofState = {
       label: 'public root',
       url: 'https://aens-nine.vercel.app/',
       status: 200,
-      expectedMarker: 'ÆNS — PrivateClawn landing',
-      body: 'ÆNS — PrivateClawn landing',
+      expectedMarker: 'ÆNS — ENS root explorer',
+      body: 'ÆNS — ENS root explorer',
     },
     {
       label: 'research capability page',
       url: 'https://aens-nine.vercel.app/research-capability/',
       status: 200,
-      expectedMarker: 'PrivateClawn Research Capability',
-      body: 'PrivateClawn Research Capability',
+      expectedMarker: 'Research Capability — ÆNS',
+      body: 'Research Capability — ÆNS',
     },
     {
       label: 'discover research page',
@@ -63,7 +63,7 @@ test('buildDiscoverResearchArtifactSurfaceCheck keeps status and adds machine-re
     label: 'public root',
     url: 'https://aens-nine.vercel.app/',
     status: 200,
-    expectedMarker: 'ÆNS — PrivateClawn landing',
+    expectedMarker: 'ÆNS — ENS root explorer',
     passed: true,
     summary: 'public root: ok (https://aens-nine.vercel.app/)',
   })

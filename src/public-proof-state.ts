@@ -1,11 +1,13 @@
 import {
-  GITHUB_BLOB_STUB_URL,
+  buildFallbackSurfaceTarget,
   buildPreferredSurfaceTargets,
   normalizePublicBaseUrl,
   preferredSurfaceReady as hasPreferredSurfaceReady,
+  resolveSurfaceMarkerMatch,
   summarizeSurfaceCheck,
   surfaceCheckPassed,
   type SurfaceCheckResult,
+  type SurfaceCheckTarget,
 } from './public-surface'
 
 export interface PublicProofState {
@@ -17,20 +19,25 @@ export interface PublicProofState {
   bootstrapProofReady: boolean
 }
 
-export async function checkSurface(input: {
-  label: string
-  url: string
-  expectedMarker: string
-}): Promise<SurfaceCheckResult> {
+export async function checkSurface(input: SurfaceCheckTarget): Promise<SurfaceCheckResult> {
   try {
     const response = await fetch(input.url)
     const body = await response.text()
+    const markerMatch = resolveSurfaceMarkerMatch({
+      body,
+      expectedMarker: input.expectedMarker,
+      expectedMarkerAliases: input.expectedMarkerAliases,
+    })
 
     return {
       label: input.label,
       url: input.url,
       status: response.status,
       expectedMarker: input.expectedMarker,
+      expectedMarkerAliases: markerMatch.activeAliases,
+      markerDomain: input.markerDomain,
+      markerMatchType: markerMatch.markerMatchType,
+      matchedMarker: markerMatch.matchedMarker,
       body,
     }
   } catch (error) {
@@ -40,6 +47,10 @@ export async function checkSurface(input: {
       url: input.url,
       status: 0,
       expectedMarker: input.expectedMarker,
+      expectedMarkerAliases: input.expectedMarkerAliases,
+      markerDomain: input.markerDomain,
+      markerMatchType: 'none',
+      matchedMarker: undefined,
       body: detail,
     }
   }
@@ -72,11 +83,7 @@ export async function fetchPublicProofState(input: {
   const preferredBaseUrl = normalizePublicBaseUrl(input.preferredBaseUrl)
   const preferredTargets = buildPreferredSurfaceTargets(preferredBaseUrl)
   const preferredResults = await Promise.all(preferredTargets.map(checkSurface))
-  const fallbackResult = await checkSurface({
-    label: 'github blob fallback',
-    url: GITHUB_BLOB_STUB_URL,
-    expectedMarker: 'PrivateClawn Research Capability Surface',
-  })
+  const fallbackResult = await checkSurface(buildFallbackSurfaceTarget())
 
   return buildPublicProofState({
     preferredBaseUrl,
