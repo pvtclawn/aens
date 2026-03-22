@@ -1,10 +1,12 @@
 import {
   BOOTSTRAP_FALLBACK_MARKER,
   PREFERRED_RUNTIME_MARKERS,
+  assertSurfaceMarkerContractsValid,
   resolveActiveMarkerAliases,
   type SurfaceMarkerAlias,
   type SurfaceMarkerContract,
   type SurfaceMarkerDomain,
+  type SurfaceMarkerMatchMode,
 } from './public-surface-marker-contract'
 
 export const DEFAULT_PUBLIC_BASE_URL = 'https://aens-nine.vercel.app/'
@@ -25,6 +27,7 @@ export interface SurfaceCheckResult {
   markerDomain?: SurfaceMarkerDomain
   markerMatchType?: SurfaceMarkerMatchType
   matchedMarker?: string
+  matchMode?: SurfaceMarkerMatchMode | string
   body: string
 }
 
@@ -34,6 +37,33 @@ export interface SurfaceCheckTarget {
   expectedMarker: string
   expectedMarkerAliases?: SurfaceMarkerAlias[]
   markerDomain?: SurfaceMarkerDomain
+  matchMode: SurfaceMarkerMatchMode
+}
+
+function isSurfaceMarkerMatchMode(value: string | undefined): value is SurfaceMarkerMatchMode {
+  return value === 'exact' || value === 'token-boundary' || value === 'contains'
+}
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function markerMatchesBody(input: {
+  body: string
+  marker: string
+  matchMode: SurfaceMarkerMatchMode
+}): boolean {
+  switch (input.matchMode) {
+    case 'exact':
+      return input.body.includes(input.marker)
+    case 'contains':
+      return input.body.includes(input.marker)
+    case 'token-boundary': {
+      const escaped = escapeRegex(input.marker)
+      const pattern = new RegExp(`(?:^|[^\\p{L}\\p{N}])${escaped}(?:$|[^\\p{L}\\p{N}])`, 'u')
+      return pattern.test(input.body)
+    }
+  }
 }
 
 function targetFromMarkerContract(input: {
@@ -47,6 +77,7 @@ function targetFromMarkerContract(input: {
     expectedMarker: input.markerContract.canonical,
     expectedMarkerAliases: input.markerContract.aliases,
     markerDomain: input.markerContract.domain,
+    matchMode: input.markerContract.matchMode,
   }
 }
 
@@ -73,6 +104,8 @@ export function resolvePreferredPublicBaseUrl(input: {
 }
 
 export function buildPreferredSurfaceTargets(baseUrl: string): SurfaceCheckTarget[] {
+  assertSurfaceMarkerContractsValid()
+
   const normalizedBaseUrl = normalizePublicBaseUrl(baseUrl)
 
   return [
@@ -95,6 +128,8 @@ export function buildPreferredSurfaceTargets(baseUrl: string): SurfaceCheckTarge
 }
 
 export function buildFallbackSurfaceTarget(): SurfaceCheckTarget {
+  assertSurfaceMarkerContractsValid()
+
   return targetFromMarkerContract({
     label: 'github blob fallback',
     url: GITHUB_BLOB_STUB_URL,
@@ -106,30 +141,36 @@ export function resolveSurfaceMarkerMatch(input: {
   body: string
   expectedMarker: string
   expectedMarkerAliases?: SurfaceMarkerAlias[]
+  matchMode?: SurfaceMarkerMatchMode | string
   nowIso?: string
 }): {
   markerMatchType: SurfaceMarkerMatchType
   matchedMarker?: string
   activeAliases: SurfaceMarkerAlias[]
 } {
-  if (input.body.includes(input.expectedMarker)) {
-    return {
-      markerMatchType: 'canonical',
-      matchedMarker: input.expectedMarker,
-      activeAliases: resolveActiveMarkerAliases({
-        aliases: input.expectedMarkerAliases ?? [],
-        nowIso: input.nowIso,
-      }),
-    }
-  }
-
   const activeAliases = resolveActiveMarkerAliases({
     aliases: input.expectedMarkerAliases ?? [],
     nowIso: input.nowIso,
   })
 
+  if (!isSurfaceMarkerMatchMode(input.matchMode)) {
+    return {
+      markerMatchType: 'none',
+      matchedMarker: undefined,
+      activeAliases,
+    }
+  }
+
+  if (markerMatchesBody({ body: input.body, marker: input.expectedMarker, matchMode: input.matchMode })) {
+    return {
+      markerMatchType: 'canonical',
+      matchedMarker: input.expectedMarker,
+      activeAliases,
+    }
+  }
+
   for (const alias of activeAliases) {
-    if (input.body.includes(alias.marker)) {
+    if (markerMatchesBody({ body: input.body, marker: alias.marker, matchMode: input.matchMode })) {
       return {
         markerMatchType: 'alias',
         matchedMarker: alias.marker,
@@ -154,7 +195,15 @@ export function surfaceCheckPassed(result: SurfaceCheckResult): boolean {
     return result.markerMatchType !== 'none'
   }
 
-  return result.body.includes(result.expectedMarker)
+  if (!isSurfaceMarkerMatchMode(result.matchMode)) {
+    return false
+  }
+
+  return markerMatchesBody({
+    body: result.body,
+    marker: result.expectedMarker,
+    matchMode: result.matchMode,
+  })
 }
 
 export function summarizeSurfaceCheck(result: SurfaceCheckResult): string {

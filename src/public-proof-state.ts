@@ -27,6 +27,7 @@ export async function checkSurface(input: SurfaceCheckTarget): Promise<SurfaceCh
       body,
       expectedMarker: input.expectedMarker,
       expectedMarkerAliases: input.expectedMarkerAliases,
+      matchMode: input.matchMode,
     })
 
     return {
@@ -38,6 +39,7 @@ export async function checkSurface(input: SurfaceCheckTarget): Promise<SurfaceCh
       markerDomain: input.markerDomain,
       markerMatchType: markerMatch.markerMatchType,
       matchedMarker: markerMatch.matchedMarker,
+      matchMode: input.matchMode,
       body,
     }
   } catch (error) {
@@ -51,6 +53,7 @@ export async function checkSurface(input: SurfaceCheckTarget): Promise<SurfaceCh
       markerDomain: input.markerDomain,
       markerMatchType: 'none',
       matchedMarker: undefined,
+      matchMode: input.matchMode,
       body: detail,
     }
   }

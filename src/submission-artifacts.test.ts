@@ -32,6 +32,7 @@ const PUBLIC_PROOF_STATE: PublicProofState = {
       url: 'https://aens-nine.vercel.app/',
       status: 200,
       expectedMarker: 'ÆNS — ENS root explorer',
+      matchMode: 'exact',
       body: 'ÆNS — ENS root explorer',
     },
     {
@@ -39,6 +40,7 @@ const PUBLIC_PROOF_STATE: PublicProofState = {
       url: 'https://aens-nine.vercel.app/research-capability/',
       status: 200,
       expectedMarker: 'Research Capability — ÆNS',
+      matchMode: 'exact',
       body: 'Research Capability — ÆNS',
     },
     {
@@ -46,6 +48,7 @@ const PUBLIC_PROOF_STATE: PublicProofState = {
       url: 'https://aens-nine.vercel.app/discover-research/',
       status: 404,
       expectedMarker: 'Discover the official research capability for an ENS identity',
+      matchMode: 'exact',
       body: 'not found',
     },
   ],
@@ -54,6 +57,7 @@ const PUBLIC_PROOF_STATE: PublicProofState = {
     url: 'https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md',
     status: 200,
     expectedMarker: 'PrivateClawn Research Capability Surface',
+    matchMode: 'exact',
     body: 'PrivateClawn Research Capability Surface',
   },
 }

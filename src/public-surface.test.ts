@@ -22,15 +22,11 @@ function buildResult(overrides: Partial<SurfaceCheckResult> = {}): SurfaceCheckR
         sunsetAt: '2026-05-01T00:00:00.000Z',
         reason: 'runtime h1 alias while checker reads static HTML content',
       },
-      {
-        marker: 'PrivateClawn Research Capability',
-        sunsetAt: '2026-05-01T00:00:00.000Z',
-        reason: 'temporary transition alias after research page copy de-hardcode',
-      },
     ],
     markerDomain: 'preferred-runtime',
     markerMatchType: 'canonical',
     matchedMarker: 'Research Capability — ÆNS',
+    matchMode: 'exact',
     body: 'Research Capability — ÆNS',
     ...overrides,
   }
@@ -46,7 +42,7 @@ test('resolvePreferredPublicBaseUrl prefers env, then deployed host, then defaul
   )
 })
 
-test('buildPreferredSurfaceTargets derives role-based runtime marker contracts', () => {
+test('buildPreferredSurfaceTargets derives role-based runtime marker contracts with explicit matchMode', () => {
   expect(buildPreferredSurfaceTargets('https://aens-nine.vercel.app')).toEqual([
     {
       label: 'public root',
@@ -65,6 +61,7 @@ test('buildPreferredSurfaceTargets derives role-based runtime marker contracts',
         },
       ],
       markerDomain: 'preferred-runtime',
+      matchMode: 'exact',
     },
     {
       label: 'research capability page',
@@ -76,13 +73,9 @@ test('buildPreferredSurfaceTargets derives role-based runtime marker contracts',
           sunsetAt: '2026-05-01T00:00:00.000Z',
           reason: 'runtime h1 alias while checker reads static HTML content',
         },
-        {
-          marker: 'PrivateClawn Research Capability',
-          sunsetAt: '2026-05-01T00:00:00.000Z',
-          reason: 'temporary transition alias after research page copy de-hardcode',
-        },
       ],
       markerDomain: 'preferred-runtime',
+      matchMode: 'exact',
     },
     {
       label: 'discover research page',
@@ -90,6 +83,7 @@ test('buildPreferredSurfaceTargets derives role-based runtime marker contracts',
       expectedMarker: 'Discover the official research capability for an ENS identity',
       expectedMarkerAliases: [],
       markerDomain: 'preferred-runtime',
+      matchMode: 'exact',
     },
   ])
 })
@@ -101,10 +95,11 @@ test('buildFallbackSurfaceTarget keeps bootstrap marker contract separate from r
     expectedMarker: 'PrivateClawn Research Capability Surface',
     expectedMarkerAliases: [],
     markerDomain: 'bootstrap-fallback',
+    matchMode: 'exact',
   })
 })
 
-test('resolveSurfaceMarkerMatch supports canonical and bounded alias matching', () => {
+test('resolveSurfaceMarkerMatch supports canonical and bounded alias matching for explicit mode', () => {
   expect(
     resolveSurfaceMarkerMatch({
       body: 'Research Capability — ÆNS',
@@ -116,6 +111,7 @@ test('resolveSurfaceMarkerMatch supports canonical and bounded alias matching', 
           reason: 'runtime h1 alias while checker reads static HTML content',
         },
       ],
+      matchMode: 'exact',
       nowIso: '2026-03-22T10:00:00.000Z',
     }),
   ).toMatchObject({
@@ -134,6 +130,7 @@ test('resolveSurfaceMarkerMatch supports canonical and bounded alias matching', 
           reason: 'runtime h1 alias while checker reads static HTML content',
         },
       ],
+      matchMode: 'exact',
       nowIso: '2026-03-22T10:00:00.000Z',
     }),
   ).toMatchObject({
@@ -152,12 +149,26 @@ test('resolveSurfaceMarkerMatch supports canonical and bounded alias matching', 
           reason: 'runtime h1 alias while checker reads static HTML content',
         },
       ],
+      matchMode: 'exact',
       nowIso: '2026-06-01T00:00:00.000Z',
     }),
   ).toMatchObject({
     markerMatchType: 'none',
     matchedMarker: undefined,
   })
+})
+
+test('resolveSurfaceMarkerMatch fails closed on unknown matchMode', () => {
+  const result = resolveSurfaceMarkerMatch({
+    body: 'Research Capability — ÆNS',
+    expectedMarker: 'Research Capability — ÆNS',
+    expectedMarkerAliases: [],
+    matchMode: 'mystery-mode',
+    nowIso: '2026-03-22T10:00:00.000Z',
+  })
+
+  expect(result.markerMatchType).toBe('none')
+  expect(result.matchedMarker).toBeUndefined()
 })
 
 test('surfaceCheckPassed requires http 200 plus canonical or alias marker match', () => {
@@ -244,6 +255,7 @@ test('runtime markers do not accept bootstrap fallback marker content', () => {
     body: fallback.expectedMarker,
     expectedMarker: runtimeRootTarget.expectedMarker,
     expectedMarkerAliases: runtimeRootTarget.expectedMarkerAliases,
+    matchMode: runtimeRootTarget.matchMode,
     nowIso: '2026-03-22T10:00:00.000Z',
   })
 
