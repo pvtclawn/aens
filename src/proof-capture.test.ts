@@ -13,7 +13,7 @@ import {
   resolveProofServiceUrl,
   sanitizeProofLabel,
 } from './proof-capture'
-import { DEFAULT_RESEARCH_CAPABILITY_URL, GITHUB_BLOB_STUB_URL } from './public-surface'
+import { DEFAULT_WRITE_RECORDS_URL, GITHUB_BLOB_STUB_URL } from './public-surface'
 
 test('sanitizeProofLabel keeps safe characters and collapses spaces to dashes', () => {
   expect(sanitizeProofLabel('post root / trial')).toBe('post-root--trial')
@@ -36,22 +36,22 @@ test('resolveProofPublicationMode rejects unsupported values', () => {
 })
 
 test('resolveProofServiceUrl defaults by mode and accepts explicit overrides', () => {
-  expect(resolveProofServiceUrl({ publicationMode: 'preferred' })).toBe(DEFAULT_RESEARCH_CAPABILITY_URL)
+  expect(resolveProofServiceUrl({ publicationMode: 'preferred' })).toBe(DEFAULT_WRITE_RECORDS_URL)
   expect(resolveProofServiceUrl({ publicationMode: 'bootstrap' })).toBe(GITHUB_BLOB_STUB_URL)
   expect(
     resolveProofServiceUrl({
       publicationMode: 'bootstrap',
-      serviceUrl: 'https://github.com/pvtclawn/aens/blob/abc123/docs/public/research-capability-stub.md',
+      serviceUrl: 'https://github.com/pvtclawn/aens/blob/abc123/docs/public/write-records-stub.md',
     }),
-  ).toBe('https://github.com/pvtclawn/aens/blob/abc123/docs/public/research-capability-stub.md')
+  ).toBe('https://github.com/pvtclawn/aens/blob/abc123/docs/public/write-records-stub.md')
 })
 
 test('classifyProofServiceUrlFamily classifies preferred and bootstrap URL families', () => {
-  expect(classifyProofServiceUrlFamily(DEFAULT_RESEARCH_CAPABILITY_URL)).toBe('preferred')
+  expect(classifyProofServiceUrlFamily(DEFAULT_WRITE_RECORDS_URL)).toBe('preferred')
   expect(classifyProofServiceUrlFamily(GITHUB_BLOB_STUB_URL)).toBe('bootstrap')
   expect(
     classifyProofServiceUrlFamily(
-      'https://github.com/pvtclawn/aens/blob/abc123/docs/public/research-capability-stub.md',
+      'https://github.com/pvtclawn/aens/blob/abc123/docs/public/write-records-stub.md',
     ),
   ).toBe('bootstrap')
   expect(classifyProofServiceUrlFamily('https://example.com/custom-capability')).toBeNull()
@@ -135,8 +135,8 @@ test('buildPublicTruthSnapshotSection embeds the live verifier lines into the ar
   const section = buildPublicTruthSnapshotSection([
     'Preferred public base: https://aens-nine.vercel.app/',
     'public root: ok (https://aens-nine.vercel.app/)',
-    'Preferred public surface ready: no (https://aens-nine.vercel.app/research/)',
-    'Bootstrap proof ready: yes (https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md)',
+    'Preferred public surface ready: no (https://aens-nine.vercel.app/write-records/)',
+    'Bootstrap proof ready: yes (https://github.com/pvtclawn/aens/blob/main/docs/public/write-records-stub.md)',
   ])
 
   expect(section).toContain('## Public truth snapshot')

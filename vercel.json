@@ -3,37 +3,5 @@
   "installCommand": "bun install && cd app && bun install",
   "buildCommand": "cd app && bun run build",
   "outputDirectory": "app/dist",
-  "trailingSlash": false,
-  "redirects": [
-    {
-      "source": "/research",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/research/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/research-capability",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/research-capability/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/discover-research",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/discover-research/",
-      "destination": "/",
-      "permanent": true
-    }
-  ]
+  "trailingSlash": false
 }

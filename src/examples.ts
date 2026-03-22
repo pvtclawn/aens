@@ -1,7 +1,7 @@
 import { classifyCapabilityAuthorization, type CapabilityAuthorization } from './capability-authorization'
 import type { LinkedRecordSummary } from './linked-records'
 import { buildAensProfile, type AensResolvedProfile } from './profile'
-import { DEFAULT_RESEARCH_CAPABILITY_URL } from './public-surface'
+import { DEFAULT_WRITE_RECORDS_URL } from './public-surface'
 
 const DEMO_ADDRESS = '0x000000000000000000000000000000000000dEaD'
 const PARENT_NAME = 'pvtclawn.eth'
@@ -103,10 +103,10 @@ function buildParentAuthorizedCapabilityExample(): AensExampleScenario {
     id: 'parent-authorized-capability',
     title: 'Parent-authorized capability surface',
     description: 'Offline demo of a child capability explicitly listed by its parent ENS identity.',
-    childName: 'research.pvtclawn.eth',
-    childDescription: 'Research capability surface for PrivateClawn',
-    childServiceUrl: DEFAULT_RESEARCH_CAPABILITY_URL,
-    parentCapabilities: ['research.pvtclawn.eth'],
+    childName: 'write.pvtclawn.eth',
+    childDescription: 'Write-records capability surface for PrivateClawn',
+    childServiceUrl: DEFAULT_WRITE_RECORDS_URL,
+    parentCapabilities: ['write.pvtclawn.eth'],
   })
 }
 
@@ -118,7 +118,7 @@ function buildUnlistedChildCapabilityExample(): AensExampleScenario {
     childName: 'ops.pvtclawn.eth',
     childDescription: 'Ops capability surface for PrivateClawn',
     childServiceUrl: 'https://pvtclawn.example/ops',
-    parentCapabilities: ['research.pvtclawn.eth'],
+    parentCapabilities: ['write.pvtclawn.eth'],
   })
 }
 

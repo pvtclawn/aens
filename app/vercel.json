@@ -3,37 +3,5 @@
   "installCommand": "bun install",
   "buildCommand": "bun run build",
   "outputDirectory": "dist",
-  "trailingSlash": true,
-  "redirects": [
-    {
-      "source": "/research",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/research/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/research-capability",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/research-capability/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/discover-research",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/discover-research/",
-      "destination": "/",
-      "permanent": true
-    }
-  ]
+  "trailingSlash": true
 }

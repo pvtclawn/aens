@@ -9,12 +9,12 @@ test('classifyCapabilityAuthorization detects a parent-authorized capability sur
     address: '0x000000000000000000000000000000000000dEaD',
     records: {
       agentId: '1391',
-      capabilities: ['research.pvtclawn.eth'],
+      capabilities: ['write.pvtclawn.eth'],
     },
   })
 
   const childProfile = buildAensProfile({
-    ensName: 'research.pvtclawn.eth',
+    ensName: 'write.pvtclawn.eth',
     address: '0x000000000000000000000000000000000000dEaD',
     records: {
       parentName: 'pvtclawn.eth',
@@ -43,7 +43,7 @@ test('classifyCapabilityAuthorization detects an unlisted child capability', () 
   })
 
   const childProfile = buildAensProfile({
-    ensName: 'research.pvtclawn.eth',
+    ensName: 'write.pvtclawn.eth',
     address: '0x000000000000000000000000000000000000dEaD',
     records: {
       parentName: 'pvtclawn.eth',
@@ -63,12 +63,12 @@ test('classifyCapabilityAuthorization detects an identity mismatch', () => {
     address: '0x000000000000000000000000000000000000dEaD',
     records: {
       agentId: '1391',
-      capabilities: ['research.pvtclawn.eth'],
+      capabilities: ['write.pvtclawn.eth'],
     },
   })
 
   const childProfile = buildAensProfile({
-    ensName: 'research.pvtclawn.eth',
+    ensName: 'write.pvtclawn.eth',
     address: '0x000000000000000000000000000000000000dEaD',
     records: {
       parentName: 'pvtclawn.eth',
@@ -102,12 +102,12 @@ test('createReportSections keeps capability authority fields inside the authorit
     address: '0x000000000000000000000000000000000000dEaD',
     records: {
       agentId: '1391',
-      capabilities: ['research.pvtclawn.eth'],
+      capabilities: ['write.pvtclawn.eth'],
     },
   })
 
   const childProfile = buildAensProfile({
-    ensName: 'research.pvtclawn.eth',
+    ensName: 'write.pvtclawn.eth',
     address: '0x000000000000000000000000000000000000dEaD',
     records: {
       parentName: 'pvtclawn.eth',
@@ -134,12 +134,12 @@ test('renderProfileReport includes capability-authorization status under the aut
     address: '0x000000000000000000000000000000000000dEaD',
     records: {
       agentId: '1391',
-      capabilities: ['research.pvtclawn.eth'],
+      capabilities: ['write.pvtclawn.eth'],
     },
   })
 
   const childProfile = buildAensProfile({
-    ensName: 'research.pvtclawn.eth',
+    ensName: 'write.pvtclawn.eth',
     address: '0x000000000000000000000000000000000000dEaD',
     records: {
       parentName: 'pvtclawn.eth',

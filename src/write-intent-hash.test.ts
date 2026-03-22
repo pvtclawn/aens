@@ -11,23 +11,23 @@ test('hashWriteIntentPayload stays stable for semantically equivalent manifests'
     schemaVersion: 'aens-write-intent/v1',
     chainId: 1,
     rootName: ' PVTClawn.eth ',
-    capabilityName: ' Research.PvtClawn.eth ',
+    capabilityName: ' Write.PvtClawn.eth ',
     targetRecords: [
       {
-        targetName: 'research.pvtclawn.eth',
+        targetName: 'write.pvtclawn.eth',
         key: 'aens.service',
-        value: 'https://aens-nine.vercel.app/research/',
+        value: 'https://aens-nine.vercel.app/write-records/',
       },
       {
         targetName: 'pvtclawn.eth',
         key: 'aens.capabilities',
-        value: '["research.pvtclawn.eth"]',
+        value: '["write.pvtclawn.eth"]',
       },
     ],
     expectedPostState: {
       authorizationStatus: 'parent-authorized',
       reasonCode: 'parent-authorized-with-service-url',
-      serviceUrl: 'https://aens-nine.vercel.app/research/',
+      serviceUrl: 'https://aens-nine.vercel.app/write-records/',
     },
   }
 
@@ -35,23 +35,23 @@ test('hashWriteIntentPayload stays stable for semantically equivalent manifests'
     schemaVersion: 'aens-write-intent/v1',
     chainId: 1,
     rootName: 'pvtclawn.eth',
-    capabilityName: 'research.pvtclawn.eth',
+    capabilityName: 'write.pvtclawn.eth',
     targetRecords: [
       {
         targetName: 'pvtclawn.eth',
         key: 'aens.capabilities',
-        value: '["research.pvtclawn.eth"]',
+        value: '["write.pvtclawn.eth"]',
       },
       {
-        targetName: 'research.pvtclawn.eth',
+        targetName: 'write.pvtclawn.eth',
         key: 'aens.service',
-        value: ' https://aens-nine.vercel.app/research ',
+        value: ' https://aens-nine.vercel.app/write-records ',
       },
     ],
     expectedPostState: {
       authorizationStatus: 'parent-authorized',
       reasonCode: 'parent-authorized-with-service-url',
-      serviceUrl: 'https://aens-nine.vercel.app/research',
+      serviceUrl: 'https://aens-nine.vercel.app/write-records',
     },
   }
 
@@ -64,12 +64,12 @@ test('hashWriteIntentPayload stays stable for semantically equivalent manifests'
     {
       targetName: 'pvtclawn.eth',
       key: 'aens.capabilities',
-      value: '["research.pvtclawn.eth"]',
+      value: '["write.pvtclawn.eth"]',
     },
     {
-      targetName: 'research.pvtclawn.eth',
+      targetName: 'write.pvtclawn.eth',
       key: 'aens.service',
-      value: 'https://aens-nine.vercel.app/research',
+      value: 'https://aens-nine.vercel.app/write-records',
     },
   ])
 })
@@ -79,18 +79,18 @@ test('hashWriteIntentPayload changes when semantic intent changes', () => {
     schemaVersion: 'aens-write-intent/v1',
     chainId: 1,
     rootName: 'pvtclawn.eth',
-    capabilityName: 'research.pvtclawn.eth',
+    capabilityName: 'write.pvtclawn.eth',
     targetRecords: [
       {
-        targetName: 'research.pvtclawn.eth',
+        targetName: 'write.pvtclawn.eth',
         key: 'aens.service',
-        value: 'https://aens-nine.vercel.app/research',
+        value: 'https://aens-nine.vercel.app/write-records',
       },
     ],
     expectedPostState: {
       authorizationStatus: 'parent-authorized',
       reasonCode: 'parent-authorized-with-service-url',
-      serviceUrl: 'https://aens-nine.vercel.app/research',
+      serviceUrl: 'https://aens-nine.vercel.app/write-records',
     },
   }
 
@@ -98,14 +98,14 @@ test('hashWriteIntentPayload changes when semantic intent changes', () => {
     ...base,
     targetRecords: [
       {
-        targetName: 'research.pvtclawn.eth',
+        targetName: 'write.pvtclawn.eth',
         key: 'aens.service',
-        value: 'https://aens-nine.vercel.app/research-v2',
+        value: 'https://aens-nine.vercel.app/write-records-v2',
       },
     ],
     expectedPostState: {
       ...base.expectedPostState,
-      serviceUrl: 'https://aens-nine.vercel.app/research-v2',
+      serviceUrl: 'https://aens-nine.vercel.app/write-records-v2',
     },
   }
 
@@ -129,28 +129,28 @@ test('write-intent canonical vectors stay locked', () => {
         schemaVersion: 'aens-write-intent/v1',
         chainId: 1,
         rootName: 'pvtclawn.eth',
-        capabilityName: 'research.pvtclawn.eth',
+        capabilityName: 'write.pvtclawn.eth',
         targetRecords: [
           {
-            targetName: 'research.pvtclawn.eth',
+            targetName: 'write.pvtclawn.eth',
             key: 'aens.service',
-            value: 'https://aens-nine.vercel.app/research/',
+            value: 'https://aens-nine.vercel.app/write-records/',
           },
           {
             targetName: 'pvtclawn.eth',
             key: 'aens.capabilities',
-            value: '["research.pvtclawn.eth"]',
+            value: '["write.pvtclawn.eth"]',
           },
         ],
         expectedPostState: {
           authorizationStatus: 'parent-authorized',
           reasonCode: 'parent-authorized-with-service-url',
-          serviceUrl: 'https://aens-nine.vercel.app/research/',
+          serviceUrl: 'https://aens-nine.vercel.app/write-records/',
         },
       },
-      expectedCanonicalJson: '{"capabilityName":"research.pvtclawn.eth","chainId":1,"expectedPostState":{"authorizationStatus":"parent-authorized","reasonCode":"parent-authorized-with-service-url","serviceUrl":"https://aens-nine.vercel.app/research"},"rootName":"pvtclawn.eth","schemaVersion":"aens-write-intent/v1","targetRecords":[{"key":"aens.capabilities","targetName":"pvtclawn.eth","value":"[\\"research.pvtclawn.eth\\"]"},{"key":"aens.service","targetName":"research.pvtclawn.eth","value":"https://aens-nine.vercel.app/research"}]}',
-      expectedHash: '0xc293a36082ed7d8b42cc7ea49e34f07adc056c14ea8bed26ab9392aca6556313',
-      expectedBytes: 506,
+      expectedCanonicalJson: '{"capabilityName":"write.pvtclawn.eth","chainId":1,"expectedPostState":{"authorizationStatus":"parent-authorized","reasonCode":"parent-authorized-with-service-url","serviceUrl":"https://aens-nine.vercel.app/write-records"},"rootName":"pvtclawn.eth","schemaVersion":"aens-write-intent/v1","targetRecords":[{"key":"aens.capabilities","targetName":"pvtclawn.eth","value":"[\\"write.pvtclawn.eth\\"]"},{"key":"aens.service","targetName":"write.pvtclawn.eth","value":"https://aens-nine.vercel.app/write-records"}]}',
+      expectedHash: '0x256c42e3ebc8b9429a8f6abfdf23c0fd936d29393e575986baa0fbdb44258dd2',
+      expectedBytes: 507,
     },
     {
       name: 'missing-service-url',
@@ -158,15 +158,15 @@ test('write-intent canonical vectors stay locked', () => {
         schemaVersion: 'aens-write-intent/v1',
         chainId: 1,
         rootName: 'pvtclawn.eth',
-        capabilityName: 'research.pvtclawn.eth',
+        capabilityName: 'write.pvtclawn.eth',
         targetRecords: [
           {
             targetName: 'pvtclawn.eth',
             key: 'aens.capabilities',
-            value: '["research.pvtclawn.eth"]',
+            value: '["write.pvtclawn.eth"]',
           },
           {
-            targetName: 'research.pvtclawn.eth',
+            targetName: 'write.pvtclawn.eth',
             key: 'aens.service',
             value: '',
           },
@@ -177,9 +177,9 @@ test('write-intent canonical vectors stay locked', () => {
           serviceUrl: '',
         },
       },
-      expectedCanonicalJson: '{"capabilityName":"research.pvtclawn.eth","chainId":1,"expectedPostState":{"authorizationStatus":"parent-authorized","reasonCode":"parent-authorized-without-service-url","serviceUrl":""},"rootName":"pvtclawn.eth","schemaVersion":"aens-write-intent/v1","targetRecords":[{"key":"aens.capabilities","targetName":"pvtclawn.eth","value":"[\\"research.pvtclawn.eth\\"]"},{"key":"aens.service","targetName":"research.pvtclawn.eth","value":""}]}',
-      expectedHash: '0x8836cd3ebaa802e4395c15abc6c56f87cc984cacae74cdb730ce9c260a033a81',
-      expectedBytes: 435,
+      expectedCanonicalJson: '{"capabilityName":"write.pvtclawn.eth","chainId":1,"expectedPostState":{"authorizationStatus":"parent-authorized","reasonCode":"parent-authorized-without-service-url","serviceUrl":""},"rootName":"pvtclawn.eth","schemaVersion":"aens-write-intent/v1","targetRecords":[{"key":"aens.capabilities","targetName":"pvtclawn.eth","value":"[\\"write.pvtclawn.eth\\"]"},{"key":"aens.service","targetName":"write.pvtclawn.eth","value":""}]}',
+      expectedHash: '0x6199fd1babec5dab40999e18c58e9ba5ae7a9f484158e8c02836e91f9cf4f13b',
+      expectedBytes: 426,
     },
   ]
 
@@ -197,27 +197,27 @@ test('buildIntentPayloadForHash normalizes ENS names and URL state deterministic
     schemaVersion: 'aens-write-intent/v1',
     chainId: 1,
     rootName: ' PVTCLAWN.ETH ',
-    capabilityName: ' RESEARCH.PVTCLAWN.ETH ',
+    capabilityName: ' WRITE.PVTCLAWN.ETH ',
     targetRecords: [
       {
-        targetName: 'RESEARCH.PVTCLAWN.ETH ',
+        targetName: 'WRITE.PVTCLAWN.ETH ',
         key: 'aens.service',
-        value: 'https://aens-nine.vercel.app/research/',
+        value: 'https://aens-nine.vercel.app/write-records/',
       },
     ],
     expectedPostState: {
       authorizationStatus: 'parent-authorized',
       reasonCode: 'parent-authorized-with-service-url',
-      serviceUrl: 'https://aens-nine.vercel.app/research/',
+      serviceUrl: 'https://aens-nine.vercel.app/write-records/',
     },
   })
 
   expect(payload.rootName).toBe('pvtclawn.eth')
-  expect(payload.capabilityName).toBe('research.pvtclawn.eth')
+  expect(payload.capabilityName).toBe('write.pvtclawn.eth')
   expect(payload.targetRecords[0]).toEqual({
-    targetName: 'research.pvtclawn.eth',
+    targetName: 'write.pvtclawn.eth',
     key: 'aens.service',
-    value: 'https://aens-nine.vercel.app/research',
+    value: 'https://aens-nine.vercel.app/write-records',
   })
-  expect(payload.expectedPostState.serviceUrl).toBe('https://aens-nine.vercel.app/research')
+  expect(payload.expectedPostState.serviceUrl).toBe('https://aens-nine.vercel.app/write-records')
 })

@@ -15,7 +15,7 @@ export interface PublicProofState {
   preferredBaseUrl: string
   preferredResults: SurfaceCheckResult[]
   fallbackResult: SurfaceCheckResult
-  preferredResearchUrl: string
+  preferredWriteRecordsUrl: string
   preferredSurfaceReady: boolean
   bootstrapProofReady: boolean
 }
@@ -77,7 +77,7 @@ export function buildPublicProofState(input: {
 }): PublicProofState {
   const preferredBaseUrl = normalizePublicBaseUrl(input.preferredBaseUrl)
   const preferredTargets = buildPreferredSurfaceTargets(preferredBaseUrl)
-  const preferredResearchUrl = preferredTargets[1]?.url ?? preferredBaseUrl
+  const preferredWriteRecordsUrl = preferredTargets[1]?.url ?? preferredBaseUrl
   const preferredSurfaceReady = hasPreferredSurfaceReady(input.preferredResults)
   const bootstrapProofReady = !preferredSurfaceReady && surfaceCheckPassed(input.fallbackResult)
 
@@ -85,7 +85,7 @@ export function buildPublicProofState(input: {
     preferredBaseUrl,
     preferredResults: input.preferredResults,
     fallbackResult: input.fallbackResult,
-    preferredResearchUrl,
+    preferredWriteRecordsUrl,
     preferredSurfaceReady,
     bootstrapProofReady,
   }
@@ -111,7 +111,7 @@ export function summarizePublicProofStateLines(state: PublicProofState): string[
     `Preferred public base: ${state.preferredBaseUrl}`,
     ...state.preferredResults.map(summarizeSurfaceCheck),
     summarizeSurfaceCheck(state.fallbackResult),
-    `Preferred public surface ready: ${state.preferredSurfaceReady ? 'yes' : 'no'} (${state.preferredResearchUrl})`,
+    `Preferred public surface ready: ${state.preferredSurfaceReady ? 'yes' : 'no'} (${state.preferredWriteRecordsUrl})`,
     `Bootstrap proof ready: ${state.bootstrapProofReady ? 'yes' : 'no'} (${state.fallbackResult.url})`,
   ]
 }

@@ -201,11 +201,11 @@ function WriteRecordsPage() {
   return (
     <Shell
       eyebrow="ÆNS"
-      title="Write ENS Records"
-      intro={<>Write <span className="code">aens.capabilities</span>, <span className="code">aens.parent</span>, and <span className="code">aens.service</span> via wallet.</>}
+      title="Write Records"
+      intro={<>Prepare the exact `aens.*` writes, inspect the payload, then cross the wallet boundary only when you are happy with it.</>}
       actions={
         <>
-          <a className="button" href={links.landing}>Root explorer</a>
+          <a className="button" href={links.landing}>Back to root explorer</a>
           <a className="button" href={repoUrl}>Repo</a>
         </>
       }
@@ -213,6 +213,7 @@ function WriteRecordsPage() {
       <CardGrid>
         <Card>
           <h2>Write form</h2>
+          <p className="helper">This page does one thing: build the three text-record writes needed for the selected root and capability name.</p>
           <form
             className="lookup-form"
             onSubmit={(event) => {
@@ -256,33 +257,58 @@ function WriteRecordsPage() {
                 Use suggested
               </button>
             </div>
-            <p className="small">Suggested endpoint for this root: <span className="code">{suggestedServiceUrl}</span></p>
 
-            <button
-              className="button"
-              type="submit"
-              disabled={
-                isSubmitting
-                || normalizedRootName.length === 0
-                || normalizedCapabilityName.length === 0
-                || normalizedServiceUrl.length === 0
-              }
-            >
-              {isSubmitting ? 'Writing…' : 'Write records'}
-            </button>
+            <div className="button-row">
+              <button
+                className="button"
+                type="submit"
+                disabled={
+                  isSubmitting
+                  || normalizedRootName.length === 0
+                  || normalizedCapabilityName.length === 0
+                  || normalizedServiceUrl.length === 0
+                }
+              >
+                {isSubmitting ? 'Writing…' : 'Write records'}
+              </button>
+            </div>
           </form>
         </Card>
 
-        <Card>
-          <h2>Planned writes</h2>
-          <pre className="result-block">{JSON.stringify(plannedRecords, null, 2)}</pre>
+        <Card className="card-muted">
+          <h2>Derived values</h2>
+          <dl className="data-list">
+            <div className="data-row">
+              <dt>Root ENS</dt>
+              <dd><span className="code block">{normalizedRootName}</span></dd>
+            </div>
+            <div className="data-row">
+              <dt>Capability ENS</dt>
+              <dd><span className="code block">{normalizedCapabilityName}</span></dd>
+            </div>
+            <div className="data-row">
+              <dt>Service URL</dt>
+              <dd><span className="code block">{normalizedServiceUrl}</span></dd>
+            </div>
+            <div className="data-row">
+              <dt>Network</dt>
+              <dd><span className="code block">Ethereum Mainnet</span></dd>
+            </div>
+          </dl>
+          <p className="small">Suggested endpoint: <span className="code">{suggestedServiceUrl}</span></p>
         </Card>
       </CardGrid>
 
       <section className="card">
+        <h2>Planned writes</h2>
+        <pre className="result-block">{JSON.stringify(plannedRecords, null, 2)}</pre>
+      </section>
+
+      <section className="card">
         <h2>Status</h2>
-        <p>{status}</p>
-        {error ? <p>{error}</p> : null}
+        <p className="status-line">{status}</p>
+        <p className="helper">Wallet approval stays explicit. Nothing should be described as live until a human signs and the transactions confirm.</p>
+        {error ? <p className="error-text">{error}</p> : null}
       </section>
 
       {submitted.length > 0 ? (

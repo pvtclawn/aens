@@ -1,12 +1,12 @@
 import { resolve } from 'node:path'
-import { DEFAULT_RESEARCH_CAPABILITY_URL, GITHUB_BLOB_STUB_URL } from './public-surface'
+import { DEFAULT_WRITE_RECORDS_URL, GITHUB_BLOB_STUB_URL } from './public-surface'
 
 export const DEFAULT_PROOF_DIR = 'docs/proof/live-session'
 export const DEFAULT_PROOF_PUBLICATION_MODE = 'bootstrap'
 export const GITHUB_BOOTSTRAP_DOC_PATH = 'docs/public/write-records-stub.md'
 
 export const DEFAULT_SERVICE_URLS = {
-  preferred: DEFAULT_RESEARCH_CAPABILITY_URL,
+  preferred: DEFAULT_WRITE_RECORDS_URL,
   bootstrap: GITHUB_BLOB_STUB_URL,
 } as const
 
@@ -103,7 +103,7 @@ export function buildCommitPinnedBootstrapSourceUrl(repoCommit: string): string 
 
 export function classifyProofServiceUrlFamily(serviceUrl: string): ProofServiceUrlFamily | null {
   const normalizedServiceUrl = normalizeServiceUrl(serviceUrl)
-  if (normalizedServiceUrl === DEFAULT_RESEARCH_CAPABILITY_URL) {
+  if (normalizedServiceUrl === DEFAULT_WRITE_RECORDS_URL) {
     return 'preferred'
   }
 

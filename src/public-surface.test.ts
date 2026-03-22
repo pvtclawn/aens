@@ -16,22 +16,22 @@ import { parseSurfaceFailureSummary } from './surface-summary-format'
 
 function buildResult(overrides: Partial<SurfaceCheckResult> = {}): SurfaceCheckResult {
   return {
-    label: 'research endpoint page',
-    url: 'https://aens-nine.vercel.app/research/',
+    label: 'write records page',
+    url: 'https://aens-nine.vercel.app/write-records/',
     status: 200,
-    expectedMarker: 'Research endpoint — ÆNS',
+    expectedMarker: 'Write ENS capability records — ÆNS',
     expectedMarkerAliases: [
       {
-        marker: 'Research Capability Route',
+        marker: 'Write ENS Records',
         sunsetAt: '2026-05-01T00:00:00.000Z',
         reason: 'runtime h1 alias while checker reads static HTML content',
       },
     ],
     markerDomain: 'preferred-runtime',
     markerMatchType: 'canonical',
-    matchedMarker: 'Research endpoint — ÆNS',
+    matchedMarker: 'Write ENS capability records — ÆNS',
     matchMode: 'exact',
-    body: 'Research endpoint — ÆNS',
+    body: 'Write ENS capability records — ÆNS',
     ...overrides,
   }
 }
@@ -46,7 +46,7 @@ test('resolvePreferredPublicBaseUrl prefers env, then deployed host, then defaul
   )
 })
 
-test('buildPreferredSurfaceTargets derives role-based runtime marker contracts with explicit matchMode', () => {
+test('buildPreferredSurfaceTargets returns root + write-records contracts', () => {
   expect(buildPreferredSurfaceTargets('https://aens-nine.vercel.app')).toEqual([
     {
       label: 'public root',
@@ -68,24 +68,16 @@ test('buildPreferredSurfaceTargets derives role-based runtime marker contracts w
       matchMode: 'exact',
     },
     {
-      label: 'research endpoint page',
-      url: 'https://aens-nine.vercel.app/research/',
-      expectedMarker: 'Research endpoint — ÆNS',
+      label: 'write records page',
+      url: 'https://aens-nine.vercel.app/write-records/',
+      expectedMarker: 'Write ENS capability records — ÆNS',
       expectedMarkerAliases: [
         {
-          marker: 'Research Capability Route',
+          marker: 'Write ENS Records',
           sunsetAt: '2026-05-01T00:00:00.000Z',
           reason: 'runtime h1 alias while checker reads static HTML content',
         },
       ],
-      markerDomain: 'preferred-runtime',
-      matchMode: 'exact',
-    },
-    {
-      label: 'discover research page',
-      url: 'https://aens-nine.vercel.app/discover-research/',
-      expectedMarker: 'Discover the official research capability for an ENS identity',
-      expectedMarkerAliases: [],
       markerDomain: 'preferred-runtime',
       matchMode: 'exact',
     },
@@ -95,22 +87,22 @@ test('buildPreferredSurfaceTargets derives role-based runtime marker contracts w
 test('buildFallbackSurfaceTarget keeps bootstrap marker contract separate from runtime markers', () => {
   expect(buildFallbackSurfaceTarget()).toEqual({
     label: 'github blob fallback',
-    url: 'https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md',
-    expectedMarker: 'PrivateClawn Research Capability Surface',
+    url: 'https://github.com/pvtclawn/aens/blob/main/docs/public/write-records-stub.md',
+    expectedMarker: 'ÆNS Write Records Surface',
     expectedMarkerAliases: [],
     markerDomain: 'bootstrap-fallback',
     matchMode: 'exact',
   })
 })
 
-test('resolveSurfaceMarkerMatch supports canonical and bounded alias matching for explicit mode', () => {
+test('resolveSurfaceMarkerMatch supports canonical and alias matching', () => {
   expect(
     resolveSurfaceMarkerMatch({
-      body: 'Research endpoint — ÆNS',
-      expectedMarker: 'Research endpoint — ÆNS',
+      body: 'Write ENS capability records — ÆNS',
+      expectedMarker: 'Write ENS capability records — ÆNS',
       expectedMarkerAliases: [
         {
-          marker: 'Research Capability Route',
+          marker: 'Write ENS Records',
           sunsetAt: '2026-05-01T00:00:00.000Z',
           reason: 'runtime h1 alias while checker reads static HTML content',
         },
@@ -120,16 +112,16 @@ test('resolveSurfaceMarkerMatch supports canonical and bounded alias matching fo
     }),
   ).toMatchObject({
     markerMatchType: 'canonical',
-    matchedMarker: 'Research endpoint — ÆNS',
+    matchedMarker: 'Write ENS capability records — ÆNS',
   })
 
   expect(
     resolveSurfaceMarkerMatch({
-      body: 'Research Capability Route',
-      expectedMarker: 'Research endpoint — ÆNS',
+      body: 'Write ENS Records',
+      expectedMarker: 'Write ENS capability records — ÆNS',
       expectedMarkerAliases: [
         {
-          marker: 'Research Capability Route',
+          marker: 'Write ENS Records',
           sunsetAt: '2026-05-01T00:00:00.000Z',
           reason: 'runtime h1 alias while checker reads static HTML content',
         },
@@ -139,33 +131,14 @@ test('resolveSurfaceMarkerMatch supports canonical and bounded alias matching fo
     }),
   ).toMatchObject({
     markerMatchType: 'alias',
-    matchedMarker: 'Research Capability Route',
-  })
-
-  expect(
-    resolveSurfaceMarkerMatch({
-      body: 'Research Capability Route',
-      expectedMarker: 'Research endpoint — ÆNS',
-      expectedMarkerAliases: [
-        {
-          marker: 'Research Capability Route',
-          sunsetAt: '2026-05-01T00:00:00.000Z',
-          reason: 'runtime h1 alias while checker reads static HTML content',
-        },
-      ],
-      matchMode: 'exact',
-      nowIso: '2026-06-01T00:00:00.000Z',
-    }),
-  ).toMatchObject({
-    markerMatchType: 'none',
-    matchedMarker: undefined,
+    matchedMarker: 'Write ENS Records',
   })
 })
 
 test('resolveSurfaceMarkerMatch fails closed on unknown matchMode', () => {
   const result = resolveSurfaceMarkerMatch({
-    body: 'Research endpoint — ÆNS',
-    expectedMarker: 'Research endpoint — ÆNS',
+    body: 'Write ENS capability records — ÆNS',
+    expectedMarker: 'Write ENS capability records — ÆNS',
     expectedMarkerAliases: [],
     matchMode: 'mystery-mode',
     nowIso: '2026-03-22T10:00:00.000Z',
@@ -177,10 +150,10 @@ test('resolveSurfaceMarkerMatch fails closed on unknown matchMode', () => {
 
 test('resolveSurfaceFailureClass keeps stricter class and never downgrades to marker-missing', () => {
   const result: SurfaceCheckResult = {
-    label: 'research endpoint page',
-    url: 'https://aens-nine.vercel.app/research/',
+    label: 'write records page',
+    url: 'https://aens-nine.vercel.app/write-records/',
     status: 200,
-    expectedMarker: 'Research endpoint — ÆNS',
+    expectedMarker: 'Write ENS capability records — ÆNS',
     expectedMarkerAliases: [],
     markerDomain: 'preferred-runtime',
     markerMatchType: 'none',
@@ -195,33 +168,33 @@ test('resolveSurfaceFailureClass keeps stricter class and never downgrades to ma
 
 test('surfaceCheckPassed requires http 200 plus canonical or alias marker match', () => {
   expect(surfaceCheckPassed(buildResult())).toBe(true)
-  expect(surfaceCheckPassed(buildResult({ markerMatchType: 'alias', matchedMarker: 'Research Capability Route' }))).toBe(true)
+  expect(surfaceCheckPassed(buildResult({ markerMatchType: 'alias', matchedMarker: 'Write ENS Records' }))).toBe(true)
   expect(surfaceCheckPassed(buildResult({ markerMatchType: 'none', matchedMarker: undefined }))).toBe(false)
   expect(surfaceCheckPassed(buildResult({ status: 404 }))).toBe(false)
 })
 
 test('summarizeSurfaceCheck explains success, alias success, and failures', () => {
   expect(summarizeSurfaceCheck(buildResult())).toBe(
-    'research endpoint page: ok (https://aens-nine.vercel.app/research/)',
+    'write records page: ok (https://aens-nine.vercel.app/write-records/)',
   )
 
   expect(
     summarizeSurfaceCheck(
       buildResult({
         markerMatchType: 'alias',
-        matchedMarker: 'Research Capability Route',
+        matchedMarker: 'Write ENS Records',
       }),
     ),
   ).toBe(
-    'research endpoint page: ok (matched alias marker) (https://aens-nine.vercel.app/research/)',
+    'write records page: ok (matched alias marker) (https://aens-nine.vercel.app/write-records/)',
   )
 
   expect(summarizeSurfaceCheck(buildResult({ markerMatchType: 'none', matchedMarker: undefined }))).toBe(
-    'research endpoint page: marker-missing (reachable but missing expected marker) (https://aens-nine.vercel.app/research/)',
+    'write records page: marker-missing (reachable but missing expected marker) (https://aens-nine.vercel.app/write-records/)',
   )
 
   expect(summarizeSurfaceCheck(buildResult({ status: 404 }))).toBe(
-    'research endpoint page: http-failure (http failure) (https://aens-nine.vercel.app/research/)',
+    'write records page: http-failure (http failure) (https://aens-nine.vercel.app/write-records/)',
   )
 })
 
@@ -234,14 +207,14 @@ test('summary templates are centralized and used by surface failure summarizer',
   )
 
   expect(summary).toBe(
-    'research endpoint page: alias-expired (alias expired (canonical marker required)) (https://aens-nine.vercel.app/research/)',
+    'write records page: alias-expired (alias expired (canonical marker required)) (https://aens-nine.vercel.app/write-records/)',
   )
 
   expect(parseSurfaceFailureSummary(summary)).toEqual({
-    surfaceLabel: 'research endpoint page',
+    surfaceLabel: 'write records page',
     failureClass: 'alias-expired',
     cue: 'alias expired (canonical marker required)',
-    url: 'https://aens-nine.vercel.app/research/',
+    url: 'https://aens-nine.vercel.app/write-records/',
   })
 })
 
@@ -256,15 +229,6 @@ test('preferredSurfaceReady requires every checked preferred page to pass', () =
       matchedMarker: 'ÆNS — ENS root explorer',
     }),
     buildResult(),
-    buildResult({
-      label: 'discover research page',
-      url: 'https://aens-nine.vercel.app/discover-research/',
-      expectedMarker: 'Discover the official research capability for an ENS identity',
-      expectedMarkerAliases: [],
-      body: 'Discover the official research capability for an ENS identity',
-      markerMatchType: 'canonical',
-      matchedMarker: 'Discover the official research capability for an ENS identity',
-    }),
   ])).toBe(true)
 
   expect(preferredSurfaceReady([
@@ -277,15 +241,6 @@ test('preferredSurfaceReady requires every checked preferred page to pass', () =
       matchedMarker: 'ÆNS — ENS root explorer',
     }),
     buildResult({ status: 404 }),
-    buildResult({
-      label: 'discover research page',
-      url: 'https://aens-nine.vercel.app/discover-research/',
-      expectedMarker: 'Discover the official research capability for an ENS identity',
-      expectedMarkerAliases: [],
-      body: 'Discover the official research capability for an ENS identity',
-      markerMatchType: 'canonical',
-      matchedMarker: 'Discover the official research capability for an ENS identity',
-    }),
   ])).toBe(false)
 })
 

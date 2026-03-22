@@ -107,7 +107,7 @@ export async function runCaptureProof(
   let overallExitCode = 0
   for (const [title, command] of [
     ['bun run inspect pvtclawn.eth', ['bun', 'run', 'inspect', 'pvtclawn.eth']],
-    ['bun run inspect research.pvtclawn.eth', ['bun', 'run', 'inspect', 'research.pvtclawn.eth']],
+    ['bun run inspect write.pvtclawn.eth', ['bun', 'run', 'inspect', 'write.pvtclawn.eth']],
   ] as const) {
     const result = runCapturedCommand(repoRoot, title, [...command])
     appendFileSync(config.outFile, result.section)

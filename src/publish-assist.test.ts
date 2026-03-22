@@ -11,7 +11,7 @@ import {
   type PublishAssistSnapshot,
 } from './publish-assist'
 import type { PublicProofState } from './public-proof-state'
-import { DEFAULT_RESEARCH_CAPABILITY_URL } from './public-surface'
+import { DEFAULT_WRITE_RECORDS_URL } from './public-surface'
 
 function buildPublicProofState(input: {
   preferredSurfaceReady: boolean
@@ -19,7 +19,7 @@ function buildPublicProofState(input: {
 }): PublicProofState {
   return {
     preferredBaseUrl: 'https://aens-nine.vercel.app/',
-    preferredResearchUrl: DEFAULT_RESEARCH_CAPABILITY_URL,
+    preferredWriteRecordsUrl: DEFAULT_WRITE_RECORDS_URL,
     preferredSurfaceReady: input.preferredSurfaceReady,
     bootstrapProofReady: input.bootstrapProofReady,
     preferredResults: [
@@ -31,22 +31,22 @@ function buildPublicProofState(input: {
         body: 'ÆNS — PrivateClawn landing',
       },
       {
-        label: 'research endpoint page',
-        url: DEFAULT_RESEARCH_CAPABILITY_URL,
+        label: 'write records page',
+        url: DEFAULT_WRITE_RECORDS_URL,
         status: input.preferredSurfaceReady ? 200 : 404,
-        expectedMarker: 'PrivateClawn Research Capability',
+        expectedMarker: 'PrivateClawn Write Records',
         body: input.preferredSurfaceReady
-          ? 'PrivateClawn Research Capability'
+          ? 'PrivateClawn Write Records'
           : 'not found',
       },
     ],
     fallbackResult: {
       label: 'github blob fallback',
-      url: 'https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md',
+      url: 'https://github.com/pvtclawn/aens/blob/main/docs/public/write-records-stub.md',
       status: input.bootstrapProofReady ? 200 : 404,
-      expectedMarker: 'PrivateClawn Research Capability Surface',
+      expectedMarker: 'ÆNS Write Records Surface',
       body: input.bootstrapProofReady
-        ? 'PrivateClawn Research Capability Surface'
+        ? 'ÆNS Write Records Surface'
         : 'not found',
     },
   }
@@ -56,7 +56,7 @@ function buildSnapshot(overrides: Partial<PublishAssistSnapshot> = {}): PublishA
   return {
     rootName: DEFAULT_PUBLISH_ROOT_NAME,
     childName: DEFAULT_PUBLISH_CHILD_NAME,
-    expectedServiceUrl: DEFAULT_RESEARCH_CAPABILITY_URL,
+    expectedServiceUrl: DEFAULT_WRITE_RECORDS_URL,
     proofDir: '/tmp/proof',
     repoCommit: 'commit-123',
     root: {
@@ -101,7 +101,7 @@ function buildReadyChildProfile(): AensResolvedProfile {
       parentName: DEFAULT_PUBLISH_ROOT_NAME,
       agentId: '1391',
       runtime: 'openclaw-gateway',
-      serviceUrl: DEFAULT_RESEARCH_CAPABILITY_URL,
+      serviceUrl: DEFAULT_WRITE_RECORDS_URL,
     },
   })
 }
@@ -120,7 +120,7 @@ function buildProofArtifactBody(input: {
     '- Captured: `2026-03-20T17-00-00Z`',
     `- Publication mode: \`${input.publicationMode ?? 'preferred'}\``,
     '- Publication mode source: `explicit`',
-    `- Service URL: \`${input.serviceUrl ?? DEFAULT_RESEARCH_CAPABILITY_URL}\``,
+    `- Service URL: \`${input.serviceUrl ?? DEFAULT_WRITE_RECORDS_URL}\``,
     '- Service URL family: `preferred`',
     `- Repo commit: \`${input.repoCommit ?? 'commit-123'}\``,
     '- Working directory: `/tmp/aens`',
@@ -158,13 +158,13 @@ test('parsePublishAssistArgs accepts explicit names and proof dir', () => {
       '--root-name',
       'base.eth',
       '--child-name',
-      'research.base.eth',
+      'write.base.eth',
       '--proof-dir',
       'docs/proof/live-session',
     ]),
   ).toEqual({
     rootName: 'base.eth',
-    childName: 'research.base.eth',
+    childName: 'write.base.eth',
     proofDir: 'docs/proof/live-session',
   })
 })
@@ -227,7 +227,7 @@ test('classifyProofArtifactBody requires a strong final-proof artifact contract'
       label: 'final',
     }),
     childName: DEFAULT_PUBLISH_CHILD_NAME,
-    expectedServiceUrl: DEFAULT_RESEARCH_CAPABILITY_URL,
+    expectedServiceUrl: DEFAULT_WRITE_RECORDS_URL,
     repoCommit: 'commit-123',
   })
   expect(strongMatch).toBe('strong-final-match')
@@ -237,7 +237,7 @@ test('classifyProofArtifactBody requires a strong final-proof artifact contract'
       label: 'post-root',
     }),
     childName: DEFAULT_PUBLISH_CHILD_NAME,
-    expectedServiceUrl: DEFAULT_RESEARCH_CAPABILITY_URL,
+    expectedServiceUrl: DEFAULT_WRITE_RECORDS_URL,
     repoCommit: 'commit-123',
   })
   expect(weakMatch).toBe('advisory-candidate')
@@ -248,7 +248,7 @@ test('classifyProofArtifactBody requires a strong final-proof artifact contract'
       repoCommit: 'old-commit',
     }),
     childName: DEFAULT_PUBLISH_CHILD_NAME,
-    expectedServiceUrl: DEFAULT_RESEARCH_CAPABILITY_URL,
+    expectedServiceUrl: DEFAULT_WRITE_RECORDS_URL,
     repoCommit: 'commit-123',
   })
   expect(staleMatch).toBe('advisory-candidate')

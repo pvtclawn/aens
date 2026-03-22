@@ -11,8 +11,8 @@ import {
 import { isClassFirstFailureSummary } from './surface-summary-format'
 
 export const DEFAULT_PUBLIC_BASE_URL = 'https://aens-nine.vercel.app/'
-export const RESEARCH_CAPABILITY_PATH = 'write-records/'
-export const DEFAULT_RESEARCH_CAPABILITY_URL = new URL(RESEARCH_CAPABILITY_PATH, DEFAULT_PUBLIC_BASE_URL).toString()
+export const WRITE_RECORDS_PATH = 'write-records/'
+export const DEFAULT_WRITE_RECORDS_URL = new URL(WRITE_RECORDS_PATH, DEFAULT_PUBLIC_BASE_URL).toString()
 export const GITHUB_BLOB_STUB_URL = 'https://github.com/pvtclawn/aens/blob/main/docs/public/write-records-stub.md'
 
 export type SurfaceMarkerMatchType = 'canonical' | 'alias' | 'none'
@@ -149,7 +149,7 @@ export function buildPreferredSurfaceTargets(baseUrl: string): SurfaceCheckTarge
     }),
     targetFromMarkerContract({
       label: 'write records page',
-      url: new URL(RESEARCH_CAPABILITY_PATH, normalizedBaseUrl).toString(),
+      url: new URL(WRITE_RECORDS_PATH, normalizedBaseUrl).toString(),
       markerContract: PREFERRED_RUNTIME_MARKERS.writeRecords,
     }),
   ]

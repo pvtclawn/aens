@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test'
 import { CliUsageError, parseCliArgs } from './cli-args'
 import { getExampleScenario, listExampleIds } from './examples'
-import { DEFAULT_RESEARCH_CAPABILITY_URL } from './public-surface'
+import { DEFAULT_WRITE_RECORDS_URL } from './public-surface'
 import { renderProfileReport } from './report'
 
 test('example registry exposes contrasting capability authority demos', () => {
@@ -14,10 +14,10 @@ test('example registry exposes contrasting capability authority demos', () => {
   const parentAuthorized = getExampleScenario('parent-authorized-capability')
   expect(parentAuthorized).not.toBeNull()
   expect(parentAuthorized?.capabilityAuthorization.status).toBe('parent-authorized')
-  expect(parentAuthorized?.profile.ensName).toBe('research.pvtclawn.eth')
+  expect(parentAuthorized?.profile.ensName).toBe('write.pvtclawn.eth')
   expect(parentAuthorized?.profile.records.parentName).toBe('pvtclawn.eth')
-  expect(parentAuthorized?.profile.records.serviceUrl).toBe(DEFAULT_RESEARCH_CAPABILITY_URL)
-  expect(parentAuthorized?.parentProfile?.records.capabilities).toEqual(['research.pvtclawn.eth'])
+  expect(parentAuthorized?.profile.records.serviceUrl).toBe(DEFAULT_WRITE_RECORDS_URL)
+  expect(parentAuthorized?.parentProfile?.records.capabilities).toEqual(['write.pvtclawn.eth'])
 
   const unlistedChild = getExampleScenario('unlisted-child-capability')
   expect(unlistedChild).not.toBeNull()
@@ -25,7 +25,7 @@ test('example registry exposes contrasting capability authority demos', () => {
   expect(unlistedChild?.profile.ensName).toBe('ops.pvtclawn.eth')
   expect(unlistedChild?.capabilityAuthorization.listedByParent).toBe(false)
   expect(unlistedChild?.capabilityAuthorization.identityMatchesParent).toBe(true)
-  expect(unlistedChild?.parentProfile?.records.capabilities).toEqual(['research.pvtclawn.eth'])
+  expect(unlistedChild?.parentProfile?.records.capabilities).toEqual(['write.pvtclawn.eth'])
 
   const identityMismatch = getExampleScenario('identity-mismatch-capability')
   expect(identityMismatch).not.toBeNull()

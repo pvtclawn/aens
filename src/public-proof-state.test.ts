@@ -4,27 +4,27 @@ import type { SurfaceCheckResult } from './public-surface'
 
 function buildSurfaceResult(overrides: Partial<SurfaceCheckResult> = {}): SurfaceCheckResult {
   return {
-    label: 'research endpoint page',
-    url: 'https://aens-nine.vercel.app/research/',
+    label: 'write records page',
+    url: 'https://aens-nine.vercel.app/write-records/',
     status: 200,
-    expectedMarker: 'Research endpoint — ÆNS',
+    expectedMarker: 'Write ENS capability records — ÆNS',
     expectedMarkerAliases: [
       {
-        marker: 'Research Capability Route',
+        marker: 'Write Records Route',
         sunsetAt: '2026-05-01T00:00:00.000Z',
         reason: 'runtime h1 alias while checker reads static HTML content',
       },
       {
-        marker: 'PrivateClawn Research Capability',
+        marker: 'PrivateClawn Write Records',
         sunsetAt: '2026-05-01T00:00:00.000Z',
-        reason: 'temporary transition alias after research page copy de-hardcode',
+        reason: 'temporary transition alias after write records page copy de-hardcode',
       },
     ],
     markerDomain: 'preferred-runtime',
     markerMatchType: 'canonical',
-    matchedMarker: 'Research endpoint — ÆNS',
+    matchedMarker: 'Write ENS capability records — ÆNS',
     matchMode: 'exact',
-    body: 'Research endpoint — ÆNS',
+    body: 'Write ENS capability records — ÆNS',
     ...overrides,
   }
 }
@@ -57,13 +57,13 @@ test('buildPublicProofState marks preferred ready only when all preferred target
     ],
     fallbackResult: buildSurfaceResult({
       label: 'github blob fallback',
-      url: 'https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md',
-      expectedMarker: 'PrivateClawn Research Capability Surface',
+      url: 'https://github.com/pvtclawn/aens/blob/main/docs/public/write-records-stub.md',
+      expectedMarker: 'ÆNS Write Records Surface',
       expectedMarkerAliases: [],
       markerDomain: 'bootstrap-fallback',
       markerMatchType: 'canonical',
-      matchedMarker: 'PrivateClawn Research Capability Surface',
-      body: 'PrivateClawn Research Capability Surface',
+      matchedMarker: 'ÆNS Write Records Surface',
+      body: 'ÆNS Write Records Surface',
     }),
   })
 
@@ -99,13 +99,13 @@ test('buildPublicProofState marks bootstrap ready when preferred surface is not 
     ],
     fallbackResult: buildSurfaceResult({
       label: 'github blob fallback',
-      url: 'https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md',
-      expectedMarker: 'PrivateClawn Research Capability Surface',
+      url: 'https://github.com/pvtclawn/aens/blob/main/docs/public/write-records-stub.md',
+      expectedMarker: 'ÆNS Write Records Surface',
       expectedMarkerAliases: [],
       markerDomain: 'bootstrap-fallback',
       markerMatchType: 'canonical',
-      matchedMarker: 'PrivateClawn Research Capability Surface',
-      body: 'PrivateClawn Research Capability Surface',
+      matchedMarker: 'ÆNS Write Records Surface',
+      body: 'ÆNS Write Records Surface',
     }),
   })
 
@@ -142,19 +142,19 @@ test('summarizePublicProofStateLines includes both preferred and bootstrap verdi
       ],
       fallbackResult: buildSurfaceResult({
         label: 'github blob fallback',
-        url: 'https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md',
-        expectedMarker: 'PrivateClawn Research Capability Surface',
+        url: 'https://github.com/pvtclawn/aens/blob/main/docs/public/write-records-stub.md',
+        expectedMarker: 'ÆNS Write Records Surface',
         expectedMarkerAliases: [],
         markerDomain: 'bootstrap-fallback',
         markerMatchType: 'canonical',
-        matchedMarker: 'PrivateClawn Research Capability Surface',
-        body: 'PrivateClawn Research Capability Surface',
+        matchedMarker: 'ÆNS Write Records Surface',
+        body: 'ÆNS Write Records Surface',
       }),
     }),
   )
 
-  expect(lines).toContain('Preferred public surface ready: no (https://aens-nine.vercel.app/research/)')
+  expect(lines).toContain('Preferred public surface ready: no (https://aens-nine.vercel.app/write-records/)')
   expect(lines).toContain(
-    'Bootstrap proof ready: yes (https://github.com/pvtclawn/aens/blob/main/docs/public/research-capability-stub.md)',
+    'Bootstrap proof ready: yes (https://github.com/pvtclawn/aens/blob/main/docs/public/write-records-stub.md)',
   )
 })

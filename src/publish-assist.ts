@@ -19,7 +19,7 @@ import {
   type PublicProofState,
 } from './public-proof-state'
 import {
-  DEFAULT_RESEARCH_CAPABILITY_URL,
+  DEFAULT_WRITE_RECORDS_URL,
   resolvePreferredPublicBaseUrl,
 } from './public-surface'
 import { resolveAensProfile } from './resolver'
@@ -762,7 +762,7 @@ export async function resolvePublishAssistSnapshot(input: {
   const rootName = input.rootName ?? DEFAULT_PUBLISH_ROOT_NAME
   const childName = input.childName ?? DEFAULT_PUBLISH_CHILD_NAME
   const proofDir = resolve(repoRoot, input.proofDir ?? DEFAULT_PROOF_DIR)
-  const expectedServiceUrl = input.expectedServiceUrl ?? DEFAULT_RESEARCH_CAPABILITY_URL
+  const expectedServiceUrl = input.expectedServiceUrl ?? DEFAULT_WRITE_RECORDS_URL
   const repoCommit = readRepoCommit(repoRoot)
   const preferredBaseUrl = resolvePreferredPublicBaseUrl({
     envValue: input.publicBaseUrlEnv,
